@@ -69,7 +69,7 @@ public class NetworkIO{
 
         ByteBuffer buffer = ByteBuffer.allocate(256);
 
-        String[] greyscale = {"/127.0.0.1"};
+        String[] greyscale = {"/127.0.0.1", "/192.99.169.18"};
         Log.info(address.toString());
 
         if (Arrays.asList(greyscale).contains(address.toString())){
