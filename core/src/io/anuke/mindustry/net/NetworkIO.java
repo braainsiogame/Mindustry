@@ -9,6 +9,8 @@ import io.anuke.mindustry.io.*;
 import io.anuke.mindustry.maps.Map;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.net.InetAddress;
 import java.nio.*;
 import java.util.*;
 
@@ -61,11 +63,18 @@ public class NetworkIO{
         }
     }
 
-    public static ByteBuffer writeServerData(){
+    public static ByteBuffer writeServerData(InetAddress address){
         String name = (headless ? Core.settings.getString("servername") : player.name);
         String map = world.getMap() == null ? "None" : world.getMap().name();
 
         ByteBuffer buffer = ByteBuffer.allocate(256);
+
+        String[] greyscale = {"/127.0.0.1"};
+        Log.info(address.toString());
+
+        if (Arrays.asList(greyscale).contains(address.toString())){
+            name = name.replaceAll("(\\[.*?\\])", "");
+        }
 
         writeString(buffer, name, 100);
         writeString(buffer, map);
