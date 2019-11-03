@@ -249,7 +249,7 @@ public class NetServer implements ApplicationListener{
         });
 
         //duration of a a kick in seconds
-        int kickDuration = 15 * 60;
+        int kickDuration = 30;
 
         class VoteSession{
             Player target;
@@ -267,14 +267,17 @@ public class NetServer implements ApplicationListener{
                         map[0] = null;
                         task.cancel();
                     }
-                }, 60 * 1);
+                }, 20);
             }
 
             void vote(Player player, int d){
+                if(player.isAdmin){
+                    votes *= 3;
+                }
                 votes += d;
                 voted.addAll(player.uuid, admins.getInfo(player.uuid).lastIP);
                         
-                Call.sendMessage(Strings.format("[orange]{0}[lightgray] has voted to kick[orange] {1}[].[accent] ({2}/{3})\n[lightgray]Type[orange] /vote <y/n>[] to agree.",
+                Call.sendMessage(Strings.format("[orange]{0}[lightgray] has voted on kicking[orange] {1}[].[accent] ({2}/{3})\n[lightgray]Type[orange] /vote <y/n>[] to agree.",
                             player.name, target.name, votes, votesRequired()));
             }
 
@@ -298,8 +301,8 @@ public class NetServer implements ApplicationListener{
         VoteSession[] currentlyKicking = {null};
 
         clientCommands.<Player>register("votekick", "[player...]", "Vote to kick a player, with a cooldown.", (args, player) -> {
-            if(playerGroup.size() < 3){
-                player.sendMessage("[scarlet]At least 3 players are needed to start a votekick.");
+            if(playerGroup.size() < 2){
+                player.sendMessage("[scarlet]At least 2 players are needed to start a votekick.");
                 return;
             }
 
@@ -547,20 +550,11 @@ public class NetServer implements ApplicationListener{
             //not a real issue, because server owners may want to do just that
             state.wavetime = 0f;
         }else if(action == AdminAction.ban){
-            netServer.admins.banPlayerIP(other.con.address);
-            other.con.kick(KickReason.banned);
-            Log.info("&lc{0} has banned {1}.", player.name, other.name);
+            Call.onPlayerDeath(other);
         }else if(action == AdminAction.kick){
-            other.con.kick(KickReason.kick);
-            Log.info("&lc{0} has kicked {1}.", player.name, other.name);
+            player.sendMessage("use [accent]/votekick[] my dearest moderator.");
         }else if(action == AdminAction.trace){
-            TraceInfo info = new TraceInfo(other.con.address, other.uuid, other.con.modclient, other.con.mobile);
-            if(player.con != null){
-                Call.onTraceInfo(player.con, other, info);
-            }else{
-                NetClient.onTraceInfo(other, info);
-            }
-            Log.info("&lc{0} has requested trace info of {1}.", player.name, other.name);
+            //
         }
     }
 
