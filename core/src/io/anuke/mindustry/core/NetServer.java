@@ -209,35 +209,19 @@ public class NetServer implements ApplicationListener{
             RemoteReadServer.readPacket(packet.writeBuffer, packet.type, con.player);
         });
 
-        Events.on(PlayerConnect.class, event -> {
-            if(admins.isAdmin(event.player.uuid, event.player.usid)){
-                admins.unAdminPlayer(event.player.uuid);
-            }
-
-            elect();
-        });
-
         Events.on(PlayerLeave.class, event -> {
             if(admins.isAdmin(event.player.uuid, event.player.usid)){
                 admins.unAdminPlayer(event.player.uuid);
+                event.player.isAdmin = false;
             }
-            elect();
         });
 
+        // remove all admins on server start
+        for(PlayerInfo admin : admins.getAdmins()){
+            admins.unAdminPlayer(admin.id);
+        }
+
         registerCommands();
-    }
-
-    protected void elect(){
-
-        Log.info("electing...");
-        Timer.schedule(() -> {
-            for(Player player : playerGroup.all()){
-                Log.info(player);
-                netServer.admins.adminPlayer(player.uuid, player.usid);
-                player.isAdmin = true;
-                return;
-            }
-        }, 1f);
     }
 
     @Override
@@ -591,6 +575,7 @@ public class NetServer implements ApplicationListener{
         if(player.con == null || player.con.hasConnected) return;
 
         player.add();
+//        elect();
         player.con.hasConnected = true;
         Call.sendMessage("[accent]" + player.name + "[accent] has connected.");
         Log.info("&lm[{1}] &y{0} has connected. ", player.name, player.uuid);
@@ -612,6 +597,17 @@ public class NetServer implements ApplicationListener{
     }
 
     public void update(){
+
+        if(playerGroup.size() > 0){
+            if(netServer.admins.getAdmins().size == 0){
+                for(Player player : playerGroup.all()){
+                    Log.info(player);
+                    netServer.admins.adminPlayer(player.uuid, player.usid);
+                    player.isAdmin = true;
+                    return;
+                }
+            }
+        }
 
         if(!headless && !closing && net.server() && state.is(State.menu)){
             closing = true;
