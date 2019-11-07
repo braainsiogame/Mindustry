@@ -62,6 +62,7 @@ public class NetServer implements ApplicationListener{
             if(con.player != null){
                 onDisconnect(con.player, packet.reason);
             }
+            elect();
         });
 
         net.handleServer(ConnectPacket.class, (con, packet) -> {
@@ -168,15 +169,6 @@ public class NetServer implements ApplicationListener{
                 con.modclient = true;
             }
 
-            if(playerGroup.size() == 0){
-                
-                for (PlayerInfo admin : admins.getAdmins()){
-                    admins.unAdminPlayer(admin.id);
-                }
-
-                admins.adminPlayer(uuid, packet.usid);
-            }
-
             Player player = new Player();
             player.isAdmin = admins.isAdmin(uuid, packet.usid);
             player.con = con;
@@ -211,6 +203,8 @@ public class NetServer implements ApplicationListener{
             platform.updateRPC();
 
             Events.fire(new PlayerConnect(player));
+
+            elect();
         });
 
         net.handleServer(InvokePacket.class, (con, packet) -> {
@@ -219,6 +213,20 @@ public class NetServer implements ApplicationListener{
         });
 
         registerCommands();
+    }
+
+    protected void elect(){
+
+        // unadmin all players
+        for(PlayerInfo admin : admins.getAdmins()){
+            admins.unAdminPlayer(admin.id);
+        }
+
+        // elect player connected the longest
+        for(Player player : playerGroup.all()){
+            admins.adminPlayer(player.uuid, player.usid);
+            return;
+        }
     }
 
     @Override
