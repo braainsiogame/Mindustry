@@ -168,6 +168,15 @@ public class NetServer implements ApplicationListener{
                 con.modclient = true;
             }
 
+            if(playerGroup.size() == 0){
+                
+                for (PlayerInfo admin : admins.getAdmins()){
+                    admins.unAdminPlayer(admin.id);
+                }
+
+                admins.adminPlayer(uuid, packet.usid);
+            }
+
             Player player = new Player();
             player.isAdmin = admins.isAdmin(uuid, packet.usid);
             player.con = con;
