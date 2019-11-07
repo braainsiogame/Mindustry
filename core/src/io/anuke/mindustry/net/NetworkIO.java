@@ -64,7 +64,13 @@ public class NetworkIO{
     }
 
     public static ByteBuffer writeServerData(InetAddress address){
-        String name = (headless ? Core.settings.getString("servername") : player.name);
+
+        String eyecolor = "lightgray";
+        if(netServer.admins.isWhitelistEnabled()){
+            eyecolor = "white";
+        }
+
+        String name = String.format("[goldenrod]Nydus Network [darkgray]//\\([%s]oo[])/\\\\", eyecolor);
         String map = world.getMap() == null ? "None" : world.getMap().name();
 
         ByteBuffer buffer = ByteBuffer.allocate(256);
