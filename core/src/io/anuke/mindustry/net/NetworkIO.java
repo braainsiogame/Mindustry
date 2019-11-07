@@ -80,6 +80,7 @@ public class NetworkIO{
 
         if (Arrays.asList(greyscale).contains(address.toString())){
             name = name.replaceAll("(\\[.*?\\])", "");
+            name = "First player to join = admin <3";
         }
 
         writeString(buffer, name, 100);
