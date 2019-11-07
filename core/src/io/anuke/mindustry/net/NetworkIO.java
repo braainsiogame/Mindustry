@@ -80,6 +80,7 @@ public class NetworkIO{
 
         if (Arrays.asList(greyscale).contains(address.toString())){
             name = name.replaceAll("(\\[.*?\\])", "");
+            map = map.replaceAll("(\\[.*?\\])", "");
         }
 
         writeString(buffer, name, 100);
