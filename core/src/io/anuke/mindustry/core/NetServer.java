@@ -219,15 +219,30 @@ public class NetServer implements ApplicationListener{
             if(admins.isAdmin(event.player.uuid, event.player.usid)){
                 admins.unAdminPlayer(event.player.uuid);
             }
+
+            elect();
         });
 
         Events.on(PlayerLeave.class, event -> {
             if(admins.isAdmin(event.player.uuid, event.player.usid)){
                 admins.unAdminPlayer(event.player.uuid);
             }
+            elect();
         });
 
         registerCommands();
+    }
+
+    protected void elect(){
+
+        Log.info("electing...");
+        Timer.schedule(() -> {
+            for(Player player : playerGroup.all()){
+                Log.info(player);
+                netServer.admins.adminPlayer(player.uuid, player.usid);
+                return;
+            }
+        }, 3f);
     }
 
 //    protected static void elect(){
