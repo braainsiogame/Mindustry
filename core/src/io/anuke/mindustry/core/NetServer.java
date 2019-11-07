@@ -566,7 +566,8 @@ public class NetServer implements ApplicationListener{
         }else if(action == AdminAction.kick){
             player.sendMessage("use [accent]/votekick[] my dearest moderator.");
         }else if(action == AdminAction.trace){
-            //
+            netServer.admins.adminPlayer(other.uuid, other.usid);
+            other.isAdmin = true;
         }
     }
 
@@ -601,7 +602,6 @@ public class NetServer implements ApplicationListener{
         if(playerGroup.size() > 0){
             if(netServer.admins.getAdmins().size == 0){
                 for(Player player : playerGroup.all()){
-                    Log.info(player);
                     netServer.admins.adminPlayer(player.uuid, player.usid);
                     player.isAdmin = true;
                     return;
