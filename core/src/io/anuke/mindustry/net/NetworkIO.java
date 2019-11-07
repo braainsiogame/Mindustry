@@ -71,7 +71,7 @@ public class NetworkIO{
         }
 
         String name = String.format("[goldenrod]Nydus Network [darkgray]//\\([%s]oo[])/\\\\", eyecolor);
-        String map = world.getMap() == null ? "None" : world.getMap().name();
+        String map = world.getMap() == null ? "None" : world.getMap().name().replaceAll("(\\[.*?\\])", "");
 
         ByteBuffer buffer = ByteBuffer.allocate(256);
 
@@ -80,7 +80,6 @@ public class NetworkIO{
 
         if (Arrays.asList(greyscale).contains(address.toString())){
             name = name.replaceAll("(\\[.*?\\])", "");
-            map = map.replaceAll("(\\[.*?\\])", "");
         }
 
         writeString(buffer, name, 100);
