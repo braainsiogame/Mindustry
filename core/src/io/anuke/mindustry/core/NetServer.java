@@ -168,10 +168,6 @@ public class NetServer implements ApplicationListener{
                 con.modclient = true;
             }
 
-//            if (player.isAdmin){
-//                admins.unAdminPlayer(uuid.id);
-//            }
-
             Player player = new Player();
             player.isAdmin = admins.isAdmin(uuid, packet.usid);
             player.con = con;
@@ -206,8 +202,6 @@ public class NetServer implements ApplicationListener{
             platform.updateRPC();
 
             Events.fire(new PlayerConnect(player));
-
-//            elect();
         });
 
         net.handleServer(InvokePacket.class, (con, packet) -> {
@@ -240,31 +234,11 @@ public class NetServer implements ApplicationListener{
             for(Player player : playerGroup.all()){
                 Log.info(player);
                 netServer.admins.adminPlayer(player.uuid, player.usid);
+                player.isAdmin = true;
                 return;
             }
-        }, 3f);
+        }, 1f);
     }
-
-//    protected static void elect(){
-//
-//        Log.info("electing...");
-//
-//        // unadmin all players
-//        for(PlayerInfo admin : netServer.admins.getAdmins()){
-//            netServer.admins.unAdminPlayer(admin.id);
-//        }
-//
-//        Log.info(playerGroup.all());
-//
-//        // elect player connected the longest
-////        for(Player player : playerGroup.all()){
-////            Log.info(player);
-////            netServer.admins.adminPlayer(player.uuid, player.usid);
-////            return;
-////        }
-//    }
-//
-//    protected static
 
     @Override
     public void init(){
@@ -498,8 +472,6 @@ public class NetServer implements ApplicationListener{
 
         player.remove();
         player.con.hasDisconnected = true;
-
-//        elect();
     }
 
     @Remote(targets = Loc.client, unreliable = true)
@@ -624,8 +596,6 @@ public class NetServer implements ApplicationListener{
         Log.info("&lm[{1}] &y{0} has connected. ", player.name, player.uuid);
 
         Events.fire(new PlayerJoin(player));
-
-//        elect();
     }
 
     public boolean isWaitingForPlayers(){
