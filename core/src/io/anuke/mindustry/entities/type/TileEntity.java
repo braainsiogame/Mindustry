@@ -4,17 +4,20 @@ import io.anuke.annotations.Annotations.*;
 import io.anuke.arc.Events;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.collection.ObjectSet;
+import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.Point2;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.ArcAnnotate.*;
 import io.anuke.mindustry.entities.EntityGroup;
+import io.anuke.mindustry.entities.effect.Fire;
 import io.anuke.mindustry.entities.traits.HealthTrait;
 import io.anuke.mindustry.entities.traits.TargetTrait;
 import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.game.EventType.BlockDestroyEvent;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.meta.Attribute;
 import io.anuke.mindustry.world.modules.*;
 
 import java.io.*;
@@ -307,6 +310,14 @@ public class TileEntity extends BaseEntity implements TargetTrait, HealthTrait{
         }
 
         Block previous = block;
+
+        float heat = block.sumAttribute(Attribute.heat, tile.x, tile.y);
+        if(heat > 0f){
+            if (Mathf.randomBoolean(heat * 0.001f)){
+                Fire.create(tile);
+            }
+        }
+
         block.update(tile);
         if(block == previous && cons != null){
             cons.update();
