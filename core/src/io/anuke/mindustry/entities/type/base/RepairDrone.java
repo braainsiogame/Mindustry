@@ -6,6 +6,7 @@ import io.anuke.mindustry.entities.units.UnitState;
 import io.anuke.mindustry.world.Pos;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.mindustry.world.blocks.*;
+import io.anuke.mindustry.world.meta.Attribute;
 
 import java.io.*;
 
@@ -25,6 +26,10 @@ public class RepairDrone extends BaseDrone{
             }
 
             if(target instanceof TileEntity && ((TileEntity)target).block instanceof BuildBlock){
+                target = null;
+            }
+
+            if (target instanceof TileEntity && ((TileEntity) target).block.sumAttribute(Attribute.heat, ((TileEntity) target).tileX(), ((TileEntity) target).tileY()) > 0f){
                 target = null;
             }
 
