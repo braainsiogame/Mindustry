@@ -69,6 +69,9 @@ public class NetworkIO{
         if(netServer.admins.isWhitelistEnabled()){
             eyecolor = "white";
         }
+        if(netServer.admins.isIPBanned(address.getHostAddress())){
+            eyecolor = "red";
+        }
 
         String name = String.format("[goldenrod]Nydus Network [darkgray]//\\([%s]oo[])/\\\\", eyecolor);
         String map = world.getMap() == null ? "None" : world.getMap().name().replaceAll("(\\[.*?\\])", "");
