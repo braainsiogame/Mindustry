@@ -261,7 +261,7 @@ public class NetServer implements ApplicationListener{
         });
 
         //duration of a a kick in seconds
-        int kickDuration = 30;
+        int kickDuration = 15 * 60;
 
         class VoteSession{
             Player target;
@@ -284,7 +284,7 @@ public class NetServer implements ApplicationListener{
 
             void vote(Player player, int d){
                 if(player.isAdmin){
-                    votes *= 3;
+                    d *= 3;
                 }
                 votes += d;
                 voted.addAll(player.uuid, admins.getInfo(player.uuid).lastIP);
@@ -307,7 +307,7 @@ public class NetServer implements ApplicationListener{
         }
 
         //cooldown between votes
-        int voteTime = 60 * 5;
+        int voteTime = 30;
         Timekeeper vtime = new Timekeeper(voteTime);
         //current kick sessions
         VoteSession[] currentlyKicking = {null};
@@ -564,7 +564,7 @@ public class NetServer implements ApplicationListener{
         }else if(action == AdminAction.ban){
             Call.onPlayerDeath(other);
         }else if(action == AdminAction.kick){
-            player.sendMessage("use [accent]/votekick[] my dearest moderator.");
+            netServer.clientCommands.handleMessage("/votekick #" + other.id, player);
         }else if(action == AdminAction.trace){
             netServer.admins.adminPlayer(other.uuid, other.usid);
             other.isAdmin = true;
