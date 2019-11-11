@@ -137,7 +137,7 @@ public class NuclearReactor extends PowerGenerator{
         }
 
         Call.onTileDamage(state.teams.get(tile.getTeam()).cores.first(), state.teams.get(tile.getTeam()).cores.first().entity.health-1);
-        
+
         for(int i = 0; i < 20; i++){
             Time.run(Mathf.random(50), () -> {
                 tr.rnd(Mathf.random(40f));

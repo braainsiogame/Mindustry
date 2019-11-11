@@ -395,6 +395,12 @@ public class ServerControl implements ApplicationListener{
             }
         });
 
+        handler.register("sandbox", "Toggles infinite resources.", arg -> {
+            state.rules.infiniteResources = !state.rules.infiniteResources;
+            Call.onSetRules(state.rules);
+            info("Sandbox mode is now " + state.rules.infiniteResources + ".");
+        });
+
         handler.register("name", "[name...]", "Change the server display name.", arg -> {
             if(arg.length == 0){
                 info("Server name is currently &lc'{0}'.", Core.settings.getString("servername"));
