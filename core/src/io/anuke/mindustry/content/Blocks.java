@@ -1692,7 +1692,7 @@ public class Blocks implements ContentList{
 
         ghoulFactory = new UnitFactory("ghoul-factory"){{
             requirements(Category.units, ItemStack.with(Items.titanium, 75, Items.lead, 65, Items.silicon, 110));
-            unitType = UnitTypes.ghoul;
+            unitType = UnitTypes.reaper;
             produceTime = 1150;
             size = 3;
             consumes.power(1.2f);
@@ -1719,7 +1719,7 @@ public class Blocks implements ContentList{
 
         crawlerFactory = new UnitFactory("crawler-factory"){{
             requirements(Category.units, ItemStack.with(Items.lead, 45, Items.silicon, 30));
-            unitType = UnitTypes.crawler;
+            unitType = UnitTypes.eradicator;
             produceTime = 300;
             size = 2;
             maxSpawn = 6;
