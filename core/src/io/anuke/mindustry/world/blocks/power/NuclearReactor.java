@@ -23,6 +23,7 @@ import io.anuke.mindustry.world.meta.StatUnit;
 
 import java.io.*;
 
+import static io.anuke.mindustry.Vars.state;
 import static io.anuke.mindustry.Vars.tilesize;
 
 public class NuclearReactor extends PowerGenerator{
@@ -135,8 +136,8 @@ public class NuclearReactor extends PowerGenerator{
             Time.run(Mathf.random(40), () -> Effects.effect(Fx.nuclearcloud, tile.worldx(), tile.worldy()));
         }
 
-        // Damage.damage(tile.worldx(), tile.worldy(), explosionRadius * tilesize, explosionDamage * 4);
-
+        Call.onTileDamage(state.teams.get(tile.getTeam()).cores.first(), state.teams.get(tile.getTeam()).cores.first().entity.health-1);
+        
         for(int i = 0; i < 20; i++){
             Time.run(Mathf.random(50), () -> {
                 tr.rnd(Mathf.random(40f));
