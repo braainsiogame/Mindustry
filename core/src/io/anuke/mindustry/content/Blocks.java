@@ -1706,7 +1706,7 @@ public class Blocks implements ContentList{
 
         crawlerFactory = new UnitFactory("crawler-factory"){{
             requirements(Category.units, ItemStack.with(Items.lead, 45, Items.silicon, 30));
-            unitType = UnitTypes.eradicator;
+            unitType = UnitTypes.crawler;
             produceTime = 300;
             size = 2;
             maxSpawn = 6;
