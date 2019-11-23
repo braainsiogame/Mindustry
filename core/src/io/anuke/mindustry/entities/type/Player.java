@@ -73,6 +73,8 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
     private Vector2 movement = new Vector2();
     private boolean moved;
 
+    public int afkSeconds = 0;
+
     //endregion
 
     //region unit and event overrides, utility methods
@@ -891,10 +893,14 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
         add();
     }
 
+    public String afkPrefix(){
+        return "[gray][AFK] [#"+ color +"] ";
+    }
+
     @Override
     public void write(DataOutput buffer) throws IOException{
         super.writeSave(buffer, !isLocal);
-        TypeIO.writeStringData(buffer, name);
+        TypeIO.writeStringData(buffer, afkSeconds > 60 ? afkPrefix() + name : name);
         buffer.writeByte(Pack.byteValue(isAdmin) | (Pack.byteValue(dead) << 1) | (Pack.byteValue(isBoosting) << 2) | (Pack.byteValue(isTyping) << 3)| (Pack.byteValue(isBuilding) << 4));
         buffer.writeInt(Color.rgba8888(color));
         buffer.writeByte(mech.id);
@@ -911,7 +917,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
         super.readSave(buffer, version());
 
-        name = TypeIO.readStringData(buffer);
+        name = TypeIO.readStringData(buffer).replace(afkPrefix(), "");
         byte bools = buffer.readByte();
         isAdmin = (bools & 1) != 0;
         dead = (bools & 2) != 0;

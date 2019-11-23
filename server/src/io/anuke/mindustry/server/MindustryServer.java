@@ -5,6 +5,7 @@ import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import io.anuke.mindustry.*;
 import io.anuke.mindustry.core.*;
+import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.mod.*;
 
 import static io.anuke.mindustry.Vars.*;
@@ -39,6 +40,17 @@ public class MindustryServer implements ApplicationListener{
         Core.app.addListener(logic = new Logic());
         Core.app.addListener(netServer = new NetServer());
         Core.app.addListener(new ServerControl(args));
+
+        Timer.schedule(() -> {
+            for(Player p : playerGroup.all()){
+                if(p.velocity().isZero(0.01f)){
+                    p.afkSeconds++;
+                }else{
+                    p.afkSeconds=0;
+                }
+            }
+
+        }, 0f, 1f);
 
         mods.each(Mod::init);
     }

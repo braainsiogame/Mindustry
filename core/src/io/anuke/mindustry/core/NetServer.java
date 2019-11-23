@@ -148,7 +148,10 @@ public class NetServer implements ApplicationListener{
                 }
             }
 
-            packet.name = fixName(packet.name);
+            Player tmplayer = new Player();
+            tmplayer.color.set(packet.color);
+
+            packet.name = fixName(packet.name.replace(tmplayer.afkPrefix(), ""));
 
             if(packet.name.trim().length() <= 0){
                 con.kick(KickReason.nameEmpty);
