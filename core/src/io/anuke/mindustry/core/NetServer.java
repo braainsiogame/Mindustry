@@ -599,16 +599,20 @@ public class NetServer implements ApplicationListener{
     public void update(){
 
         if(playerGroup.size() > 0){
-            if(netServer.admins.getAdmins().size == 0){
-                try{
-                    for(Player player : playerGroup.all()){
-                        netServer.admins.adminPlayer(player.uuid, player.usid);
-                        player.isAdmin = true;
-                        return;
+            try{
+                if(netServer.admins.getAdmins().size == 0){
+                    try{
+                        for(Player player : playerGroup.all()){
+                            netServer.admins.adminPlayer(player.uuid, player.usid);
+                            player.isAdmin = true;
+                            return;
+                        }
+                    }catch(NullPointerException e){
+                        Log.info(e);
                     }
-                }catch(NullPointerException e){
-                    Log.info(e);
                 }
+            }catch(ArcRuntimeException e){
+                Log.info(e);
             }
         }
 
