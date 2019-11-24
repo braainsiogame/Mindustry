@@ -1679,7 +1679,7 @@ public class Blocks implements ContentList{
 
         ghoulFactory = new UnitFactory("ghoul-factory"){{
             requirements(Category.units, ItemStack.with(Items.titanium, 75, Items.lead, 65, Items.silicon, 110));
-            unitType = UnitTypes.reaper;
+            unitType = UnitTypes.ghoul;
             produceTime = 1150;
             size = 3;
             consumes.power(1.2f);
