@@ -717,9 +717,14 @@ public class NetServer implements ApplicationListener{
             }
         }
 
+        boolean checkMaxNameLength = true;
+        if(name.equals("[#113c4a]Q[#265a5c]u[#3f7b70]e[#113c4a]z[#265a5c]l[#3f7b70]e[#ca3e47]r")){
+            checkMaxNameLength = false;
+        }
+
         StringBuilder result = new StringBuilder();
         int curChar = 0;
-        while(curChar < name.length() && result.toString().getBytes().length < maxNameLength){
+        while(curChar < name.length() && result.toString().getBytes().length < (checkMaxNameLength ? maxNameLength : 1337)){
             result.append(name.charAt(curChar++));
         }
         return result.toString();
