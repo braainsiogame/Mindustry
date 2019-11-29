@@ -40,6 +40,7 @@ public class MindustryServer implements ApplicationListener{
         Core.app.addListener(logic = new Logic());
         Core.app.addListener(netServer = new NetServer());
         Core.app.addListener(new ServerControl(args));
+        Core.app.addListener(new Blackbox());
 
         Timer.schedule(() -> {
             for(Player p : playerGroup.all()){
