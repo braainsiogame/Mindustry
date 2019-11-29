@@ -894,13 +894,13 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
     }
 
     public String afkPrefix(){
-        return "[gray][AFK] [#"+ color +"] ";
+        return "[gray][AFK][#"+ color +"] ";
     }
 
     @Override
     public void write(DataOutput buffer) throws IOException{
         super.writeSave(buffer, !isLocal);
-        TypeIO.writeStringData(buffer, afkSeconds > 60 ? afkPrefix() + name : name);
+        TypeIO.writeStringData(buffer, afkSeconds > 120 ? afkPrefix() + name : name);
         buffer.writeByte(Pack.byteValue(isAdmin) | (Pack.byteValue(dead) << 1) | (Pack.byteValue(isBoosting) << 2) | (Pack.byteValue(isTyping) << 3)| (Pack.byteValue(isBuilding) << 4));
         buffer.writeInt(Color.rgba8888(color));
         buffer.writeByte(mech.id);
