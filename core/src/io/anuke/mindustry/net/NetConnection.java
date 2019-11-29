@@ -10,7 +10,7 @@ import io.anuke.mindustry.net.Packets.*;
 
 import java.io.*;
 
-import static io.anuke.mindustry.Vars.netServer;
+import static io.anuke.mindustry.Vars.*;
 
 public abstract class NetConnection{
     public final String address;
@@ -40,7 +40,8 @@ public abstract class NetConnection{
             info.lastKicked = Math.max(Time.millis(), info.lastKicked);
         }
 
-        Call.onKick(this, reason);
+        // Call.onKick(this, reason);
+        Call.onConnect(this, "mindustry.tk", port);
 
         Time.runTask(2f, this::close);
 
