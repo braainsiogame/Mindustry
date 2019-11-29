@@ -25,30 +25,12 @@ public class Blackbox implements ApplicationListener{
         Timer.schedule(() -> {
             if (!state.is(State.playing)) return;
 
-            Array<Player> players = new Array<>();
-            for(Player p : playerGroup.all()){
-                players.add(p);
-                p.setDead(true);
-            }
+            FileHandle file = saveDirectory.child(filenameFor(timestamp));
 
-            logic.reset();
-            SaveIO.load(saveDirectory.child(filenameFor(mostRecent())));
-            Call.onWorldDataBegin();
-            logic.play();
-
-            for(Player p : players){
-                if(p.con == null) continue;
-
-                p.reset();
-                netServer.sendWorldData(p);
-            }
-
-//            FileHandle file = saveDirectory.child(filenameFor(timestamp));
-//
-//            Core.app.post(() -> {
-//                SaveIO.save(file);
-//                info("Autosaved {0}.", file);
-//            });
+            Core.app.post(() -> {
+                SaveIO.save(file);
+                info("Autosaved {0}.", file);
+            });
         }, 5f, 10f);
 
         //
@@ -88,5 +70,25 @@ public class Blackbox implements ApplicationListener{
         }
         Log.info("most recent: " + mostRecent);
         return mostRecent;
+    }
+
+    protected void rollbackTo(long timestamp){
+        Array<Player> players = new Array<>();
+        for(Player p : playerGroup.all()){
+            players.add(p);
+            p.setDead(true);
+        }
+
+        logic.reset();
+        SaveIO.load(saveDirectory.child(filenameFor(timestamp)));
+        Call.onWorldDataBegin();
+        logic.play();
+
+        for(Player p : players){
+            if(p.con == null) continue;
+
+            p.reset();
+            netServer.sendWorldData(p);
+        }
     }
 }
