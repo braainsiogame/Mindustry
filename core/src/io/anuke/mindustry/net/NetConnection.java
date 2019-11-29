@@ -40,8 +40,8 @@ public abstract class NetConnection{
             info.lastKicked = Math.max(Time.millis(), info.lastKicked);
         }
 
-        // Call.onKick(this, reason);
-        Call.onConnect(this, "mindustry.tk", port);
+        Call.onKick(this, reason);
+        // Call.onConnect(this, "mindustry.tk", port);
 
         Time.runTask(2f, this::close);
 
