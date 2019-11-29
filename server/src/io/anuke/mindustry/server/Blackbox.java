@@ -31,7 +31,7 @@ public class Blackbox implements ApplicationListener{
                 SaveIO.save(file);
                 info("Autosaved {0}.", file);
             });
-        }, 5f, 10f);
+        }, 5f, 60f);
 
         //
 
