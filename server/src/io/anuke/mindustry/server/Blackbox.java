@@ -6,6 +6,8 @@ import io.anuke.arc.util.*;
 import io.anuke.mindustry.core.GameState.*;
 import io.anuke.mindustry.io.*;
 
+import java.io.*;
+
 import static io.anuke.arc.util.Log.info;
 import static io.anuke.mindustry.Vars.*;
 
@@ -19,10 +21,8 @@ public class Blackbox implements ApplicationListener{
         Timer.schedule(() -> {
             if (!state.is(State.playing)) return;
 
-            FileHandle file = saveDirectory.child(prefix + timestamp + "." + saveExtension);
-
-            Log.info(saveDirectory);
-
+            FileHandle file = saveDirectory.child(filenameFor(timestamp));
+            
             Core.app.post(() -> {
                 SaveIO.save(file);
                 info("Autosaved {0}.", file);
@@ -41,10 +41,24 @@ public class Blackbox implements ApplicationListener{
             }
         }
         Log.info("most recent: " + mostRecent);
+
+        SaveIO.load(saveDirectory.child(filenameFor(mostRecent)));
+        state.rules.zone = null;
+        info("Save loaded.");
+        try{
+            net.host(Core.settings.getInt("port"));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        state.set(State.playing);
     }
 
     @Override
     public void update(){
         timestamp = System.currentTimeMillis() / 1000;
+    }
+
+    protected String filenameFor(long timestamp){
+        return prefix + timestamp + "." + saveExtension;
     }
 }
