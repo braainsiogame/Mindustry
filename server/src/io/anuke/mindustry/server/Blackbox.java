@@ -38,6 +38,8 @@ public class Blackbox implements ApplicationListener{
         long mostRecent = mostRecent();
         Log.info("most recent: " + mostRecent);
 
+        if(mostRecent == 0) return;
+
         SaveIO.load(saveDirectory.child(filenameFor(mostRecent)));
         state.rules.zone = null;
         info("Save loaded.");
