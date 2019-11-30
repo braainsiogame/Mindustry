@@ -17,11 +17,8 @@ import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.game.EventType.BlockDestroyEvent;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.world.*;
-<<<<<<< HEAD
 import io.anuke.mindustry.world.meta.Attribute;
-=======
 import io.anuke.mindustry.world.consumers.*;
->>>>>>> master
 import io.anuke.mindustry.world.modules.*;
 
 import java.io.*;
