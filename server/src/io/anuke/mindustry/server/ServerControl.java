@@ -12,6 +12,7 @@ import io.anuke.arc.util.Timer.*;
 import io.anuke.arc.util.serialization.*;
 import io.anuke.arc.util.serialization.JsonValue.*;
 import io.anuke.mindustry.*;
+import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.core.GameState.*;
 import io.anuke.mindustry.core.*;
 import io.anuke.mindustry.entities.*;
@@ -909,6 +910,7 @@ public class ServerControl implements ApplicationListener{
             run.run();
             logic.play();
             state.rules = world.getMap().applyRules(lastMode);
+            state.rules.bannedBlocks.add(Blocks.turbineGenerator);
             applyRules();
 
             for(Player p : players){
