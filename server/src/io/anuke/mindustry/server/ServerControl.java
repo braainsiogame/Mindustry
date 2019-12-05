@@ -462,6 +462,16 @@ public class ServerControl implements ApplicationListener{
             info("Sandbox mode is now " + state.rules.infiniteResources + ".");
         });
 
+        handler.register("darkness", "[f]", "Changes alpha value of shadows.", arg -> {
+            if(arg.length > 0 && Strings.canParsePositiveFloat(arg[0]) && Strings.parseFloat(arg[0]) > 0){
+                state.rules.ambientLight.a = Strings.parseFloat(arg[0]);
+                Call.onSetRules(state.rules);
+                info("Darkness changed.");
+            }else{
+                err("Alpha must be a float.");
+            }
+        });
+
         handler.register("name", "[name...]", "Change the server display name.", arg -> {
             if(arg.length == 0){
                 info("Server name is currently &lc'{0}'.", Core.settings.getString("servername"));
