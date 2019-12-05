@@ -30,8 +30,8 @@ import java.util.zip.*;
 import static io.anuke.mindustry.Vars.*;
 
 public class NetServer implements ApplicationListener{
-    private final static int maxSnapshotSize = 430, timerBlockSync = 0;
-    private final static float serverSyncTime = 12, kickDuration = 30 * 1000, blockSyncTime = 60 * 10;
+    public final static int maxSnapshotSize = 430;
+    private final static float serverSyncTime = 12, kickDuration = 30 * 1000;
     private final static Vector2 vector = new Vector2();
     private final static Rectangle viewport = new Rectangle();
     /** If a player goes away of their server-side coordinates by this distance, they get teleported back. */
@@ -41,7 +41,6 @@ public class NetServer implements ApplicationListener{
     public final CommandHandler clientCommands = new CommandHandler("/");
 
     private boolean closing = false;
-    private Interval timer = new Interval();
 
     private ByteBuffer writeBuffer = ByteBuffer.allocate(127);
     private ByteBufferOutput outputBuffer = new ByteBufferOutput(writeBuffer);
@@ -637,35 +636,7 @@ public class NetServer implements ApplicationListener{
         }
     }
 
-    /** Sends a block snapshot to all players. */
-    public void writeBlockSnapshots() throws IOException{
-        syncStream.reset();
-
-        short sent = 0;
-        for(TileEntity entity : tileGroup.all()){
-            if(!entity.block.sync) continue;
-            sent ++;
-
-            dataStream.writeInt(entity.tile.pos());
-            entity.write(dataStream);
-
-            if(syncStream.size() > maxSnapshotSize){
-                dataStream.close();
-                byte[] stateBytes = syncStream.toByteArray();
-                Call.onBlockSnapshot(sent, (short)stateBytes.length, net.compressSnapshot(stateBytes));
-                sent = 0;
-                syncStream.reset();
-            }
-        }
-
-        if(sent > 0){
-            dataStream.close();
-            byte[] stateBytes = syncStream.toByteArray();
-            Call.onBlockSnapshot(sent, (short)stateBytes.length, net.compressSnapshot(stateBytes));
-        }
-    }
-
-    public void writeEntitySnapshot(Player player) throws IOException{
+    public void writeSnapshot(Player player) throws IOException{
         syncStream.reset();
         ObjectSet<Tile> cores = state.teams.get(player.getTeam()).cores;
 
@@ -784,6 +755,7 @@ public class NetServer implements ApplicationListener{
     void sync(){
 
         try{
+
             //iterate through each player
             for(int i = 0; i < playerGroup.size(); i++){
                 Player player = playerGroup.all().get(i);
@@ -798,11 +770,7 @@ public class NetServer implements ApplicationListener{
 
                 if(!player.timer.get(Player.timerSync, serverSyncTime) || !connection.hasConnected) continue;
 
-                writeEntitySnapshot(player);
-            }
-
-            if(playerGroup.size() > 0 && Core.settings.getBool("blocksync") && timer.get(timerBlockSync, blockSyncTime)){
-                writeBlockSnapshots();
+                writeSnapshot(player);
             }
 
         }catch(IOException e){
