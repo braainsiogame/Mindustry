@@ -913,7 +913,7 @@ public class ServerControl implements ApplicationListener{
             logic.play();
             state.rules = world.getMap().applyRules(lastMode);
             state.rules.bannedBlocks.add(Blocks.turbineGenerator);
-            state.rules.bannedBlocks.add(Blocks.liquidJunction);
+            state.rules.bannedBlocks.add(Blocks.mender);
             state.rules.bannedBlocks.add(Blocks.vault);
             applyRules();
 
