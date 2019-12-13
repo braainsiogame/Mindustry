@@ -156,7 +156,6 @@ public class Block extends BlockStorage{
 
     public Block(String name){
         super(name);
-        this.description = Core.bundle.getOrNull("block." + name + ".description");
         this.solid = false;
     }
 
@@ -183,7 +182,7 @@ public class Block extends BlockStorage{
     }
 
     protected void updatePowerGraph(Tile tile){
-        TileEntity entity = tile.entity();
+        TileEntity entity = tile.ent();
 
         for(Tile other : getPowerConnections(tile, tempTiles)){
             if(other.entity.power != null){
@@ -395,11 +394,6 @@ public class Block extends BlockStorage{
     }
 
     @Override
-    public String localizedName(){
-        return localizedName;
-    }
-
-    @Override
     public void displayInfo(Table table){
         ContentDisplay.displayBlock(table, this);
     }
@@ -487,7 +481,7 @@ public class Block extends BlockStorage{
      * Called when this block is tapped to build a UI on the table.
      * {@link #configurable} must return true for this to be called.
      */
-    public void buildTable(Tile tile, Table table){
+    public void buildConfiguration(Tile tile, Table table){
     }
 
     /** Update table alignment after configuring.*/
@@ -551,7 +545,7 @@ public class Block extends BlockStorage{
             }else{
                 current = entity -> entity.liquids.current();
             }
-            bars.add("liquid", entity -> new Bar(() -> entity.liquids.get(current.get(entity)) <= 0.001f ? Core.bundle.get("bar.liquid") : current.get(entity).localizedName(),
+            bars.add("liquid", entity -> new Bar(() -> entity.liquids.get(current.get(entity)) <= 0.001f ? Core.bundle.get("bar.liquid") : current.get(entity).localizedName,
                     () -> current.get(entity).barColor(), () -> entity.liquids.get(current.get(entity)) / liquidCapacity));
         }
 

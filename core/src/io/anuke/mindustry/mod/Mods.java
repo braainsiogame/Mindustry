@@ -30,6 +30,7 @@ import static io.anuke.mindustry.Vars.*;
 
 public class Mods implements Loadable{
     private Json json = new Json();
+    private @Nullable Scripts scripts;
     private ContentParser parser = new ContentParser();
     private ObjectMap<String, Array<FileHandle>> bundles = new ObjectMap<>();
     private ObjectSet<String> specialFolders = ObjectSet.with("bundles", "sprites");
@@ -48,6 +49,18 @@ public class Mods implements Loadable{
         ModMeta load = metas.get(mod.getClass());
         if(load == null) throw new IllegalArgumentException("Mod is not loaded yet (or missing)!");
         return modDirectory.child(load.name).child("config.json");
+    }
+
+    /** Returns a list of files per mod subdirectory. */
+    public void listFiles(String directory, Cons2<LoadedMod, FileHandle> cons){
+        for(LoadedMod mod : loaded){
+            FileHandle file = mod.root.child(directory);
+            if(file.exists()){
+                for(FileHandle child : file.list()){
+                    cons.get(mod, child);
+                }
+            }
+        }
     }
 
     /** @return the loaded mod found by class, or null if not found. */
@@ -88,7 +101,7 @@ public class Mods implements Loadable{
             Array<FileHandle> overrides = mod.root.child("sprites-override").findAll(f -> f.extension().equals("png"));
             packSprites(sprites, mod, true);
             packSprites(overrides, mod, false);
-            Log.info("Packed {0} images for mod '{1}'.", sprites.size + overrides.size, mod.meta.name);
+            Log.debug("Packed {0} images for mod '{1}'.", sprites.size + overrides.size, mod.meta.name);
             totalSprites += sprites.size + overrides.size;
         }
 
@@ -99,7 +112,7 @@ public class Mods implements Loadable{
             }
         }
 
-        Log.info("Time to pack textures: {0}", Time.elapsed());
+        Log.debug("Time to pack textures: {0}", Time.elapsed());
     }
 
     private void packSprites(Array<FileHandle> sprites, LoadedMod mod, boolean prefix){
@@ -145,12 +158,12 @@ public class Mods implements Loadable{
 
             Core.atlas = packer.flush(filter, new TextureAtlas());
             Core.atlas.setErrorRegion("error");
-            Log.info("Total pages: {0}", Core.atlas.getTextures().size);
+            Log.debug("Total pages: {0}", Core.atlas.getTextures().size);
         }
 
         packer.dispose();
         packer = null;
-        Log.info("Time to update textures: {0}", Time.elapsed());
+        Log.debug("Time to update textures: {0}", Time.elapsed());
     }
 
     private PageType getPage(AtlasRegion region){
@@ -188,6 +201,16 @@ public class Mods implements Loadable{
         loaded.remove(mod);
         disabled.remove(mod);
         requiresReload = true;
+    }
+
+    public Scripts getScripts(){
+        if(scripts == null) scripts = platform.createScripts();
+        return scripts;
+    }
+
+    /** @return whether the scripting engine has been initialized. */
+    public boolean hasScripts(){
+        return scripts != null;
     }
 
     public boolean requiresReload(){
@@ -340,8 +363,15 @@ public class Mods implements Loadable{
         Sounds.dispose();
         Sounds.load();
         Core.assets.finishLoading();
+        if(scripts != null){
+            scripts.dispose();
+            scripts = null;
+        }
         content.clear();
-        content.createContent();
+        content.createBaseContent();
+        content.loadColors();
+        loadScripts();
+        content.createModContent();
         loadAsync();
         loadSync();
         content.init();
@@ -351,10 +381,50 @@ public class Mods implements Loadable{
         requiresReload = false;
 
         Events.fire(new ContentReloadEvent());
+
+        if(scripts != null && scripts.hasErrored()){
+            Core.app.post(() -> Core.settings.getBoolOnce("scripts-errored", () -> ui.showErrorMessage("$mod.scripts.unsupported")));
+        }
+    }
+
+    /** This must be run on the main thread! */
+    public void loadScripts(){
+        Time.mark();
+
+        try{
+            for(LoadedMod mod : loaded){
+                if(mod.root.child("scripts").exists()){
+                    content.setCurrentMod(mod);
+                    mod.scripts = mod.root.child("scripts").findAll(f -> f.extension().equals("js"));
+                    Log.debug("[{0}] Found {1} scripts.", mod.meta.name, mod.scripts.size);
+
+                    for(FileHandle file : mod.scripts){
+                        try{
+                            if(scripts == null){
+                                scripts = platform.createScripts();
+                            }
+                            scripts.run(mod, file);
+                        }catch(Throwable e){
+                            Core.app.post(() -> {
+                                Log.err("Error loading script {0} for mod {1}.", file.name(), mod.meta.name);
+                                e.printStackTrace();
+                                //if(!headless) ui.showException(e);
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        }finally{
+            content.setCurrentMod(null);
+        }
+
+        Log.debug("Time to initialize modded scripts: {0}", Time.elapsed());
     }
 
     /** Creates all the content found in mod files. */
     public void loadContent(){
+
         class LoadRun implements Comparable<LoadRun>{
             final ContentType type;
             final FileHandle file;
@@ -407,9 +477,6 @@ public class Mods implements Loadable{
 
         //this finishes parsing content fields
         parser.finishParsing();
-
-        //load content for code mods
-        each(Mod::loadContent);
     }
 
     /** @return all loaded mods. */
@@ -575,6 +642,8 @@ public class Mods implements Loadable{
         public Array<LoadedMod> dependencies = new Array<>();
         /** All missing dependencies of this mod as strings. */
         public Array<String> missingDependencies = new Array<>();
+        /** Script files to run. */
+        public Array<FileHandle> scripts = new Array<>();
 
         public LoadedMod(FileHandle file, FileHandle root, Mod mod, ModMeta meta){
             this.root = root;
@@ -673,10 +742,14 @@ public class Mods implements Loadable{
 
     /** Plugin metadata information.*/
     public static class ModMeta{
-        public String name, author, description, version, main, minGameVersion;
+        public String name, displayName, author, description, version, main, minGameVersion;
         public Array<String> dependencies = Array.with();
         /** Hidden mods are only server-side or client-side, and do not support adding new content. */
         public boolean hidden;
+
+        public String displayName(){
+            return displayName == null ? name : displayName;
+        }
     }
 
     /** Thrown when an error occurs while loading a mod.*/
