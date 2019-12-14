@@ -9,6 +9,7 @@ import io.anuke.arc.math.geom.Point2;
 import io.anuke.arc.math.geom.Vector2;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.ArcAnnotate.*;
+import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.entities.EntityGroup;
 import io.anuke.mindustry.entities.effect.Fire;
 import io.anuke.mindustry.entities.traits.HealthTrait;
@@ -17,6 +18,8 @@ import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.game.EventType.BlockDestroyEvent;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.blocks.*;
+import io.anuke.mindustry.world.blocks.power.*;
 import io.anuke.mindustry.world.meta.Attribute;
 import io.anuke.mindustry.world.consumers.*;
 import io.anuke.mindustry.world.modules.*;
@@ -317,8 +320,12 @@ public class TileEntity extends BaseEntity implements TargetTrait, HealthTrait{
 
         float heat = block.sumAttribute(Attribute.heat, tile.x, tile.y);
         if(heat > 0f){
-            if (Mathf.randomBoolean(heat * 0.001f)){
-                Fire.create(tile);
+            if (Mathf.randomBoolean(heat * 0.005f)){
+                if(block instanceof ThermalGenerator || block instanceof BuildBlock){
+                    // you're good.
+                }else{
+                    Fire.create(tile);
+                }
             }
         }
 
