@@ -198,6 +198,7 @@ project(":ios"){
 project(":core"){
     apply plugin: "java"
 
+
     task preGen{
         outputs.upToDateWhen{ false }
         generateLocales()
@@ -262,6 +263,9 @@ project(":core"){
 
         compileOnly project(":annotations")
         annotationProcessor project(":annotations")
+    }
+    compileJava{
+        options.compilerArgs << '-parameters'
     }
 }
 

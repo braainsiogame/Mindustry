@@ -3,6 +3,7 @@ package io.anuke.mindustry.core;
 import io.anuke.annotations.Annotations.*;
 import io.anuke.arc.*;
 import io.anuke.arc.util.*;
+import io.anuke.mindustry.Vars;
 import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.core.GameState.*;
 import io.anuke.mindustry.ctype.*;
@@ -18,6 +19,8 @@ import io.anuke.mindustry.world.blocks.*;
 import io.anuke.mindustry.world.blocks.BuildBlock.*;
 import io.anuke.mindustry.world.blocks.power.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.*;
 
 import static io.anuke.mindustry.Vars.*;
@@ -91,6 +94,12 @@ public class Logic implements ApplicationListener{
                 }
             }
         });
+        try{
+            FileOutputStream stream = new FileOutputStream(new File("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\call.d.ts"));
+            stream.write(TypingsGenerator.generate(Call.class).getBytes());
+        } catch(Exception e) {
+            Log.err(e);
+        }
     }
 
     /** Handles the event of content being used by either the player or some block. */
