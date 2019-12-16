@@ -3,107 +3,113 @@ package io.anuke.mindustry.core;
 import io.anuke.mindustry.world.Block;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class TypingsGenerator {
-    private static void generate(Class entry, HashMap<Class, TypingsClass> generated){
+    private static void generate(Class entryClass, HashMap<Class, TypingsClass> generated){
         final TypingsClass typingsClass = new TypingsClass();
-        typingsClass.namespace = escapeNamespaces(entry.getCanonicalName());
-        generated.put(entry, typingsClass);
-        StringBuilder sb = new StringBuilder("export class ");
-        sb.append(entry.getSimpleName());
+        typingsClass.namespace = escapeNamespaces(entryClass.getCanonicalName());
+        generated.put(entryClass, typingsClass);
+        StringBuilder sb = new StringBuilder("export interface ");
+        String tsName = entryClass.getSimpleName();
+        sb.append(tsName);
+
         sb.append(" {\n");
 
-        HashMap<String, String> properties = new HashMap<>();
-        HashMap<String, String> staticProperties = new HashMap<>();
+        HashMap<String, ArrayList<String>> properties = new HashMap<>();
+        HashMap<String, ArrayList<String>> staticProperties = new HashMap<>();
 
-        for(Field field: entry.getDeclaredFields()){
-            final int fieldModifiers = field.getModifiers();
-            if(!Modifier.isPublic(fieldModifiers)) continue;
-            StringBuilder property = new StringBuilder("    ");
-            Class fieldType = field.getType();
-            while(fieldType.isArray()) fieldType = fieldType.getComponentType();
-            if(fieldType.isPrimitive()) fieldType = toBoxedType(fieldType);
-            if(!generated.containsKey(fieldType)){
-                generate(fieldType, generated);
-            }
-            if(Modifier.isStatic(fieldModifiers)){
-                property.append("static ");
-            }
-            final String name = field.getName();
-            property.append(name);
-            if(isKeyWord(name)) property.append('_');
-            property.append(": ");
-            property.append(toTSName(fieldType));
-            property.append(";\n");
-            (Modifier.isStatic(fieldModifiers) ? staticProperties : properties).put(name, property.toString());
-        }
+        Class entrySuper = entryClass;
 
-        for(Method method: entry.getDeclaredMethods()){
-            final int methodModifiers = method.getModifiers();
-            if(!Modifier.isPublic(methodModifiers)) continue;
-            StringBuilder property = new StringBuilder("    ");
-            Class returnType = method.getReturnType();
-            while(returnType.isArray()) returnType = returnType.getComponentType();
-            if(returnType.isPrimitive()) returnType = toBoxedType(returnType);
-            if(!generated.containsKey(returnType)){
-                generate(returnType, generated);
-            }
-            if(Modifier.isStatic(methodModifiers)){
-                property.append("static ");
-            }
-            final String name = method.getName();
-            property.append(name);
-            if(isKeyWord(name)) sb.append('_');
-            property.append(": (");
-            final Parameter[] params = method.getParameters();
-            for(Parameter param: params){
-                Class paramType = param.getType();
-                while(paramType.isArray()) paramType = paramType.getComponentType();
-                if(paramType.isPrimitive()) paramType = toBoxedType(paramType);
-                if(!generated.containsKey(paramType)){
-                    generate(paramType, generated);
+        while(entrySuper != null){
+            for(Field field: entrySuper.getDeclaredFields()){
+                final int fieldModifiers = field.getModifiers();
+                if(!Modifier.isPublic(fieldModifiers)) continue;
+                StringBuilder property = new StringBuilder("    ");
+                Class fieldType = field.getType();
+                while(fieldType.isArray()) fieldType = fieldType.getComponentType();
+                if(fieldType.isPrimitive()) fieldType = toBoxedType(fieldType);
+                if(!generated.containsKey(fieldType)){
+                    generate(fieldType, generated);
                 }
-                property.append(param.getName());
-                if(isKeyWord(param.getName())) property.append('_');
+                if(Modifier.isStatic(fieldModifiers)){
+                    property.append("static ");
+                }
+                final String name = field.getName();
+                property.append(name);
                 property.append(": ");
-                property.append(toTSName(paramType));
-                if(param != params[params.length - 1]){
-                    property.append(", ");
+                property.append(toTSName(fieldType));
+                property.append(";\n");
+                final HashMap<String, ArrayList<String>> correctProperties =
+                        Modifier.isStatic(fieldModifiers) ? staticProperties : properties;
+                if(!correctProperties.containsKey(name)){
+                    correctProperties.put(name, new ArrayList<>());
                 }
+                correctProperties.get(name).add(property.toString());
             }
-            property.append(") => ");
-            property.append(toTSName(returnType));
-            property.append(";\n");
-            final HashMap<String, String> correct_properties = Modifier.isStatic(methodModifiers) ? staticProperties : properties;
-            correct_properties.put(name, correct_properties.containsKey(name) ? "" : property.toString());
+
+            for(Method method: entrySuper.getDeclaredMethods()){
+                final int methodModifiers = method.getModifiers();
+                if(!Modifier.isPublic(methodModifiers)) continue;
+                StringBuilder property = new StringBuilder("    ");
+                Class returnType = method.getReturnType();
+                while(returnType.isArray()) returnType = returnType.getComponentType();
+                if(returnType.isPrimitive()) returnType = toBoxedType(returnType);
+                if(!generated.containsKey(returnType)){
+                    generate(returnType, generated);
+                }
+                if(Modifier.isStatic(methodModifiers)){
+                    property.append("static ");
+                }
+                final String name = method.getName();
+                property.append(name);
+                property.append(": (");
+                final Parameter[] params = method.getParameters();
+                for(Parameter param: params){
+                    Class paramType = param.getType();
+                    while(paramType.isArray()) paramType = paramType.getComponentType();
+                    if(paramType.isPrimitive()) paramType = toBoxedType(paramType);
+                    if(!generated.containsKey(paramType)){
+                        generate(paramType, generated);
+                    }
+                    property.append(param.getName());
+                    if(isKeyWord(param.getName())) property.append('_');
+                    property.append(": ");
+                    property.append(toTSName(paramType));
+                    if(param != params[params.length - 1]){
+                        property.append(", ");
+                    }
+                }
+                property.append(") => ");
+                property.append(toTSName(returnType));
+                property.append(";\n");
+                final HashMap<String, ArrayList<String>> correctProperties =
+                        Modifier.isStatic(methodModifiers) ? staticProperties : properties;
+                if(!correctProperties.containsKey(name)){
+                    correctProperties.put(name, new ArrayList<>());
+                }
+                correctProperties.get(name).add(property.toString());
+            }
+            entrySuper = entrySuper.getSuperclass();
         }
-        for(HashMap.Entry property: staticProperties.entrySet()){
-            if(property.getValue().equals("")){
-                sb.append("    static ");
-                String key = (String) property.getKey();
-                sb.append(key);
-                if(isKeyWord(key)) sb.append('_');
-                sb.append(": any;\n");
-            } else {
-                sb.append(property.getValue());
-            }
+
+        for(HashMap.Entry<String, ArrayList<String>> property: properties.entrySet()){
+            sb.append(mergeProperties(property.getValue()));
         }
-        for(HashMap.Entry property: properties.entrySet()){
-            if(property.getValue().equals("")){
-                sb.append("    ");
-                String key = (String) property.getKey();
-                sb.append(key);
-                if(isKeyWord(key)) sb.append('_');
-                sb.append(": any;\n");
-            } else {
-                sb.append(property.getValue());
-            }
+        sb.append("}\nexport class ");
+        sb.append(tsName);
+        sb.append(" {");
+        for(HashMap.Entry<String, ArrayList<String>> property: staticProperties.entrySet()){
+            sb.append(mergeProperties(property.getValue()));
         }
         sb.append("}\n");
         typingsClass.code = sb.toString();
+    }
+    private static String mergeProperties(ArrayList<String> properties){
+        return properties.get(0);
     }
     private static String toTSName(Class cl){
         StringBuilder arrayAmount = new StringBuilder();
