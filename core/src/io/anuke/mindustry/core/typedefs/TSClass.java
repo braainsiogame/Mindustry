@@ -1,5 +1,7 @@
 package io.anuke.mindustry.core.typedefs;
 
+import io.anuke.arc.util.Log;
+
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ public class TSClass implements TSConvertable {
 
         Class baseSuper = base;
         while(baseSuper != null){
-            for(Field field: base.getDeclaredFields()){
+            for(Field field: baseSuper.getDeclaredFields()){
                 final int modifiers = field.getModifiers();
                 if(Modifier.isPublic(modifiers)){
                     final String fieldName = field.getName();
@@ -31,7 +33,7 @@ public class TSClass implements TSConvertable {
                     fields.add(new TSField(field));
                 }
             }
-            for(Method method: base.getDeclaredMethods()){
+            for(Method method: baseSuper.getDeclaredMethods()){
                 final int modifiers = method.getModifiers();
                 if(Modifier.isPublic(modifiers)){
                     final String methodName = method.getName();

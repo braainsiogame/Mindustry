@@ -63,6 +63,7 @@ public class TypeConverter {
         }
     }
     public String mergeProperties(ArrayList<TSConvertable> properties){
+        if(properties.size() > 1) return "any";
         return properties.get(0).toString(this);
     }
     public String toTSType(Class type){
