@@ -2,7 +2,7 @@ package io.anuke.mindustry.entities.type.base;
 
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.Structs;
-import io.anuke.mindustry.content.*;
+import io.anuke.mindustry.content.Blocks;
 import io.anuke.mindustry.entities.traits.MinerTrait;
 import io.anuke.mindustry.entities.type.TileEntity;
 import io.anuke.mindustry.entities.units.UnitState;
@@ -94,7 +94,6 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
             TileEntity tile = (TileEntity)target;
 
             if(dst(target) < type.range){
-                item.item = Items.scrap;
                 if(tile.tile.block().acceptStack(item.item, item.amount, tile.tile, MinerDrone.this) > 0){
                     Call.transferItemTo(item.item, item.amount, x, y, tile.tile);
                 }
