@@ -612,6 +612,7 @@ public class Blocks implements ContentList{
 
             consumes.power(1f);
             consumes.item(Items.scrap, 1);
+            flags = EnumSet.of(BlockFlag.smelter);
         }};
 
         separator = new Separator("separator"){{

@@ -1,5 +1,6 @@
 package io.anuke.mindustry.entities.type.base;
 
+import io.anuke.arc.collection.*;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.Structs;
 import io.anuke.mindustry.content.Blocks;
@@ -11,6 +12,7 @@ import io.anuke.mindustry.type.Item;
 import io.anuke.mindustry.type.ItemType;
 import io.anuke.mindustry.world.Pos;
 import io.anuke.mindustry.world.Tile;
+import io.anuke.mindustry.world.meta.*;
 
 import java.io.*;
 
@@ -81,14 +83,14 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
         }
 
         public void update(){
-            if(item.amount == 0 || item.item.type != ItemType.material){
+            if(item.amount == 0){
                 clearItem();
                 setState(mine);
                 return;
             }
 
-            target = getClosestCore();
-
+            Tile melter = Array.with(indexer.getAllied(team, BlockFlag.smelter)).random();
+            if(melter != null && target == null) target = melter.entity;
             if(target == null) return;
 
             TileEntity tile = (TileEntity)target;
@@ -96,10 +98,10 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
             if(dst(target) < type.range){
                 if(tile.tile.block().acceptStack(item.item, item.amount, tile.tile, MinerDrone.this) > 0){
                     Call.transferItemTo(item.item, item.amount, x, y, tile.tile);
-                }
 
-                clearItem();
-                setState(mine);
+                    clearItem();
+                    setState(mine);
+                }
             }
 
             circle(type.range / 1.8f);

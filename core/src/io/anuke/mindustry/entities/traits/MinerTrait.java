@@ -1,17 +1,20 @@
 package io.anuke.mindustry.entities.traits;
 
 import io.anuke.arc.Core;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.math.*;
-import io.anuke.arc.util.Time;
+import io.anuke.arc.util.*;
 import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.entities.Effects;
 import io.anuke.mindustry.entities.type.*;
+import io.anuke.mindustry.entities.type.base.*;
 import io.anuke.mindustry.gen.Call;
 import io.anuke.mindustry.graphics.*;
 import io.anuke.mindustry.type.Item;
 import io.anuke.mindustry.world.Tile;
+import io.anuke.mindustry.world.meta.*;
 
 import static io.anuke.mindustry.Vars.*;
 
@@ -40,11 +43,17 @@ public interface MinerTrait extends Entity{
 
     default void updateMining(){
         Unit unit = (Unit)this;
+
+        if(unit instanceof MinerDrone){
+            updateMiningDrone();
+            return;
+        }
+
         Tile tile = getMineTile();
         TileEntity core = unit.getClosestCore();
 
         if(tile == null || core == null || tile.block() != Blocks.air || dst(tile.worldx(), tile.worldy()) > getMiningRange()
-                || tile.drop() == null || !unit.acceptsItem(tile.drop()) || !canMine(tile.drop())){
+        || tile.drop() == null || !unit.acceptsItem(tile.drop()) || !canMine(tile.drop())){
             setMineTile(null);
         }else{
             Item item = tile.drop();
@@ -54,20 +63,64 @@ public interface MinerTrait extends Entity{
 
                 if(unit.dst(core) < mineTransferRange && core.tile.block().acceptStack(item, 1, core.tile, unit) == 1){
                     Call.transferItemTo(item, 1,
-                            tile.worldx() + Mathf.range(tilesize / 2f),
-                            tile.worldy() + Mathf.range(tilesize / 2f), core.tile);
+                    tile.worldx() + Mathf.range(tilesize / 2f),
+                    tile.worldy() + Mathf.range(tilesize / 2f), core.tile);
                 }else if(unit.acceptsItem(item)){
                     Call.transferItemToUnit(item,
-                            tile.worldx() + Mathf.range(tilesize / 2f),
-                            tile.worldy() + Mathf.range(tilesize / 2f),
-                            unit);
+                    tile.worldx() + Mathf.range(tilesize / 2f),
+                    tile.worldy() + Mathf.range(tilesize / 2f),
+                    unit);
                 }
             }
 
             if(Mathf.chance(0.06 * Time.delta())){
                 Effects.effect(Fx.pulverizeSmall,
-                        tile.worldx() + Mathf.range(tilesize / 2f),
-                        tile.worldy() + Mathf.range(tilesize / 2f), 0f, item.color);
+                tile.worldx() + Mathf.range(tilesize / 2f),
+                tile.worldy() + Mathf.range(tilesize / 2f), 0f, item.color);
+            }
+        }
+    }
+
+    default void updateMiningDrone(){
+        Unit unit = (Unit)this;
+        Tile tile = getMineTile();
+        TileEntity core = unit.getClosestCore();
+
+        if(unit instanceof MinerDrone){
+            Tile melter = Array.with(indexer.getAllied(unit.getTeam(), BlockFlag.smelter)).random();
+            if(melter != null){
+                core = melter.entity;
+            }else{
+                core = null;
+            }
+        }
+
+        Item drop = Items.scrap;
+
+        if(tile == null || core == null || tile.block() != Blocks.air || dst(tile.worldx(), tile.worldy()) > getMiningRange()
+        || tile.drop() == null || !unit.acceptsItem(drop) || !canMine(tile.drop())){
+            setMineTile(null);
+        }else{
+            unit.rotation = Mathf.slerpDelta(unit.rotation, unit.angleTo(tile.worldx(), tile.worldy()), 0.4f);
+
+            if(Mathf.chance(Time.delta() * (0.06 - drop.hardness * 0.01) * getMinePower())){
+
+                if(unit.dst(core) < mineTransferRange && core.tile.block().acceptStack(drop, 1, core.tile, unit) == 1){
+                    Call.transferItemTo(drop, 1,
+                    tile.worldx() + Mathf.range(tilesize / 2f),
+                    tile.worldy() + Mathf.range(tilesize / 2f), core.tile);
+                }else if(unit.acceptsItem(drop)){
+                    Call.transferItemToUnit(drop,
+                    tile.worldx() + Mathf.range(tilesize / 2f),
+                    tile.worldy() + Mathf.range(tilesize / 2f),
+                    unit);
+                }
+            }
+
+            if(Mathf.chance(0.06 * Time.delta())){
+                Effects.effect(Fx.pulverizeSmall,
+                tile.worldx() + Mathf.range(tilesize / 2f),
+                tile.worldy() + Mathf.range(tilesize / 2f), 0f, drop.color);
             }
         }
     }
