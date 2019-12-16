@@ -174,6 +174,6 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
         if(entity == null){
             return;
         }
-        targetItem = Structs.findMin(type.toMine, indexer::hasOre, (a, b) -> Mathf.random(1, 100));
+        targetItem = Structs.findMin(type.toMine, indexer::hasOre, (a, b) -> -Integer.compare(entity.items.get(a), entity.items.get(b)));
     }
 }
