@@ -8,6 +8,7 @@ import io.anuke.arc.util.Time;
 import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.entities.Effects;
 import io.anuke.mindustry.entities.type.*;
+import io.anuke.mindustry.entities.type.base.*;
 import io.anuke.mindustry.gen.Call;
 import io.anuke.mindustry.graphics.*;
 import io.anuke.mindustry.type.Item;
@@ -48,12 +49,16 @@ public interface MinerTrait extends Entity{
             setMineTile(null);
         }else{
             Item item = tile.drop();
+            Item dropoff = item;
+            if(unit instanceof MinerDrone){
+                dropoff = Items.scrap;
+            }
             unit.rotation = Mathf.slerpDelta(unit.rotation, unit.angleTo(tile.worldx(), tile.worldy()), 0.4f);
 
             if(Mathf.chance(Time.delta() * (0.06 - item.hardness * 0.01) * getMinePower())){
 
                 if(unit.dst(core) < mineTransferRange && core.tile.block().acceptStack(item, 1, core.tile, unit) == 1){
-                    Call.transferItemTo(item, 1,
+                    Call.transferItemTo(dropoff, 1,
                             tile.worldx() + Mathf.range(tilesize / 2f),
                             tile.worldy() + Mathf.range(tilesize / 2f), core.tile);
                 }else if(unit.acceptsItem(item)){

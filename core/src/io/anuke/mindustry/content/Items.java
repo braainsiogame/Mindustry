@@ -59,7 +59,7 @@ public class Items implements ContentList{
         }};
 
         scrap = new Item("scrap", Color.valueOf("777777")){{
-
+            type = ItemType.material;
         }};
 
         silicon = new Item("silicon", Color.valueOf("53565c")){{
