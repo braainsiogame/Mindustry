@@ -77,6 +77,9 @@ public class TypeConverter {
         if(properties.size() > 1) return "any";
         return properties.get(0).toString(this);
     }
+    public String mergeConstructors(ArrayList<TSConstructor> constructors){
+        return constructors.get(0).toString(this);
+    }
     public String toTSType(Class type){
         StringBuilder arrayAmountBuilder = new StringBuilder();
         Class baseType = type;

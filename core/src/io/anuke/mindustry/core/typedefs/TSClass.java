@@ -11,16 +11,17 @@ public class TSClass implements TSConvertable {
     public Class base;
     public HashMap<String, ArrayList<TSConvertable>> staticProperties;
     public HashMap<String, ArrayList<TSConvertable>> properties;
+    public ArrayList<TSConstructor> constructors;
     public TSClass(Class base){
         this.base = base;
         staticProperties = new HashMap<>();
         properties = new HashMap<>();
+        constructors = new ArrayList<>();
     }
 
     @Override
     public String toString(TypeConverter tc) {
         StringBuilder sb = new StringBuilder();
-
         Class baseSuper = base;
         while(baseSuper != null){
             for(Field field: baseSuper.getDeclaredFields()){
@@ -43,33 +44,41 @@ public class TSClass implements TSConvertable {
                     methods.add(new TSMethod(method));
                 }
             }
+            for(Constructor constructor: baseSuper.getDeclaredConstructors()){
+                final int modifiers = constructor.getModifiers();
+                if(Modifier.isPublic(modifiers)){
+                    constructors.add(new TSConstructor(constructor));
+                }
+            }
             baseSuper = baseSuper.getSuperclass();
         }
 
         sb.append("export class ");
+        sb.append(base.getSimpleName());
+        sb.append(" {\n");
         handleProperties(staticProperties, tc, sb);
-
-        sb.append("export interface ");
         handleProperties(properties, tc, sb);
-
+        if(constructors.size() > 0){
+            sb.append(tc.mergeConstructors(constructors));
+            sb.append(";\n");
+        }
+        sb.append("}\n");
         return sb.toString();
     }
     private void handleProperties(HashMap<String, ArrayList<TSConvertable>> properties, TypeConverter tc, StringBuilder sb){
-        final String className = base.getSimpleName();
-        sb.append(className);
-        sb.append(" {\n");
-
         for(HashMap.Entry<String, ArrayList<TSConvertable>> entry: properties.entrySet()){
             sb.append("    ");
             if(properties == staticProperties){
                 sb.append("static ");
             }
-            sb.append(entry.getKey());
+            final String key = entry.getKey();
+            sb.append(key);
+            if(properties != staticProperties && key.equals("constructor")){
+                sb.append('_');
+            }
             sb.append(": ");
             sb.append(tc.mergeProperties(entry.getValue()));
             sb.append(";\n");
         }
-
-        sb.append("}\n");
     }
 }
