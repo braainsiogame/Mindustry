@@ -101,6 +101,8 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
 
                     clearItem();
                     setState(mine);
+                }else{
+                    target = null;
                 }
             }
 
