@@ -1,5 +1,8 @@
 package io.anuke.mindustry.core.typedefs;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,10 +32,10 @@ public class TypeConverter {
         toTSName.put(Long.class, "number");
         toTSName.put(String.class, "string");
     }
-    private TSNamespace namespace;
+    private TSModule module;
     private HashSet<Class> resolved;
-    public TypeConverter(){
-        namespace = new TSNamespace("Packages");
+    public TypeConverter() throws IOException {
+        module = new TSModule(Paths.get("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\Packages"));
         resolved = new HashSet<>();
     }
     private String escapeNamespaces(String ns){
@@ -42,7 +45,7 @@ public class TypeConverter {
         }
         return String.join(".", nss).replaceAll("\\$", ".");
     }
-    public void resolveClass(Class type){
+    public void resolveClass(Class type) throws IOException {
         Class base = type;
         while(base.isArray()){
             base = base.getComponentType();
@@ -52,13 +55,21 @@ public class TypeConverter {
         //System.out.println(base);
         resolved.add(base);
         TSClass tsClass = new TSClass(base);
-        String[] names = escapeNamespaces(base.getCanonicalName()).split("\\.");
-        TSNamespace currentNS = namespace;
+        Class enclosing = base.getEnclosingClass();
+        String[] names = escapeNamespaces((enclosing == null ? base : enclosing).getCanonicalName()).split("\\.");
+        TSModule currentModule = module;
+        String resolved = tsClass.toString(this);
         for(String name: names){
             if(name.equals(names[names.length - 1])){
-                currentNS.content.append(tsClass.toString(this));
+                if(enclosing != null) {
+                    currentModule.add("export namespace ");
+                    currentModule.add(name);
+                    currentModule.add(" {\n");
+                }
+                currentModule.add(resolved); //Has to resolve into another namespace declaration for nested namespaces - But how?
+                if(enclosing != null) currentModule.add("}\n");
             } else {
-                currentNS = currentNS.child(name);
+                currentModule = currentModule.child(name);
             }
         }
     }
@@ -102,9 +113,7 @@ public class TypeConverter {
                 return string;
         }
     }
-
-    @Override
-    public String toString() {
-        return namespace.toString(this);
+    public void finish() throws IOException {
+        module.finish();
     }
 }

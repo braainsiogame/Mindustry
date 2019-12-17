@@ -1,5 +1,6 @@
 package io.anuke.mindustry.core.typedefs;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class TSField implements TSConvertable {
@@ -9,7 +10,11 @@ public class TSField implements TSConvertable {
     }
     @Override
     public String toString(TypeConverter tc) {
-        tc.resolveClass(type);
+        try {
+            tc.resolveClass(type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return tc.toTSType(type);
     }
 }

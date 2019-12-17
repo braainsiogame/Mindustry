@@ -60,6 +60,7 @@ public class TSClass implements TSConvertable {
         sb.append(" {\n");
 
         for(HashMap.Entry<String, ArrayList<TSConvertable>> entry: properties.entrySet()){
+            sb.append("    ");
             if(properties == staticProperties){
                 sb.append("static ");
             }

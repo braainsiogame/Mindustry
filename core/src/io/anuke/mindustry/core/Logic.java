@@ -96,7 +96,7 @@ public class Logic implements ApplicationListener{
             }
         });
         try{
-            FileOutputStream stream = new FileOutputStream(new File("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\mindustry.d.ts"));
+            //FileOutputStream stream = new FileOutputStream(new File("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\mindustry.d.ts"));
             Class[] classes = new Class[]{
                 BufferItem.class,
                 Call.class,
@@ -552,9 +552,9 @@ public class Logic implements ApplicationListener{
             };
             TypeConverter tc = new TypeConverter();
             for(Class cl: classes) tc.resolveClass(cl);
-            String typings = tc.toString();
-            stream.write(typings.getBytes());
-            stream.close();
+            tc.finish();
+            //stream.write(typings.getBytes());
+            //stream.close();
         } catch(Exception e) {
             Log.err(e);
         }

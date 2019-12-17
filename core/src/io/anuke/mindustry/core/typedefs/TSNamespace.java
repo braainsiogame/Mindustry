@@ -3,7 +3,7 @@ package io.anuke.mindustry.core.typedefs;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TSNamespace implements TSConvertable{
+public class TSNamespace {
     public StringBuilder content;
     public HashMap<String, TSNamespace> children;
     public String name;
@@ -23,9 +23,9 @@ public class TSNamespace implements TSConvertable{
         return child;
     }
     @Override
-    public String toString(TypeConverter tc) {
+    public String toString() {
         for(TSNamespace child: children.values()){
-            content.append(child.toString(tc));
+            content.append(child.toString());
         }
         content.append("}\n");
         return content.toString();
