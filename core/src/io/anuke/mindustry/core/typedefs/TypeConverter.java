@@ -74,8 +74,17 @@ public class TypeConverter {
         }
     }
     public String mergeProperties(ArrayList<TSConvertable> properties){
-        if(properties.size() > 1) return "any";
-        return properties.get(0).toString(this);
+        TSConvertable current = null;
+        for(TSConvertable tsConvertable: properties){
+            if(current == null){
+                current = tsConvertable;
+                continue;
+            }
+            if(current instanceof TSField && tsConvertable instanceof TSMethod){
+                current = tsConvertable;
+            }
+        }
+        return current.toString(this);
     }
     public String mergeConstructors(ArrayList<TSConstructor> constructors){
         return constructors.get(0).toString(this);
