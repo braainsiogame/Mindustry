@@ -1,5 +1,7 @@
 package io.anuke.mindustry.core.typedefs;
 
+import io.anuke.mindustry.entities.Effects;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -68,6 +70,11 @@ public class TypeConverter {
                 }
                 currentModule.add(resolved); //Has to resolve into another namespace declaration for nested namespaces - But how?
                 if(enclosing != null) currentModule.add("}\n");
+
+                if(false && enclosing == null){
+                    System.out.println(currentModule.root.relativize(currentModule.path).toString());
+                    System.out.println(name);
+                }
             } else {
                 currentModule = currentModule.child(name);
             }
