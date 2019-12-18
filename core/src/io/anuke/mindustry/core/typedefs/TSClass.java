@@ -1,21 +1,22 @@
 package io.anuke.mindustry.core.typedefs;
 
-import io.anuke.arc.util.Log;
-
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class TSClass implements TSConvertable {
     public Class base;
-    public HashMap<String, ArrayList<TSConvertable>> staticProperties;
-    public HashMap<String, ArrayList<TSConvertable>> properties;
+    public HashMap<String, TSField> staticTSFields;
+    public HashMap<String, TSField> tsFields;
+    public HashMap<String, ArrayList<TSMethod>> staticTSMethods;
+    public HashMap<String, ArrayList<TSMethod>> tsMethods;
     public ArrayList<TSConstructor> constructors;
     public TSClass(Class base){
         this.base = base;
-        staticProperties = new HashMap<>();
-        properties = new HashMap<>();
+        staticTSFields = new HashMap<>();
+        tsFields = new HashMap<>();
+        staticTSMethods = new HashMap<>();
+        tsMethods = new HashMap<>();
         constructors = new ArrayList<>();
     }
 
@@ -28,19 +29,19 @@ public class TSClass implements TSConvertable {
                 final int modifiers = field.getModifiers();
                 if(Modifier.isPublic(modifiers)){
                     final String fieldName = field.getName();
-                    final HashMap<String, ArrayList<TSConvertable>> properProperties =
-                            Modifier.isStatic(modifiers) ? staticProperties : properties;
-                    ArrayList<TSConvertable> fields = properProperties.computeIfAbsent(fieldName, k -> new ArrayList<>());
-                    fields.add(new TSField(field));
+                    final HashMap<String, TSField> properFields =
+                            Modifier.isStatic(modifiers) ? staticTSFields : tsFields;
+                    properFields.putIfAbsent(fieldName, new TSField(field));
                 }
             }
             for(Method method: baseSuper.getDeclaredMethods()){
                 final int modifiers = method.getModifiers();
                 if(Modifier.isPublic(modifiers)){
                     final String methodName = method.getName();
-                    final HashMap<String, ArrayList<TSConvertable>> properProperties =
-                            Modifier.isStatic(modifiers) ? staticProperties : properties;
-                    ArrayList<TSConvertable> methods = properProperties.computeIfAbsent(methodName, k -> new ArrayList<>());
+                    final HashMap<String, ArrayList<TSMethod>> properMethods =
+                            Modifier.isStatic(modifiers) ? staticTSMethods : tsMethods;
+                    (Modifier.isStatic(modifiers) ? staticTSFields : tsFields).remove(methodName);
+                    ArrayList<TSMethod> methods = properMethods.computeIfAbsent(methodName, k -> new ArrayList<>());
                     methods.add(new TSMethod(method));
                 }
             }
@@ -56,28 +57,47 @@ public class TSClass implements TSConvertable {
         sb.append("export class ");
         sb.append(base.getSimpleName());
         sb.append(" {\n");
-        handleProperties(staticProperties, tc, sb);
-        handleProperties(properties, tc, sb);
+        handleFields(staticTSFields, tc, sb);
+        handleFields(tsFields, tc, sb);
+        handleMethods(staticTSMethods, tc, sb);
+        handleMethods(tsMethods, tc, sb);
         if(constructors.size() > 0){
-            sb.append(tc.mergeConstructors(constructors));
-            sb.append(";\n");
+            for(TSConstructor constructor: constructors){
+                sb.append(constructor.toString(tc));
+                sb.append(";\n");
+            }
         }
         sb.append("}\n");
         return sb.toString();
     }
-    private void handleProperties(HashMap<String, ArrayList<TSConvertable>> properties, TypeConverter tc, StringBuilder sb){
-        for(HashMap.Entry<String, ArrayList<TSConvertable>> entry: properties.entrySet()){
-            sb.append("    ");
-            if(properties == staticProperties){
+    private void handleMethods(HashMap<String, ArrayList<TSMethod>> methods, TypeConverter tc, StringBuilder sb){
+        for(HashMap.Entry<String, ArrayList<TSMethod>> entry: methods.entrySet()){
+            final String name = entry.getKey();
+            for(TSMethod method: entry.getValue()){
+                if(methods == staticTSMethods){
+                    sb.append("static ");
+                }
+                sb.append(name);
+                if(methods == tsMethods && name.equals("constructor")){
+                    sb.append('_');
+                }
+                sb.append(method.toString(tc));
+                sb.append(";\n");
+            }
+        }
+    }
+    private void handleFields(HashMap<String, TSField> fields, TypeConverter tc, StringBuilder sb){
+        for(HashMap.Entry<String, TSField> entry: fields.entrySet()){
+            if(fields == staticTSFields){
                 sb.append("static ");
             }
-            final String key = entry.getKey();
-            sb.append(key);
-            if(properties != staticProperties && key.equals("constructor")){
+            final String name = entry.getKey();
+            sb.append(name);
+            if(fields == tsFields && name.equals("constructor")){
                 sb.append('_');
             }
             sb.append(": ");
-            sb.append(tc.mergeProperties(entry.getValue()));
+            sb.append(entry.getValue().toString(tc));
             sb.append(";\n");
         }
     }

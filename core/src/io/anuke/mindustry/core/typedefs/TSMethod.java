@@ -11,7 +11,7 @@ public class TSMethod implements TSConvertable {
     }
     @Override
     public String toString(TypeConverter tc) {
-        StringBuilder sb = new StringBuilder("((");
+        StringBuilder sb = new StringBuilder("(");
         final Parameter[] params = base.getParameters();
         for(Parameter param: params){
             final Class paramType = param.getType();
@@ -25,7 +25,7 @@ public class TSMethod implements TSConvertable {
             sb.append(tc.toTSType(paramType));
             if(param != params[params.length - 1]) sb.append(", ");
         }
-        sb.append(") => ");
+        sb.append("): ");
         final Class returnType = base.getReturnType();
         try {
             tc.resolveClass(returnType);
@@ -33,7 +33,6 @@ public class TSMethod implements TSConvertable {
             e.printStackTrace();
         }
         sb.append(tc.toTSType(returnType));
-        sb.append(')');
         return sb.toString();
     }
 }
