@@ -1845,13 +1845,15 @@ public class Blocks implements ContentList{
             requirements(Category.water, BuildVisibility.water, ItemStack.with());
             facade = powerNodeLarge;
 
-            selected = bool -> {
-                // disconnect all power
-                for(Tile tile : indexer.getAllied(player.getTeam(), BlockFlag.powernode)){
-                    while(tile.entity.power.links.size > 0){
-                        tile.configure(tile.entity.power.links.first());
+            selected = tmp -> {
+                Timer.schedule(() -> {
+                    // disconnect all power
+                    for(Tile tile : indexer.getAllied(player.getTeam(), BlockFlag.powernode)){
+                        while(tile.entity.power.links.size > 0){
+                            tile.configure(tile.entity.power.links.first());
+                        }
                     }
-                }
+                }, 0f);
 
                 Timer.schedule(() -> {
                     // connect all power
@@ -1861,7 +1863,9 @@ public class Blocks implements ContentList{
                             if(!tile.entity.power.links.contains(link.pos()) && !PowerNode.insulated(tile, link)) tile.configure(link.pos());
                         });
                     }
-                }, 1f);
+                }, 0.25f);
+
+                return false;
             };
         }};
     }

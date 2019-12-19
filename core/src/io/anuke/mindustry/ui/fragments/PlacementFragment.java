@@ -428,12 +428,7 @@ public class PlacementFragment extends Fragment{
 
     void setSelectedBlock(Category cat, Block block){
         if(block instanceof WaterBlock){
-            WaterBlock wb = (WaterBlock)block;
-//            if(fb.button){
-//                control.input.block = null;
-//                hovered = block;
-//            }
-            wb.selected();
+            control.input.block = ((WaterBlock)block).selected() ? control.input.block : null;
         }else{
             selectedBlocks.put(cat, block);
         }

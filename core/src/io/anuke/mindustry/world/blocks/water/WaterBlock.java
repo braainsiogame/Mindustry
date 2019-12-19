@@ -8,7 +8,7 @@ import io.anuke.mindustry.world.*;
 public class WaterBlock extends Block{
     protected Block facade;
 
-    protected Cons<Boolean> selected = bool -> {};
+    protected Boolf<Boolean> selected = tmp -> true;
 
     public WaterBlock(String name){
         super(name);
@@ -26,7 +26,7 @@ public class WaterBlock extends Block{
         //
     }
 
-    public void selected(){
-        this.selected.get(true);
+    public boolean selected(){
+        return this.selected.get(true);
     }
 }
