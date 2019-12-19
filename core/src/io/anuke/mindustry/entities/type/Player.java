@@ -429,11 +429,15 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
         font.setUseIntegerPositions(ints);
     }
 
-    /** Draw all current build requests. Does not draw the beam effect, only the positions. */
     public void drawBuildRequests(){
+        this.drawBuildRequests(buildQueue());
+    }
+
+    /** Draw all current build requests. Does not draw the beam effect, only the positions. */
+    public void drawBuildRequests(Queue<BuildRequest> queue){
         if(!isLocal) return;
 
-        for(BuildRequest request : buildQueue()){
+        for(BuildRequest request : queue){
             if(request.progress > 0.01f || (buildRequest() == request && request.initialized && (dst(request.x * tilesize, request.y * tilesize) <= placeDistance || state.isEditor()))) continue;
 
             request.animScale = 1f;

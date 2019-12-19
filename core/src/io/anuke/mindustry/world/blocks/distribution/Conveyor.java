@@ -48,6 +48,7 @@ public class Conveyor extends Block implements Autotiler{
         idleSound = Sounds.conveyor;
         idleSoundVolume = 0.004f;
         unloadable = false;
+        flags = EnumSet.of(BlockFlag.conveyor);
     }
 
     private static int compareItems(long a, long b){

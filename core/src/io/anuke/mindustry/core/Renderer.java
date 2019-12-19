@@ -24,6 +24,7 @@ import io.anuke.mindustry.graphics.*;
 import io.anuke.mindustry.input.*;
 import io.anuke.mindustry.ui.Cicon;
 import io.anuke.mindustry.world.blocks.defense.ForceProjector.*;
+import io.anuke.mindustry.world.blocks.water.*;
 
 import static io.anuke.arc.Core.*;
 import static io.anuke.mindustry.Vars.*;
@@ -276,6 +277,10 @@ public class Renderer implements ApplicationListener{
 
         overlays.drawBottom();
         playerGroup.draw(p -> p.isLocal, Player::drawBuildRequests);
+        if(ui.hudfrag.blockfrag.hovered instanceof WaterBlock){
+            WaterBlock wb = (WaterBlock)ui.hudfrag.blockfrag.hovered;
+            wb.hovering();
+        }
 
         if(shieldGroup.countInBounds() > 0){
             if(settings.getBool("animatedshields") && Shaders.shield != null){

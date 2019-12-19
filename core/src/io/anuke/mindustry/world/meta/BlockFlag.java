@@ -18,6 +18,7 @@ public enum BlockFlag{
     mechPad,
     /** Water o2. */
     powernode,
+    conveyor,
 
     nothing;
 

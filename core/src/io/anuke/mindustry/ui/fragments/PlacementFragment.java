@@ -33,7 +33,8 @@ public class PlacementFragment extends Fragment{
     Array<Category> returnCatArray = new Array<>();
     boolean[] categoryEmpty = new boolean[Category.all.length];
     ObjectMap<Category,Block> selectedBlocks = new ObjectMap<Category,Block>();
-    Block hovered, lastDisplay;
+    public Block hovered;
+    Block lastDisplay;
     Tile lastHover;
     Tile hoverTile;
     Table blockTable, toggler, topTable;

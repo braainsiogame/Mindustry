@@ -10,6 +10,7 @@ import io.anuke.mindustry.*;
 import io.anuke.mindustry.ctype.*;
 import io.anuke.mindustry.entities.*;
 import io.anuke.mindustry.entities.bullet.*;
+import io.anuke.mindustry.entities.traits.BuilderTrait.*;
 import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.graphics.*;
@@ -86,7 +87,7 @@ public class Blocks implements ContentList{
     dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad,
 
     //water
-    waterPowerCycle;
+    waterPowerCycle, waterConveyorUpgrade;
 
     @Override
     public void load(){
@@ -1864,6 +1865,32 @@ public class Blocks implements ContentList{
                         });
                     }
                 }, 0.25f);
+
+                return false;
+            };
+        }};
+
+        waterConveyorUpgrade = new WaterBlock("water-conveyor-upgrade"){{
+            requirements(Category.water, BuildVisibility.water, ItemStack.with());
+            facade = conveyor;
+
+            hovering = tmp -> {
+                placeQueue.clear();
+                for(Tile c : indexer.getAllied(player.getTeam(), BlockFlag.conveyor)){
+                    if(player.dst(c) > player.placeDistance) continue;
+                    if(c.block() != conveyor) continue;
+
+                    placeQueue.addFirst(new BuildRequest(c.x, c.y, c.rotation(), titaniumConveyor));
+                }
+                player.drawBuildRequests(placeQueue);
+            };
+
+            selected = tmp -> {
+                hovering();
+
+                for(BuildRequest br : placeQueue){
+                    player.buildQueue().addFirst(br);
+                }
 
                 return false;
             };
