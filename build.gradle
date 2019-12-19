@@ -87,8 +87,12 @@ allprojects{
         }
 
         getBuildVersion = {
-            if(!project.hasProperty("buildversion")) return "custom build"
-            return project.getProperties()["buildversion"]
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'describe', '--tags', '--abbrev=0'
+                standardOutput = stdout
+            }
+            return stdout.toString().trim().substring(1)
         }
 
         getPackage = {
