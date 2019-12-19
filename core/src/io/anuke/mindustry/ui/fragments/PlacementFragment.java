@@ -378,7 +378,7 @@ public class PlacementFragment extends Fragment{
                             continue;
                         }
 
-                        categories.addImageButton(Core.atlas.drawable("icon-" + cat.name() + "-smaller"), Styles.clearToggleTransi, () -> {
+                        categories.addImageButton(Core.atlas.drawable("icon-" + cat.icon() + "-smaller"), Styles.clearToggleTransi, () -> {
                             currentCategory = cat;
                             if(control.input.block != null){
                                 control.input.block = getSelectedBlock(currentCategory);

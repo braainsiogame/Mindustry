@@ -26,6 +26,7 @@ import io.anuke.mindustry.world.blocks.production.*;
 import io.anuke.mindustry.world.blocks.sandbox.*;
 import io.anuke.mindustry.world.blocks.storage.*;
 import io.anuke.mindustry.world.blocks.units.*;
+import io.anuke.mindustry.world.blocks.water.*;
 import io.anuke.mindustry.world.consumers.*;
 import io.anuke.mindustry.world.meta.*;
 import io.anuke.mindustry.world.modules.*;
@@ -80,7 +81,10 @@ public class Blocks implements ContentList{
     fortressFactory, repairPoint,
 
     //upgrades
-    dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad;
+    dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad,
+
+    //water
+    waterTmp;
 
     @Override
     public void load(){
@@ -1833,5 +1837,11 @@ public class Blocks implements ContentList{
         }};
 
         //endregion
+        // region water
+
+        waterTmp = new WaterBlock("water-tmp"){{
+            requirements(Category.water, BuildVisibility.water, ItemStack.with());
+            facade = waterExtractor;
+        }};
     }
 }

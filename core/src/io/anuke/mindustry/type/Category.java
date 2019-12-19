@@ -20,7 +20,11 @@ public enum Category{
     /** Things that upgrade the player such as mech pads. */
     upgrade,
     /** Things for storage or passive effects. */
-    effect;
+    effect,
+    /** Water o2 toolbar. */
+    water,
+    /** Placeholder for darkness. */
+    placeholder;
 
     public static final Category[] all = values();
 
@@ -30,5 +34,10 @@ public enum Category{
 
     public Category next(){
         return all[(this.ordinal() + 1) % all.length];
+    }
+
+    public String icon(){ // bodge to set water category icon without touching sprites
+        if(name().equals("water")) return "liquid-consume";
+        return name();
     }
 }
