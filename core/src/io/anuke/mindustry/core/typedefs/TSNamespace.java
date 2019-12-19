@@ -5,13 +5,15 @@ import java.util.HashMap;
 
 public class TSNamespace {
     public StringBuilder content;
+    public ArrayList<String> classNames;
     public HashMap<String, TSNamespace> children;
     public String name;
     public TSNamespace(String name){
-        content = new StringBuilder("export namespace ");
+        content = new StringBuilder("namespace ");
         content.append(name);
         content.append(" {\n");
         children = new HashMap<>();
+        classNames = new ArrayList<>();
         this.name = name;
     }
     public TSNamespace child(String name){

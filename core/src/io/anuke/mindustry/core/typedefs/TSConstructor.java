@@ -16,11 +16,7 @@ public class TSConstructor implements TSConvertable {
         final Parameter[] params = base.getParameters();
         for(Parameter param: params){
             final Class paramType = param.getType();
-            try {
-                tc.resolveClass(paramType);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            tc.resolveClass(paramType);
             sb.append(tc.escapeKeywords(param.getName()));
             sb.append(": ");
             sb.append(tc.toTSType(paramType));

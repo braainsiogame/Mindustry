@@ -53,7 +53,7 @@ public class TSClass implements TSConvertable {
             baseSuper = baseSuper.getSuperclass();
         }
 
-        sb.append("export class ");
+        sb.append("class ");
         sb.append(base.getSimpleName());
         sb.append(" {\n");
         handleFields(staticTSFields, tc, sb);

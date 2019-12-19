@@ -1,5 +1,7 @@
 package io.anuke.mindustry.core.typedefs;
 
+import io.anuke.arc.collection.Array;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class TypeConverter {
         }
         return String.join(".", nss).replaceAll("\\$", ".");
     }
-    public void resolveClass(Class type) throws IOException {
+    public void resolveClass(Class type) {
         Class base = type;
         while(base.isArray()){
             base = base.getComponentType();
@@ -59,6 +61,7 @@ public class TypeConverter {
         for(String name: names){
             if(name.equals(names[names.length - 1])){
                 currentNS.content.append(tsClass.toString(this));
+                currentNS.classNames.add(name);
             } else {
                 currentNS = currentNS.child(name);
             }
@@ -119,6 +122,29 @@ public class TypeConverter {
 
     @Override
     public String toString() {
-        return namespace.toString();
+        StringBuilder sb = new StringBuilder("declare global {\n");
+        sb.append(namespace.toString());
+        for(String[] namespaces: ExportedClasses.exported){
+            StringBuilder fullClassNameBuilder = new StringBuilder("Packages.");
+            TSNamespace tsNamespace = namespace;
+            for(String namespace: namespaces){
+                tsNamespace = tsNamespace.child(namespace);
+                fullClassNameBuilder.append(namespace);
+                fullClassNameBuilder.append('.');
+            }
+            String fullClassName = fullClassNameBuilder.toString();
+            for(String className: tsNamespace.classNames){
+                if(false) System.out.println(fullClassName + className);
+                sb.append("const ");
+                sb.append(className);
+                sb.append(": typeof ");
+                sb.append(fullClassName);
+                sb.append(className);
+                sb.append(";\n");
+            }
+        }
+        Array<Class> c;
+        sb.append("}\nexport {}");
+        return sb.toString();
     }
 }
