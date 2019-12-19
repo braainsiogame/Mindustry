@@ -1,8 +1,5 @@
 package io.anuke.mindustry.core.typedefs;
 
-import io.anuke.mindustry.entities.Effects;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -34,10 +31,10 @@ public class TypeConverter {
         toTSName.put(Long.class, "number");
         toTSName.put(String.class, "string");
     }
-    private TSModule module;
+    private TSNamespace namespace;
     private HashSet<Class> resolved;
     public TypeConverter() throws IOException {
-        module = new TSModule(Paths.get("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\Packages"));
+        namespace = new TSNamespace("Packages");
         resolved = new HashSet<>();
     }
     private String escapeNamespaces(String ns){
@@ -57,26 +54,13 @@ public class TypeConverter {
         //System.out.println(base);
         resolved.add(base);
         TSClass tsClass = new TSClass(base);
-        Class enclosing = base.getEnclosingClass();
-        String[] names = escapeNamespaces((enclosing == null ? base : enclosing).getCanonicalName()).split("\\.");
-        TSModule currentModule = module;
-        String resolved = tsClass.toString(this);
+        String[] names = escapeNamespaces(base.getCanonicalName()).split("\\.");
+        TSNamespace currentNS = namespace;
         for(String name: names){
             if(name.equals(names[names.length - 1])){
-                if(enclosing != null) {
-                    currentModule.add("export namespace ");
-                    currentModule.add(name);
-                    currentModule.add(" {\n");
-                }
-                currentModule.add(resolved); //Has to resolve into another namespace declaration for nested namespaces - But how?
-                if(enclosing != null) currentModule.add("}\n");
-
-                if(false && enclosing == null){
-                    System.out.println(currentModule.root.relativize(currentModule.path).toString());
-                    System.out.println(name);
-                }
+                currentNS.content.append(tsClass.toString(this));
             } else {
-                currentModule = currentModule.child(name);
+                currentNS = currentNS.child(name);
             }
         }
     }
@@ -132,7 +116,9 @@ public class TypeConverter {
                 return string;
         }
     }
-    public void finish() throws IOException {
-        module.finish();
+
+    @Override
+    public String toString() {
+        return namespace.toString();
     }
 }

@@ -40,7 +40,6 @@ public class TSClass implements TSConvertable {
                     final String methodName = method.getName();
                     final HashMap<String, ArrayList<TSMethod>> properMethods =
                             Modifier.isStatic(modifiers) ? staticTSMethods : tsMethods;
-                    (Modifier.isStatic(modifiers) ? staticTSFields : tsFields).remove(methodName);
                     ArrayList<TSMethod> methods = properMethods.computeIfAbsent(methodName, k -> new ArrayList<>());
                     methods.add(new TSMethod(method));
                 }
@@ -88,6 +87,9 @@ public class TSClass implements TSConvertable {
     }
     private void handleFields(HashMap<String, TSField> fields, TypeConverter tc, StringBuilder sb){
         for(HashMap.Entry<String, TSField> entry: fields.entrySet()){
+            if((fields == staticTSFields ? staticTSMethods : tsMethods).containsKey(entry.getKey())){
+                continue;
+            }
             if(fields == staticTSFields){
                 sb.append("static ");
             }
