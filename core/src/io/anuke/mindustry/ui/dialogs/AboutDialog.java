@@ -15,7 +15,7 @@ import io.anuke.mindustry.ui.Links.*;
 import static io.anuke.mindustry.Vars.*;
 
 public class AboutDialog extends FloatingDialog{
-    private Array<String> contributors = new Array<>();
+    private Array<String> contributors, disclaimer = new Array<>();
     private static ObjectSet<String> bannedItems = ObjectSet.with("google-play", "itch.io", "dev-builds", "f-droid");
 
     public AboutDialog(){
@@ -23,6 +23,7 @@ public class AboutDialog extends FloatingDialog{
 
         shown(() -> {
             contributors = Array.with(Core.files.internal("contributors").readString("UTF-8").split("\n"));
+            disclaimer = Array.with(Core.files.internal("disclaimer").readString("UTF-8").split("\n"));
             Core.app.post(this::setup);
         });
 
@@ -84,7 +85,7 @@ public class AboutDialog extends FloatingDialog{
 
         addCloseButton();
 
-//        buttons.addButton("$credits", this::showCredits).size(200f, 64f);
+        buttons.addButton("$disclaimer", this::showDisclaimer).size(200f, 64f);
 
         if(Core.graphics.isPortrait()){
             for(Cell<?> cell : buttons.getCells()){
@@ -112,6 +113,26 @@ public class AboutDialog extends FloatingDialog{
                     if(++i % 3 == 0){
                         row();
                     }
+                }
+            }});
+        }
+        dialog.show();
+    }
+
+    public void showDisclaimer(){
+        FloatingDialog dialog = new FloatingDialog("$disclaimer");
+        dialog.addCloseButton();
+        dialog.cont.add("$disclaimer.text");
+        dialog.cont.row();
+        if(!contributors.isEmpty()){
+            dialog.cont.addImage().color(Pal.accent).fillX().height(3f).pad(3f);
+            dialog.cont.row();
+            dialog.cont.add("$disclaimer.description");
+            dialog.cont.row();
+            dialog.cont.pane(new Table(){{
+                for(String d : disclaimer){
+                    add("[lightgray]" + d).left().pad(3).padLeft(6).padRight(6);
+                    row();
                 }
             }});
         }
