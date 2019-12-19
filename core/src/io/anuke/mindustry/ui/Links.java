@@ -1,6 +1,7 @@
 package io.anuke.mindustry.ui;
 
 import io.anuke.arc.Core;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.graphics.Color;
 import io.anuke.mindustry.graphics.Pal;
@@ -20,7 +21,7 @@ public class Links{
 //            new LinkEntry("f-droid", "https://f-droid.org/packages/io.anuke.mindustry/", Color.valueOf("026aa7")),
 //            new LinkEntry("github", "https://github.com/Anuken/Mindustry/", Color.valueOf("24292e")),
 //            new LinkEntry("dev-builds", "https://github.com/Anuken/MindustryBuilds", Color.valueOf("fafbfc")),
-            new LinkEntry("liquid-consume", "https://github.com/Anuken/Mindustry/compare/master...Quezler:water-o2", Color.royal.cpy()),
+            new LinkEntry("liquid-consume", new String[]{"https://github.com/Anuken/Mindustry/compare/master...Quezler:water-o2", "https://github.com/Quezler/Mindustry/tree/water-o2"}, Color.royal.cpy()),
         };
     }
 
@@ -33,14 +34,15 @@ public class Links{
     }
 
     public static class LinkEntry{
-        public final String name, title, description, link;
+        public final String name, title, description;
         public final Color color;
+        public final String[] links;
 
-        public LinkEntry(String name, String link, Color color){
+        public LinkEntry(String name, String[] links, Color color){
             this.name = name;
             this.color = color;
             this.description = Core.bundle.getNotNull("link." + name + ".description");
-            this.link = link;
+            this.links = links;
 
             String title = Core.bundle.getOrNull("link." + name + ".title");
             this.title = title != null ? title : Strings.capitalize(name.replace("-", " "));

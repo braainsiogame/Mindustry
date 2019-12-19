@@ -67,9 +67,11 @@ public class AboutDialog extends FloatingDialog{
             table.addImageButton(Icon.link, () -> {
                 if(link.name.equals("wiki")) Events.fire(Trigger.openWiki);
 
-                if(!Core.net.openURI(link.link)){
-                    ui.showErrorMessage("$linkfail");
-                    Core.app.setClipboardText(link.link);
+                for(int i=0; i < link.links.length;i++){
+                    if(!Core.net.openURI(link.links[i])){
+                        ui.showErrorMessage("$linkfail");
+                        Core.app.setClipboardText(link.links[i]);
+                    }
                 }
             }).size(h - 5, h);
 
