@@ -14,6 +14,7 @@ import io.anuke.arc.util.noise.RidgedPerlin;
 import io.anuke.arc.util.noise.Simplex;
 import io.anuke.mindustry.content.Blocks;
 import io.anuke.mindustry.content.UnitTypes;
+import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.type.UnitType;
 import io.anuke.mindustry.ui.Cicon;
 import io.anuke.mindustry.world.*;
@@ -33,7 +34,7 @@ public class MenuRenderer implements Disposable{
     private CacheBatch batch;
     private float time = 0f;
     private float flyerRot = 45f;
-    private int flyers = Mathf.chance(0.2) ? Mathf.random(35) : Mathf.random(15);
+    private int flyers = Mathf.chance(0.2) ? Mathf.random(100) : Mathf.random(50);
     private UnitType flyerType = Structs.select(UnitTypes.wraith, UnitTypes.wraith, UnitTypes.ghoul, UnitTypes.phantom, UnitTypes.phantom, UnitTypes.revenant);
 
     public MenuRenderer(){
@@ -279,6 +280,10 @@ public class MenuRenderer implements Disposable{
             Draw.color();
 
             Draw.rect(flyerType.region, x, y, flyerRot - 90);
+
+            Draw.color(Color.black, Team.blue.color, 1f + Mathf.absin(Time.time(), Math.max(5f, 1f), 0f));
+            Draw.rect("power-cell", x, y, rotation - 90);
+            Draw.color();
         });
     }
 
