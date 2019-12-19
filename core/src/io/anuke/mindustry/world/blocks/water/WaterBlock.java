@@ -1,11 +1,8 @@
 package io.anuke.mindustry.world.blocks.water;
 
 import io.anuke.arc.graphics.g2d.*;
-import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.meta.*;
-import io.anuke.mindustry.world.meta.values.*;
 
 public class WaterBlock extends Block{
     protected Block facade;
