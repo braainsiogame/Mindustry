@@ -21,6 +21,7 @@ import io.anuke.mindustry.type.*;
 import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.ui.Cicon;
 import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.blocks.water.*;
 
 import static io.anuke.mindustry.Vars.*;
 
@@ -128,7 +129,7 @@ public class PlacementFragment extends Fragment{
                                     j = (j < blocks.size - 4 ? j + 4 : j % 4);
                             }
                             input.block = blocks.get(j);
-                            selectedBlocks.put(currentCategory, input.block);
+                            setSelectedBlock(currentCategory, input.block);
                             break;
                         }
                     }
@@ -153,7 +154,7 @@ public class PlacementFragment extends Fragment{
                     }
                     Array<Block> blocks = getByCategory(currentCategory);
                     input.block = (i < blocks.size) ? blocks.get(i) : null;
-                    selectedBlocks.put(currentCategory, input.block);
+                    setSelectedBlock(currentCategory, input.block);
                     blockSelectSeqMillis = Time.millis();
                 }
                 return true;
@@ -205,7 +206,7 @@ public class PlacementFragment extends Fragment{
                         ImageButton button = blockTable.addImageButton(Icon.lockedSmall, Styles.selecti, () -> {
                             if(unlocked(block)){
                                 control.input.block = control.input.block == block ? null : block;
-                                selectedBlocks.put(currentCategory, control.input.block);
+                                setSelectedBlock(currentCategory, control.input.block);
                             }
                         }).size(46f).group(group).name("block-" + block.name).get();
 
@@ -423,6 +424,19 @@ public class PlacementFragment extends Fragment{
             selectedBlocks.put(cat, getByCategory(cat).find(this::unlocked));
         }
         return selectedBlocks.get(cat);
+    }
+
+    void setSelectedBlock(Category cat, Block block){
+        if(block instanceof WaterBlock){
+            WaterBlock wb = (WaterBlock)block;
+//            if(fb.button){
+//                control.input.block = null;
+//                hovered = block;
+//            }
+            wb.selected();
+        }else{
+            selectedBlocks.put(cat, block);
+        }
     }
 
     boolean unlocked(Block block){

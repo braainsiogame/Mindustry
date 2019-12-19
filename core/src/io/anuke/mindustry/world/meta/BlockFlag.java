@@ -15,7 +15,11 @@ public enum BlockFlag{
     /** Repair point. */
     repair,
     /** Upgrade pad. */
-    mechPad;
+    mechPad,
+    /** Water o2. */
+    powernode,
+
+    nothing;
 
     public final static BlockFlag[] all = values();
 }

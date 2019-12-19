@@ -35,6 +35,7 @@ public class PowerNode extends PowerBlock{
         configurable = true;
         consumesPower = false;
         outputsPower = false;
+        flags = EnumSet.of(BlockFlag.powernode);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class PowerNode extends PowerBlock{
         super.placed(tile);
     }
 
-    private void getPotentialLinks(Tile tile, Cons<Tile> others){
+    public void getPotentialLinks(Tile tile, Cons<Tile> others){
         Boolf<Tile> valid = other -> other != null && other != tile && other.entity != null && other.entity.power != null &&
         ((!other.block().outputsPower && other.block().consumesPower) || (other.block().outputsPower && !other.block().consumesPower) || other.block() instanceof PowerNode) &&
         overlaps(tile.x * tilesize + offset(), tile.y * tilesize + offset(), other, laserRange * tilesize) && other.getTeam() == player.getTeam()

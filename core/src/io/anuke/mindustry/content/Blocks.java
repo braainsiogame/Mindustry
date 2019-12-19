@@ -31,6 +31,8 @@ import io.anuke.mindustry.world.consumers.*;
 import io.anuke.mindustry.world.meta.*;
 import io.anuke.mindustry.world.modules.*;
 
+import static io.anuke.mindustry.Vars.*;
+
 public class Blocks implements ContentList{
     public static Block
 
@@ -84,7 +86,7 @@ public class Blocks implements ContentList{
     dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad,
 
     //water
-    waterTmp;
+    waterPowerCycle;
 
     @Override
     public void load(){
@@ -1839,9 +1841,28 @@ public class Blocks implements ContentList{
         //endregion
         // region water
 
-        waterTmp = new WaterBlock("water-tmp"){{
+        waterPowerCycle = new WaterBlock("water-power-cycle"){{
             requirements(Category.water, BuildVisibility.water, ItemStack.with());
-            facade = waterExtractor;
+            facade = powerNodeLarge;
+
+            selected = bool -> {
+                // disconnect all power
+                for(Tile tile : indexer.getAllied(player.getTeam(), BlockFlag.powernode)){
+                    while(tile.entity.power.links.size > 0){
+                        tile.configure(tile.entity.power.links.first());
+                    }
+                }
+
+                Timer.schedule(() -> {
+                    // connect all power
+                    for(Tile tile : indexer.getAllied(player.getTeam(), BlockFlag.powernode)){
+                        PowerNode block = (PowerNode)tile.block();
+                        block.getPotentialLinks(tile, link -> {
+                            if(!tile.entity.power.links.contains(link.pos()) && !PowerNode.insulated(tile, link)) tile.configure(link.pos());
+                        });
+                    }
+                }, 1f);
+            };
         }};
     }
 }
