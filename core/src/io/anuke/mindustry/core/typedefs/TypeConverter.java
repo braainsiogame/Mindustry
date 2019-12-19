@@ -1,6 +1,8 @@
 package io.anuke.mindustry.core.typedefs;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.scene.style.TextureRegionDrawable;
+import io.anuke.arc.scene.ui.layout.Table;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -135,16 +137,17 @@ public class TypeConverter {
             String fullClassName = fullClassNameBuilder.toString();
             for(String className: tsNamespace.classNames){
                 if(false) System.out.println(fullClassName + className);
-                sb.append("const ");
+                sb.append("class ");
                 sb.append(className);
-                sb.append(": typeof ");
+                sb.append(" extends ");
                 sb.append(fullClassName);
                 sb.append(className);
-                sb.append(";\n");
+                sb.append(" { }\n");
             }
         }
         Array<Class> c;
-        sb.append("}\nexport {}");
+        sb.append("}\nexport { }");
+        Table
         return sb.toString();
     }
 }
