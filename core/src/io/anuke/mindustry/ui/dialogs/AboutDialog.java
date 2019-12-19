@@ -82,7 +82,7 @@ public class AboutDialog extends FloatingDialog{
 
         addCloseButton();
 
-        buttons.addButton("$credits", this::showCredits).size(200f, 64f);
+//        buttons.addButton("$credits", this::showCredits).size(200f, 64f);
 
         if(Core.graphics.isPortrait()){
             for(Cell<?> cell : buttons.getCells()){
