@@ -14,7 +14,6 @@ import io.anuke.arc.util.noise.RidgedPerlin;
 import io.anuke.arc.util.noise.Simplex;
 import io.anuke.mindustry.content.Blocks;
 import io.anuke.mindustry.content.UnitTypes;
-import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.type.UnitType;
 import io.anuke.mindustry.ui.Cicon;
 import io.anuke.mindustry.world.*;
@@ -281,7 +280,7 @@ public class MenuRenderer implements Disposable{
 
             Draw.rect(flyerType.region, x, y, flyerRot - 90);
 
-            Draw.color(Color.black, Team.blue.color, 1f + Mathf.absin(Time.time(), Math.max(5f, 1f), 0f));
+            Draw.color(Color.black, Color.royal, 1f + Mathf.absin(Time.time(), Math.max(5f, 1f), 0f));
             Draw.rect("power-cell", x, y, rotation - 90);
             Draw.color();
         });
