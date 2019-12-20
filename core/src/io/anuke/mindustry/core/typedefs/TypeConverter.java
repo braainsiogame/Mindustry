@@ -1,8 +1,6 @@
 package io.anuke.mindustry.core.typedefs;
 
 import io.anuke.arc.collection.Array;
-import io.anuke.arc.scene.style.TextureRegionDrawable;
-import io.anuke.arc.scene.ui.layout.Table;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -147,7 +145,6 @@ public class TypeConverter {
         }
         Array<Class> c;
         sb.append("}\nexport { }");
-        Table
         return sb.toString();
     }
 }

@@ -1,5 +1,9 @@
 package io.anuke.mindustry.core.typedefs;
 
+import io.anuke.arc.scene.style.Drawable;
+import io.anuke.arc.scene.style.TextureRegionDrawable;
+import io.anuke.mindustry.entities.Effects;
+
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,34 +27,31 @@ public class TSClass implements TSConvertable {
     @Override
     public String toString(TypeConverter tc) {
         StringBuilder sb = new StringBuilder();
-        Class baseSuper = base;
-        while(baseSuper != null){
-            for(Field field: baseSuper.getDeclaredFields()){
-                final int modifiers = field.getModifiers();
-                if(Modifier.isPublic(modifiers)){
-                    final String fieldName = field.getName();
-                    final HashMap<String, TSField> properFields =
-                            Modifier.isStatic(modifiers) ? staticTSFields : tsFields;
-                    properFields.putIfAbsent(fieldName, new TSField(field));
-                }
+
+        for(Field field: base.getFields()){
+            final int modifiers = field.getModifiers();
+            if(!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)){
+                final String fieldName = field.getName();
+                final HashMap<String, TSField> properFields =
+                        Modifier.isStatic(modifiers) ? staticTSFields : tsFields;
+                properFields.putIfAbsent(fieldName, new TSField(field));
             }
-            for(Method method: baseSuper.getDeclaredMethods()){
-                final int modifiers = method.getModifiers();
-                if(Modifier.isPublic(modifiers)){
-                    final String methodName = method.getName();
-                    final HashMap<String, ArrayList<TSMethod>> properMethods =
-                            Modifier.isStatic(modifiers) ? staticTSMethods : tsMethods;
-                    ArrayList<TSMethod> methods = properMethods.computeIfAbsent(methodName, k -> new ArrayList<>());
-                    methods.add(new TSMethod(method));
-                }
+        }
+        for(Method method: base.getMethods()){
+            final int modifiers = method.getModifiers();
+            if(!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)){
+                final String methodName = method.getName();
+                final HashMap<String, ArrayList<TSMethod>> properMethods =
+                        Modifier.isStatic(modifiers) ? staticTSMethods : tsMethods;
+                ArrayList<TSMethod> methods = properMethods.computeIfAbsent(methodName, k -> new ArrayList<>());
+                methods.add(new TSMethod(method));
             }
-            for(Constructor constructor: baseSuper.getDeclaredConstructors()){
-                final int modifiers = constructor.getModifiers();
-                if(Modifier.isPublic(modifiers)){
-                    constructors.add(new TSConstructor(constructor));
-                }
+        }
+        for(Constructor constructor: base.getConstructors()){
+            final int modifiers = constructor.getModifiers();
+            if(Modifier.isPublic(modifiers)){
+                constructors.add(new TSConstructor(constructor));
             }
-            baseSuper = baseSuper.getSuperclass();
         }
 
         sb.append("class ");
