@@ -15,7 +15,11 @@ public class TSMethod implements TSConvertable {
         final Parameter[] params = base.getParameters();
         for(Parameter param: params){
             final Class paramType = param.getType();
-            tc.resolveClass(paramType);
+            try {
+                tc.resolveClass(paramType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sb.append(tc.escapeKeywords(param.getName()));
             sb.append(": ");
             sb.append(tc.toTSType(paramType));
@@ -23,7 +27,11 @@ public class TSMethod implements TSConvertable {
         }
         sb.append("): ");
         final Class returnType = base.getReturnType();
-        tc.resolveClass(returnType);
+        try {
+            tc.resolveClass(returnType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         sb.append(tc.toTSType(returnType));
         return sb.toString();
     }

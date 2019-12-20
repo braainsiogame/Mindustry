@@ -10,7 +10,11 @@ public class TSField implements TSConvertable {
     }
     @Override
     public String toString(TypeConverter tc) {
-        tc.resolveClass(type);
+        try {
+            tc.resolveClass(type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return tc.toTSType(type);
     }
 }

@@ -767,12 +767,13 @@ public class Logic implements ApplicationListener{
 
                     JavaAdapter.class
             };
-            File file = new File("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\mindustry.d.ts");
-            FileOutputStream stream = new FileOutputStream(file);
+            //File file = new File("C:\\Users\\ngkai\\Documents\\GitHub\\MinMod.ts\\testing\\mindustry.d.ts");
+            //FileOutputStream stream = new FileOutputStream(file);
             TypeConverter tc = new TypeConverter();
             for(Class cl: classes) tc.resolveClass(cl);
-            stream.write(tc.toString().getBytes());
-            stream.close();
+            tc.finish();
+            //stream.write(tc.toString().getBytes());
+            //stream.close();
         } catch(Exception e) {
             Log.err(e);
         }

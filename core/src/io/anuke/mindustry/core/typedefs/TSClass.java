@@ -1,9 +1,5 @@
 package io.anuke.mindustry.core.typedefs;
 
-import io.anuke.arc.scene.style.Drawable;
-import io.anuke.arc.scene.style.TextureRegionDrawable;
-import io.anuke.mindustry.entities.Effects;
-
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +50,7 @@ public class TSClass implements TSConvertable {
             }
         }
 
-        sb.append("class ");
+        sb.append("export class ");
         sb.append(base.getSimpleName());
         sb.append(" {\n");
         handleFields(staticTSFields, tc, sb);
