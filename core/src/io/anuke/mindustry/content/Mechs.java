@@ -16,7 +16,7 @@ import io.anuke.mindustry.graphics.*;
 import io.anuke.mindustry.type.*;
 
 public class Mechs implements ContentList{
-    public static Mech alpha, delta, tau, omega, dart, javelin, trident, glaive;
+    public static Mech core, alpha, delta, tau, omega, dart, javelin, trident, glaive;
 
     public static Mech starter;
 
@@ -49,6 +49,29 @@ public class Mechs implements ContentList{
                 player.healBy(Time.delta() * 0.09f);
             }
 
+        };
+
+        core = new Mech("core-mech", false){
+            {
+                drillPower = 1;
+                mineSpeed = 0f;
+                mass = 1.2f;
+                speed = 0.25f;
+                itemCapacity = 0;
+                boostSpeed = 0.50f;
+                buildPower = 0.25f;
+                engineColor = Pal.plastanium;
+                health = 500f;
+
+                weapon = new Weapon("mother knows best"){{
+                    length = 1.5f;
+                    reload = 5f;
+                    alternate = true;
+                    ejectEffect = Fx.shootHeal;
+                    bullet = Bullets.healBulletBig;
+                    shootSound = Sounds.none;
+                }};
+            }
         };
 
         delta = new Mech("delta-mech", false){

@@ -70,7 +70,7 @@ public class Blocks implements ContentList{
     mechanicalDrill, pneumaticDrill, laserDrill, blastDrill, waterExtractor, oilExtractor, cultivator,
 
     //storage
-    coreShard, coreFoundation, coreNucleus, vault, container, unloader, launchPad, launchPadLarge,
+    coreGhost, coreShard, coreFoundation, coreNucleus, vault, container, unloader, launchPad, launchPadLarge,
 
     //turrets
     duo, scatter, scorch, hail, arc, wave, lancer, swarmer, salvo, fuse, ripple, cyclone, spectre, meltdown,
@@ -1233,6 +1233,10 @@ public class Blocks implements ContentList{
         //endregion
         //region storage
 
+        coreGhost = new CoreGhost("core-ghost"){{
+
+        }};
+
         coreShard = new CoreBlock("core-shard"){{
             requirements(Category.effect, BuildVisibility.debugOnly, ItemStack.with(Items.titanium, 4000));
             alwaysUnlocked = true;
@@ -1746,7 +1750,7 @@ public class Blocks implements ContentList{
 
         dartPad = new MechPad("dart-mech-pad"){{
             requirements(Category.upgrade, ItemStack.with(Items.lead, 100, Items.graphite, 50, Items.copper, 75));
-            mech = Mechs.alpha;
+            mech = Mechs.core;
             size = 2;
             consumes.power(0.5f);
         }};

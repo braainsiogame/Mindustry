@@ -347,6 +347,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public void drawStats(){
+        if(mech == Mechs.core) return;
         Draw.color(Color.black, team.color, healthf() + Mathf.absin(Time.time(), healthf() * 5f, 1f - healthf()));
         Draw.rect(getPowerCellRegion(), x + Angles.trnsx(rotation, mech.cellTrnsY, 0f), y + Angles.trnsy(rotation, mech.cellTrnsY, 0f), rotation - 90);
         Draw.reset();
@@ -516,6 +517,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
         }
 
         Tile tile = world.tileWorld(x, y);
+
+        if(tile.block() == Blocks.air && mech == Mechs.core){
+            tile.setBlock(Blocks.coreGhost);
+        }
 
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);
         shootHeat = Mathf.lerpDelta(shootHeat, isShooting() ? 1f : 0f, 0.06f);
