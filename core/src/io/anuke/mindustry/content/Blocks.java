@@ -76,7 +76,7 @@ public class Blocks implements ContentList{
     duo, scatter, scorch, hail, arc, wave, lancer, swarmer, salvo, fuse, ripple, cyclone, spectre, meltdown,
 
     //units
-    commandCenter, draugFactory, spiritFactory, phantomFactory, wraithFactory, ghoulFactory, revenantFactory, daggerFactory, crawlerFactory, titanFactory,
+    commandCenter, droneCommander, draugFactory, spiritFactory, phantomFactory, wraithFactory, ghoulFactory, revenantFactory, daggerFactory, crawlerFactory, titanFactory,
     fortressFactory, repairPoint,
 
     //upgrades
@@ -1668,6 +1668,12 @@ public class Blocks implements ContentList{
             size = 2;
             health = size * size * 55;
         }};
+
+        droneCommander = new DroneCommanderBlock("drone-commander"){{
+            requirements(Category.units, ItemStack.with(Items.copper, 200, Items.lead, 250, Items.silicon, 250, Items.graphite, 100));
+            health = 100;
+        }};
+
 
         wraithFactory = new UnitFactory("wraith-factory"){{
             requirements(Category.units, ItemStack.with(Items.titanium, 30, Items.lead, 40, Items.silicon, 45));
