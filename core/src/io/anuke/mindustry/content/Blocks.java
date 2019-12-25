@@ -76,7 +76,7 @@ public class Blocks implements ContentList{
     duo, scatter, scorch, hail, arc, wave, lancer, swarmer, salvo, fuse, ripple, cyclone, spectre, meltdown,
 
     //units
-    commandCenter, draugFactory, spiritFactory, phantomFactory, wraithFactory, ghoulFactory, revenantFactory, daggerFactory, crawlerFactory, titanFactory,
+    commandCenter, draugFactory, spiritFactory, phantomFactory, wraithFactory, ghoulFactory, revenantFactory, daggerFactory, crawlerFactory, tetherFactory, titanFactory,
     fortressFactory, repairPoint,
 
     //upgrades
@@ -1713,6 +1713,15 @@ public class Blocks implements ContentList{
             maxSpawn = 6;
             consumes.power(0.5f);
             consumes.items(new ItemStack(Items.coal, 10));
+        }};
+
+        tetherFactory = new UnitFactory("tether-factory"){{
+            requirements(Category.units, ItemStack.with(Items.surgealloy, 50));
+            unitType = UnitTypes.tether;
+            produceTime = 300;
+            size = 2;
+            maxSpawn = 1;
+            consumes.power(10f);
         }};
 
         titanFactory = new UnitFactory("titan-factory"){{
