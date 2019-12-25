@@ -12,21 +12,19 @@ import io.anuke.arc.scene.ui.layout.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.pooling.*;
 import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.effect.Fire;
 import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.net.*;
 import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.ui.dialogs.*;
 import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.BoxedValue;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.Instruction;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.Parser;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.CharStream;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.Parser;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.TokenStream;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.Codeblock;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
 
 import static io.anuke.mindustry.Vars.*;
 
@@ -156,55 +154,24 @@ public class DroneCommanderBlock extends Block{
 
     public static class DroneCommanderBlockEntity extends TileEntity{
         private String message;
-        private Instruction[] instructions;
-        public final int maxInstructionsPerStep = 200;
-        public int sleepCycles = 0;
-        public HashMap<Object, BoxedValue> variables;
-        private String errorMsg = null;
-        private boolean isEmpty;
-        public HashMap<Object, Integer> labels;
-        public int[] stack = new int[1024];
-        public int stackIndex = 0;
+        private String errorMsg;
+        private Interpreter interpreter;
+        public final int maxStepsPerStep = 200;
+        private boolean running = false;
         public DroneCommanderBlockEntity(){
             super();
-            setMessage("sleep 1\n");
+            setMessage("foo = 0;");
         }
         @Override
         public void update() {
             super.update();
-            if(errorMsg != null){
-                return;
-            }
             int steps = Mathf.round(delta());
             while(steps-- > 0){
-                if(sleepCycles > 0){
-                    --sleepCycles;
-                    continue;
-                }
-                int instructionsRun = 0;
-                while(instructionsRun++ < maxInstructionsPerStep && sleepCycles == 0){
-                    if(isEmpty){
-                        instructionsRun = maxInstructionsPerStep + 1;
-                        break;
-                    }
-                    if(stack[stackIndex] >= instructions.length){
-                        stack[stackIndex] = 0;
-                    }
-                    Instruction instruction = instructions[stack[stackIndex]];
-                    if(instruction == null || (instruction.initOnly && instruction.alreadyRun)){
-                        --instructionsRun;
-                    } else {
-                        try {
-                            instruction.run(this);
-                        } catch(Instruction.InstructionError e){
-                            handleError(e, stack[stackIndex] + 1, 0);
-                        }
-                    }
-                    stack[stackIndex]++;
-                }
-                if(instructionsRun > maxInstructionsPerStep){
-                    Fire.create(tile);
-                    break;
+                if(!running) break;
+                try {
+                    running = interpreter.step();
+                } catch(Interpreter.RuntimeError e) {
+                    handleError(e, -1, -1);
                 }
             }
         }
@@ -230,51 +197,29 @@ public class DroneCommanderBlock extends Block{
         }
 
         public void setMessage(String message) {
-            Log.info("Recompiling. . .");
             this.message = message;
-            stack[0] = 0;
-            stackIndex = 0;
+            running = true;
+            CharStream charStream = new CharStream(message);
             errorMsg = null;
-            String[] lines = message.split("\n");
-            variables = new HashMap<>();
-            instructions = new Instruction[lines.length];
-            labels = new HashMap<>();
-            isEmpty = true;
-            sleepCycles = 0;
-            for(int i = 0; i < lines.length; i++){
-                Log.info(lines[i]);
-                Parser.CharStream charStream = new Parser.CharStream(lines[i]);
-                try {
-                    if(!charStream.finished() && charStream.peek() != '#'){
-                        if(charStream.peek() == ':'){
-                            charStream.next();
-                            BoxedValue key = Parser.parseAny(charStream);
-                            labels.put(key.resolve(this), i);
-                        } else {
-                            Instruction instruction = Instruction.parse(charStream);
-                            instructions[i] = instruction;
-                            if(!instruction.initOnly){
-                                isEmpty = false;
-                            }
-                        }
-                    }
-                } catch(Parser.InstructionSyntaxError e){
-                    handleError(e, i + 1, charStream.index() + 1);
-                    isEmpty = true;
-                    break;
-                }
+            try {
+                Codeblock programAST = Parser.parse(new TokenStream(charStream));
+                interpreter = new Interpreter(programAST);
+            } catch (Parser.SyntaxError e) {
+                e.printStackTrace();
+                handleError(e, charStream.lines(), charStream.chars());
             }
         }
         private void handleError(Error e, int line, int chr){
+            running = false;
             StringBuilder errorMsgBuilder = new StringBuilder("[red]");
             errorMsgBuilder.append(e.getClass().getSimpleName());
             errorMsgBuilder.append(": [scarlet]");
             errorMsgBuilder.append(e.getMessage());
             errorMsgBuilder.append(" [lightgray](line ");
-            errorMsgBuilder.append(line);
-            if(chr > 0){
+            errorMsgBuilder.append(line + 1);
+            if(chr > -1){
                 errorMsgBuilder.append(" char ");
-                errorMsgBuilder.append(chr);
+                errorMsgBuilder.append(chr + 1);
             }
             errorMsgBuilder.append(")");
             errorMsg = errorMsgBuilder.toString();

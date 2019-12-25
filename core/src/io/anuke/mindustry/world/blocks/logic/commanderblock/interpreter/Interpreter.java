@@ -1,0 +1,92 @@
+package io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter;
+
+import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class Interpreter {
+    public Stack<Node> stack = new Stack<>(new Node[1024]);
+    public Stack<InterpreterObject> scopes = new Stack<>(new InterpreterObject[1024]);
+    private InterpreterObject returnValue = null;
+    public Interpreter(Node AST){
+        stack.push(AST);
+        scopes.push(createGlobalObject());
+    }
+    public InterpreterObject returnValue() {
+        InterpreterObject value = returnValue;
+        returnValue = null;
+        return value;
+    }
+    public void returnValue(InterpreterObject value){
+        returnValue = value;
+    }
+    private InterpreterObject createGlobalObject(){
+        InterpreterObject global = InterpreterObject.create();
+        global.setProperty(InterpreterObject.create("Object"), InterpreterObject.create(0));
+        return global;
+    }
+    public InterpreterObject getValueFromScopeChain(InterpreterObject key){
+        for(InterpreterObject scope: scopes){
+            InterpreterObject value = scope.getProperty(key);
+            if(value != null){
+                return value;
+            }
+        }
+        return InterpreterObject.nullObject;
+    }
+    public boolean step(){
+        Node node = stack.peek();
+        if(node.stepper == null){
+            node.stepper = node.newStepper(this);
+        }
+        if(node.stepper.step()){
+            node.stepper = null;
+            stack.pop();
+        }
+        return stack.size() > 0;
+    }
+    public static class RuntimeError extends Error {
+        public RuntimeError(String msg){
+            super(msg);
+        }
+    }
+    public static class Stack<T> implements Iterable<T> {
+        private T[] array;
+        private int index = -1;
+        public Stack(T[] array){
+            this.array = array;
+        }
+        public T peek(){
+            return array[index];
+        }
+        public T pop(){
+            T value = array[index];
+            array[index--] = null;
+            return value;
+        }
+        public T push(T element){
+            array[++index] = element;
+            return element;
+        }
+        public int size(){
+            return index + 1;
+        }
+        public T[] array(){
+            return array;
+        }
+        public Iterator<T> iterator(){
+            return new Iterator<T>() {
+                private int i = index;
+                @Override
+                public boolean hasNext() {
+                    return i >= 0;
+                }
+                @Override
+                public T next() {
+                    return array[i--];
+                }
+            };
+        }
+    }
+}
