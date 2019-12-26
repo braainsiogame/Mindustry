@@ -1,29 +1,19 @@
 package io.anuke.mindustry.world.blocks.logic.commanderblock.nodes;
 
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 
 public abstract class Node {
-    public Type type;
     public Stepper stepper;
-    protected Node(Type type){
-        this.type = type;
-    }
-    public enum Type {
-        Assignment,
-        Binary,
-        Codeblock,
-        Constant,
-        FunctionCall,
-        FunctionExpression,
-        Identifier,
-        If
+    protected Node(){
+
     }
     public abstract static class Stepper {
         protected Interpreter interpreter;
         public Stepper(Interpreter interpreter){
             this.interpreter = interpreter;
         }
-        public abstract boolean step(); //Returns true if done
+        public abstract boolean step(InterpreterObject returnValue); //Returns true if done
     }
     public abstract Stepper newStepper(Interpreter interpreter);
 }

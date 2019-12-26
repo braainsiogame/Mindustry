@@ -6,7 +6,7 @@ import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpre
 public class Constant extends Node {
     public Object value;
     public Constant(){
-        super(Type.Constant);
+        super();
     }
     @Override
     public Stepper newStepper(Interpreter interpreter) {
@@ -19,7 +19,7 @@ public class Constant extends Node {
             value = InterpreterObject.create(node.value);
         }
         @Override
-        public boolean step() {
+        public boolean step(InterpreterObject returnValue) {
             interpreter.returnValue(value);
             return true;
         }

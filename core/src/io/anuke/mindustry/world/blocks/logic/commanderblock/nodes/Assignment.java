@@ -6,10 +6,10 @@ public class Assignment extends Node {
     public Identifier left;
     public Node right;
     public Assignment(){
-        super(Type.Assignment);
+        super();
     }
     @Override
-    public Node.Stepper newStepper(Interpreter interpreter) {
+    public Stepper newStepper(Interpreter interpreter) {
         return new Stepper(this, interpreter);
     }
     public static class Stepper extends Node.Stepper {
@@ -31,14 +31,14 @@ public class Assignment extends Node {
             }
         }
         @Override
-        public boolean step() {
-            InterpreterObject returnValue = interpreter.returnValue();
+        public boolean step(InterpreterObject returnValue) {
             if(returnValue != null){
                 if(parsedLeft){
                     parentObject.setProperty(childObject, returnValue);
                     return true;
                 }
-                setChild(returnValue);
+                parentObject = parentObject.getProperty(childObject);
+                childObject = returnValue;
             }
             if(index < node.left.children.size){
                 Object child = node.left.children.get(index++);
@@ -52,10 +52,6 @@ public class Assignment extends Node {
                 parsedLeft = true;
             }
             return false;
-        }
-        private void setChild(InterpreterObject obj){
-            parentObject = parentObject.getProperty(childObject);
-            childObject = obj;
         }
     }
 }

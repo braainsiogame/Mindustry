@@ -13,11 +13,6 @@ public class Interpreter {
         stack.push(AST);
         scopes.push(createGlobalObject());
     }
-    public InterpreterObject returnValue() {
-        InterpreterObject value = returnValue;
-        returnValue = null;
-        return value;
-    }
     public void returnValue(InterpreterObject value){
         returnValue = value;
     }
@@ -29,7 +24,7 @@ public class Interpreter {
     public InterpreterObject getValueFromScopeChain(InterpreterObject key){
         for(InterpreterObject scope: scopes){
             InterpreterObject value = scope.getProperty(key);
-            if(value != null){
+            if(value != InterpreterObject.nullObject){
                 return value;
             }
         }
@@ -40,7 +35,9 @@ public class Interpreter {
         if(node.stepper == null){
             node.stepper = node.newStepper(this);
         }
-        if(node.stepper.step()){
+        InterpreterObject value = returnValue;
+        returnValue = null;
+        if(node.stepper.step(value)){
             node.stepper = null;
             stack.pop();
         }
@@ -61,12 +58,14 @@ public class Interpreter {
             return array[index];
         }
         public T pop(){
+            if(index == -1) throw new StackError("Stack underflow!");
             T value = array[index];
             array[index--] = null;
             return value;
         }
         public T push(T element){
-            array[++index] = element;
+            if(++index == array.length) throw new StackError("Stack overflow!");
+            array[index] = element;
             return element;
         }
         public int size(){
@@ -87,6 +86,11 @@ public class Interpreter {
                     return array[i--];
                 }
             };
+        }
+        private static class StackError extends Interpreter.RuntimeError{
+            public StackError(String msg) {
+                super(msg);
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ public class Binary extends Node {
     public Node right;
     public String operator;
     public Binary(){
-        super(Type.Binary);
+        super();
     }
     @Override
     public Stepper newStepper(Interpreter interpreter) {
@@ -26,17 +26,16 @@ public class Binary extends Node {
             operator = getOperator();
         }
         @Override
-        public boolean step() {
+        public boolean step(InterpreterObject returnValue) {
             if(left == null){
-                InterpreterObject returnValue = interpreter.returnValue();
                 if(returnValue == null){
                     interpreter.stack.push(node.left);
                     return false;
                 }
                 left = returnValue.value();
+                returnValue = null;
             }
             if(right == null){
-                InterpreterObject returnValue = interpreter.returnValue();
                 if(returnValue == null){
                     interpreter.stack.push(node.right);
                     return false;
@@ -77,7 +76,7 @@ public class Binary extends Node {
             }
         }
         private Void throwOperatorOverloadError(){
-            throw new Interpreter.RuntimeError(
+            throw new InterpreterObject.TypeError(
                     "No overload for the operator \"" + node.operator +
                     "\" accepts types \"" + left.getClass().getSimpleName() +
                     "\" and \"" + right.getClass().getSimpleName() +

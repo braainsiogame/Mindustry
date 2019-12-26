@@ -30,15 +30,16 @@ public class Parser {
             if (otherPrecedence > precedence) {
                 stream.next();
                 Node right = mayBeBinary(parseAtom(), otherPrecedence);
-                Node binary;
+                Node binary = null;
                 if(token.value.equals("=")){
                     Assignment assignment = new Assignment();
-                    if(left.type != Node.Type.Identifier){
+                    if(left instanceof Identifier){
+                        assignment.left = (Identifier) left;
+                        assignment.right = right;
+                        binary = assignment;
+                    } else {
                         unexpected("an identifier");
                     }
-                    assignment.left = (Identifier) left;
-                    assignment.right = right;
-                    binary = assignment;
                 } else {
                     Binary bin = new Binary();
                     bin.operator = (String) token.value;
