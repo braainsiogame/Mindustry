@@ -31,6 +31,7 @@ public class FunctionCall extends Node {
         public boolean step(InterpreterObject returnValue) {
             if(finished) {
                 interpreter.scopes.pop();
+                interpreter.returnValue(returnValue);
                 return true;
             }
             if(returnValue != null){
@@ -48,6 +49,9 @@ public class FunctionCall extends Node {
                         }
                         interpreter.scopes.push(scope);
                         interpreter.stack.push(funcExp.body);
+                    } else if(value instanceof NativeFunction){
+                        interpreter.scopes.push(InterpreterObject.create());
+                        ((NativeFunction) value).func.get(params);
                     } else {
                         throw new InterpreterObject.TypeError("\"" + value + "\" is not a Function!");
                     }

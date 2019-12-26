@@ -1,5 +1,6 @@
 package io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter;
 
+import io.anuke.arc.math.Mathf;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.*;
 
 import java.util.HashMap;
@@ -19,7 +20,32 @@ public class Interpreter {
     private InterpreterObject createGlobalObject(){
         InterpreterObject global = InterpreterObject.create();
         global.setProperty(InterpreterObject.create("Object"), InterpreterObject.create(0));
+        global.setProperty(InterpreterObject.create("Math"), createMathObject());
         return global;
+    }
+    private InterpreterObject createMathObject(){
+        InterpreterObject mathObj = InterpreterObject.create();
+        NativeFunction sinFunc = new NativeFunction(args -> {
+            if(args.length == 1){
+                Object n = args[0].value();
+                if(n instanceof Float){
+                    returnValue(InterpreterObject.create(Mathf.sinDeg((float) n)));
+                }
+            }
+            return null;
+        });
+        mathObj.setProperty(InterpreterObject.create("sin"), InterpreterObject.create(sinFunc));
+        NativeFunction cosFunc = new NativeFunction(args -> {
+            if(args.length == 1){
+                Object n = args[0].value();
+                if(n instanceof Float){
+                    returnValue(InterpreterObject.create(Mathf.cosDeg((float) n)));
+                }
+            }
+            return null;
+        });
+        mathObj.setProperty(InterpreterObject.create("cos"), InterpreterObject.create(cosFunc));
+        return mathObj;
     }
     public InterpreterObject getValueFromScopeChain(InterpreterObject key){
         for(InterpreterObject scope: scopes){

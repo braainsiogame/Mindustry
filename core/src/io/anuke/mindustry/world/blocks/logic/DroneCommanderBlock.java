@@ -11,7 +11,9 @@ import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.layout.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.pooling.*;
+import io.anuke.mindustry.content.Fx;
 import io.anuke.mindustry.entities.*;
+import io.anuke.mindustry.entities.effect.Fire;
 import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.net.*;
@@ -19,6 +21,8 @@ import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.ui.dialogs.*;
 import io.anuke.mindustry.world.*;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.CharStream;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.Parser;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.TokenStream;
@@ -156,7 +160,8 @@ public class DroneCommanderBlock extends Block{
         private String message;
         private String errorMsg;
         private Interpreter interpreter;
-        public final int maxStepsPerStep = 200;
+        public final int maxStepsPerCycle = 5000;
+        public int sleepCycles = 0;
         private boolean running = false;
         public DroneCommanderBlockEntity(){
             super();
@@ -165,13 +170,24 @@ public class DroneCommanderBlock extends Block{
         @Override
         public void update() {
             super.update();
-            int steps = Mathf.round(delta());
-            while(steps-- > 0){
-                if(!running) break;
-                try {
-                    running = interpreter.step();
-                } catch(Interpreter.RuntimeError e) {
-                    handleError(e, -1, -1);
+            int executeAmount = Mathf.round(delta());
+            while(executeAmount-- > 0){
+                if(sleepCycles > 0){
+                    --sleepCycles;
+                } else {
+                    int steps = 0;
+                    while(sleepCycles == 0){
+                        if(!running) break;
+                        try {
+                            running = interpreter.step();
+                        } catch(Interpreter.RuntimeError e) {
+                            handleError(e, -1, -1);
+                        }
+                        if(++steps > maxStepsPerCycle){
+                            Fire.create(tile);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -199,15 +215,44 @@ public class DroneCommanderBlock extends Block{
         public void setMessage(String message) {
             this.message = message;
             running = true;
+            sleepCycles = 0;
             CharStream charStream = new CharStream(message);
             errorMsg = null;
             try {
                 Codeblock programAST = Parser.parse(new TokenStream(charStream));
                 interpreter = new Interpreter(programAST);
+                addGlobalObjects(interpreter.scopes.peek());
             } catch (Parser.SyntaxError e) {
                 e.printStackTrace();
                 handleError(e, charStream.lines(), charStream.chars());
             }
+        }
+        private void addGlobalObjects(InterpreterObject global){
+            NativeFunction fxFunc = new NativeFunction(args -> {
+                if(args.length == 2){
+                    Object x = args[0].value();
+                    Object y = args[1].value();
+                    if(x instanceof Float && y instanceof Float){
+                        Effects.effect(Fx.blastsmoke, (float) x, (float) y);
+                    }
+                }
+                return null;
+            });
+            global.setProperty(InterpreterObject.create("fx"), InterpreterObject.create(fxFunc));
+            NativeFunction sleepFunc = new NativeFunction(args -> {
+                sleepCycles = 1;
+                if(args.length > 0){
+                    Object value = args[0].value();
+                    if(value instanceof Float) {
+                        sleepCycles = Mathf.floorPositive((float) value);
+                    }
+                }
+                if(sleepCycles < 0){
+                    sleepCycles = 0;
+                }
+                return null;
+            });
+            global.setProperty(InterpreterObject.create("sleep"), InterpreterObject.create(sleepFunc));
         }
         private void handleError(Error e, int line, int chr){
             running = false;

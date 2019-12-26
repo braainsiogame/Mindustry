@@ -63,6 +63,7 @@ public class Parser {
             }
             if (isPunctuation('{')) return parseBlock();
             if (isKeyword("if")) return parseIf();
+            if (isKeyword("while")) return parseWhile();
             if (isKeyword("func")) return parseFunctionExpression();
             Token.Type tokenType = stream.peek().type;
             if (tokenType == Token.Type.identifier) return parseIdentifier();
@@ -156,6 +157,15 @@ public class Parser {
             stream.next();
             ret.elseBody = parseExpression();
         }
+        return ret;
+    }
+    private static While parseWhile() {
+        While ret = new While();
+        skipKeyword("while");
+        skipPunctuation('(');
+        ret.condition = parseExpression();
+        skipPunctuation(')');
+        ret.body = parseExpression();
         return ret;
     }
     //Parse sequences like (0, 1, 2)

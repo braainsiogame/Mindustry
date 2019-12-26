@@ -71,6 +71,24 @@ public class Binary extends Node {
                     }
                     return throwOperatorOverloadError();
                 };
+                case "==": return (left, right) -> {
+                    if(left instanceof Float && right instanceof Float){
+                        return ((float) left) == ((float) right);
+                    }
+                    return throwOperatorOverloadError();
+                };
+                case ">": return (left, right) -> {
+                    if(left instanceof Float && right instanceof Float){
+                        return ((float) left) > ((float) right);
+                    }
+                    return throwOperatorOverloadError();
+                };
+                case "<": return (left, right) -> {
+                    if(left instanceof Float && right instanceof Float){
+                        return ((float) left) < ((float) right);
+                    }
+                    return throwOperatorOverloadError();
+                };
                 default:
                     throw new Interpreter.RuntimeError("Invalid operator \"" + node.operator + "\"!");
             }

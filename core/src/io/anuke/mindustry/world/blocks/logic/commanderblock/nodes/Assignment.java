@@ -24,7 +24,7 @@ public class Assignment extends Node {
             childObject = InterpreterObject.create(node.left.children.get(0));
             parentObject = interpreter.scopes.peek();
             for(InterpreterObject scope: interpreter.scopes){
-                if(scope.getProperty(childObject) != null){
+                if(scope.getProperty(childObject) != InterpreterObject.nullObject){
                     parentObject = scope;
                     break;
                 }
