@@ -47,4 +47,11 @@ public class InterpreterObject {
             super(msg);
         }
     }
+    @Override
+    public String toString(){
+        if(this == nullObject){
+            return "null";
+        }
+        return super.toString();
+    }
 }

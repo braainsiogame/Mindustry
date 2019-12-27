@@ -5,8 +5,10 @@ import io.anuke.arc.*;
 import io.anuke.arc.Input.*;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
+import io.anuke.arc.input.KeyCode;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.math.geom.*;
+import io.anuke.arc.scene.event.InputEvent;
 import io.anuke.arc.scene.ui.*;
 import io.anuke.arc.scene.ui.layout.*;
 import io.anuke.arc.util.*;
@@ -21,6 +23,7 @@ import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.ui.dialogs.*;
 import io.anuke.mindustry.world.*;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.BlockGlobals;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.CodeTextArea;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
@@ -122,7 +125,7 @@ public class DroneCommanderBlock extends Block{
             }else{
                 FloatingDialog dialog = new FloatingDialog("$editmessage");
                 dialog.setFillParent(false);
-                TextArea a = dialog.cont.add(new TextArea(entity.getMessage().replace("\n", "\r"))).size(380f, 160f).get();
+                CodeTextArea a = dialog.cont.add(new CodeTextArea(entity.getMessage().replace("\n", "\r"))).size(760f, 320f).get();
                 a.setFilter((textField, c) -> {
                     if(c == '\n' || c == '\r'){
                         int count = 0;
