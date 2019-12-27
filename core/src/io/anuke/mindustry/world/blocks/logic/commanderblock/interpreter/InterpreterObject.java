@@ -6,6 +6,7 @@ public class InterpreterObject {
     public static final InterpreterObject nullObject = new InterpreterObject();
     private Object value;
     private HashMap<Object, InterpreterObject> map;
+    public boolean canWrite = true;
     private InterpreterObject(){
 
     }
@@ -25,7 +26,11 @@ public class InterpreterObject {
     }
     public void setProperty(InterpreterObject key, InterpreterObject value){
         throwIfSelfIsNullObject(key);
-        map.put(key.value(), value);
+        if(canWrite){
+            map.put(key.value(), value);
+        } else {
+            throw new TypeError("Object \"" + this + "\" is read-only!");
+        }
     }
     public InterpreterObject getProperty(InterpreterObject key){
         throwIfSelfIsNullObject(key);

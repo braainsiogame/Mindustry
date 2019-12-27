@@ -5,8 +5,8 @@ import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpre
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 
 public class NativeFunction extends Node{
-    public Func<InterpreterObject[], Void> func;
-    public NativeFunction(Func<InterpreterObject[], Void> func){
+    public Func<InterpreterObject[], InterpreterObject> func;
+    public NativeFunction(Func<InterpreterObject[], InterpreterObject> func){
         super();
         this.func = func;
     }

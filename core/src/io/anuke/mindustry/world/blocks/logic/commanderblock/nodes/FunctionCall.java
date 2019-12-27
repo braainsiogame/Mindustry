@@ -50,8 +50,8 @@ public class FunctionCall extends Node {
                         interpreter.scopes.push(scope);
                         interpreter.stack.push(funcExp.body);
                     } else if(value instanceof NativeFunction){
-                        interpreter.scopes.push(InterpreterObject.create());
-                        ((NativeFunction) value).func.get(params);
+                        interpreter.returnValue(((NativeFunction) value).func.get(params));
+                        return true;
                     } else {
                         throw new InterpreterObject.TypeError("\"" + value + "\" is not a Function!");
                     }

@@ -20,6 +20,7 @@ import io.anuke.mindustry.net.*;
 import io.anuke.mindustry.ui.*;
 import io.anuke.mindustry.ui.dialogs.*;
 import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.blocks.logic.commanderblock.BlockGlobals;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
@@ -221,38 +222,11 @@ public class DroneCommanderBlock extends Block{
             try {
                 Codeblock programAST = Parser.parse(new TokenStream(charStream));
                 interpreter = new Interpreter(programAST);
-                addGlobalObjects(interpreter.scopes.peek());
+                BlockGlobals.modifyGlobals(interpreter, this, interpreter.scopes.peek());
             } catch (Parser.SyntaxError e) {
                 e.printStackTrace();
                 handleError(e, charStream.lines(), charStream.chars());
             }
-        }
-        private void addGlobalObjects(InterpreterObject global){
-            NativeFunction fxFunc = new NativeFunction(args -> {
-                if(args.length == 2){
-                    Object x = args[0].value();
-                    Object y = args[1].value();
-                    if(x instanceof Float && y instanceof Float){
-                        Effects.effect(Fx.blastsmoke, (float) x, (float) y);
-                    }
-                }
-                return null;
-            });
-            global.setProperty(InterpreterObject.create("fx"), InterpreterObject.create(fxFunc));
-            NativeFunction sleepFunc = new NativeFunction(args -> {
-                sleepCycles = 1;
-                if(args.length > 0){
-                    Object value = args[0].value();
-                    if(value instanceof Float) {
-                        sleepCycles = Mathf.floorPositive((float) value);
-                    }
-                }
-                if(sleepCycles < 0){
-                    sleepCycles = 0;
-                }
-                return null;
-            });
-            global.setProperty(InterpreterObject.create("sleep"), InterpreterObject.create(sleepFunc));
         }
         private void handleError(Error e, int line, int chr){
             running = false;
