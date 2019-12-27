@@ -66,19 +66,22 @@ public class Globals {
             return InterpreterObject.nullObject;
         }
     }
-    public static class Object_ {
-        public static InterpreterObject global(){
+    public static class Object_ extends Global {
+        public Object_(Interpreter interpreter) {
+            super(interpreter);
+        }
+        public InterpreterObject global(){
             InterpreterObject obj = InterpreterObject.create();
-            obj.setProperty(InterpreterObject.create("create"), InterpreterObject.create(new NativeFunction(Object_::create)));
+            obj.setProperty(InterpreterObject.create("create"), InterpreterObject.create(new NativeFunction(this::create)));
             return obj;
         }
-        public static InterpreterObject create(InterpreterObject[] args){
+        public InterpreterObject create(InterpreterObject[] args){
             return InterpreterObject.create();
         }
     }
     public static InterpreterObject createGlobalObject(Interpreter interpreter){
         InterpreterObject global = InterpreterObject.create();
-        global.setProperty(InterpreterObject.create("Object"), Object_.global());
+        global.setProperty(InterpreterObject.create("Object"), new Object_(interpreter).global());
         global.setProperty(InterpreterObject.create("Math"), new Math_(interpreter).global());
         return global;
     }

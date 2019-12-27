@@ -12,19 +12,25 @@ import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction
 import java.lang.ref.WeakReference;
 
 public class BlockGlobals {
-    public static void modifyGlobals(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity, InterpreterObject global){
-        global.setProperty(InterpreterObject.create("Debug"), new Debug_(interpreter).global());
-        global.setProperty(InterpreterObject.create("CPU"), CPU_.global());
-    }
-    public static class Debug_ {
-        private Interpreter interpreter;
-        private DroneCommanderBlock.DroneCommanderBlockEntity entity;
-        public Debug_(Interpreter interpreter){
-            this.interpreter = interpreter;
+    public abstract static class BlockGlobal extends Globals.Global {
+        public DroneCommanderBlock.DroneCommanderBlockEntity entity;
+        public BlockGlobal(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
+            super(interpreter);
+            this.entity = entity;
         }
-        public InterpreterObject global(BlockGlobals globals){
+    }
+    public static void modifyGlobals(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity, InterpreterObject global){
+        global.setProperty(InterpreterObject.create("Debug"), new Debug_(interpreter, entity).global());
+        global.setProperty(InterpreterObject.create("CPU"), new CPU_(interpreter, entity).global());
+    }
+    public static class Debug_ extends BlockGlobal {
+        private DroneCommanderBlock.DroneCommanderBlockEntity entity;
+        public Debug_(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
+            super(interpreter, entity);
+        }
+        public InterpreterObject global(){
             InterpreterObject obj = InterpreterObject.create();
-            obj.setProperty(InterpreterObject.create("effect"), InterpreterObject.create(new NativeFunction(Debug_::effect)));
+            obj.setProperty(InterpreterObject.create("effect"), InterpreterObject.create(new NativeFunction(this::effect)));
             return obj;
         }
         public InterpreterObject effect(InterpreterObject[] args){
@@ -38,10 +44,13 @@ public class BlockGlobals {
             return InterpreterObject.nullObject;
         }
     }
-    public static class CPU_ {
+    public static class CPU_ extends BlockGlobal {
+        public CPU_(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
+            super(interpreter, entity);
+        }
         public InterpreterObject global(){
             InterpreterObject obj = InterpreterObject.create();
-            obj.setProperty(InterpreterObject.create("sleep"), InterpreterObject.create(new NativeFunction(CPU_::sleep)));
+            obj.setProperty(InterpreterObject.create("sleep"), InterpreterObject.create(new NativeFunction(this::sleep)));
             return obj;
         }
         public InterpreterObject sleep(InterpreterObject[] args){
