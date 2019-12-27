@@ -9,8 +9,6 @@ import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpre
 import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
 
-import java.lang.ref.WeakReference;
-
 public class BlockGlobals {
     public abstract static class BlockGlobal extends Globals.Global {
         public DroneCommanderBlock.DroneCommanderBlockEntity entity;
@@ -21,10 +19,9 @@ public class BlockGlobals {
     }
     public static void modifyGlobals(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity, InterpreterObject global){
         global.setProperty(InterpreterObject.create("Debug"), new Debug_(interpreter, entity).global());
-        global.setProperty(InterpreterObject.create("CPU"), new CPU_(interpreter, entity).global());
+        global.setProperty(InterpreterObject.create("Block"), new Block_(interpreter, entity).global());
     }
     public static class Debug_ extends BlockGlobal {
-        private DroneCommanderBlock.DroneCommanderBlockEntity entity;
         public Debug_(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
             super(interpreter, entity);
         }
@@ -44,14 +41,21 @@ public class BlockGlobals {
             return InterpreterObject.nullObject;
         }
     }
-    public static class CPU_ extends BlockGlobal {
-        public CPU_(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
+    public static class Block_ extends BlockGlobal {
+        public Block_(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity) {
             super(interpreter, entity);
         }
         public InterpreterObject global(){
             InterpreterObject obj = InterpreterObject.create();
             obj.setProperty(InterpreterObject.create("sleep"), InterpreterObject.create(new NativeFunction(this::sleep)));
+            obj.setProperty(InterpreterObject.create("pos"), positionObject());
             return obj;
+        }
+        private InterpreterObject positionObject(){
+            InterpreterObject pos = InterpreterObject.create();
+            pos.setProperty(InterpreterObject.create("x"), InterpreterObject.create(entity.x));
+            pos.setProperty(InterpreterObject.create("y"), InterpreterObject.create(entity.y));
+            return pos;
         }
         public InterpreterObject sleep(InterpreterObject[] args){
             entity.sleepCycles = 1;
