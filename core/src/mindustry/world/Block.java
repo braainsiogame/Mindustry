@@ -355,8 +355,12 @@ public class Block extends BlockStorage{
     public void removed(Tile tile){
     }
 
-    /** Called every frame a unit is on this tile. */
+    /** Called every frame a ground unit is on this tile. */
     public void unitOn(Tile tile, Unit unit){
+    }
+
+    /** Called every frame an air unit is over this tile. */
+    public void unitOver(Tile tile, Unit unit){
     }
 
     /** Called when a unit that spawned at this tile is removed. */
@@ -461,7 +465,7 @@ public class Block extends BlockStorage{
     }
 
     /** Returns an internally cached region by ID. */
-    protected TextureRegion reg(int id){
+    public TextureRegion reg(int id){
         return cacheRegions[id];
     }
 

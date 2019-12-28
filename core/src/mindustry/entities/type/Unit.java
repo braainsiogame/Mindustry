@@ -39,7 +39,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
 
     private static final Vec2 moveVector = new Vec2();
 
-    public float rotation;
+    public float rotation, scale;
 
     protected final Interpolator interpolator = new Interpolator();
     protected final Statuses status = new Statuses();
@@ -281,6 +281,9 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
         if(isFlying()){
             drownTime = 0f;
             move(velocity.x * Time.delta(), velocity.y * Time.delta());
+
+            Tile linked = world.ltileWorld(x, y);
+            if(linked != null) linked.block().unitOver(linked, this);
         }else{
             boolean onLiquid = floor.isLiquid;
 
@@ -432,8 +435,10 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
 
     public void drawAll(){
         if(!isDead()){
+            Draw.scl += scale;
             draw();
             drawStats();
+            Draw.scl -= scale;
         }
     }
 

@@ -564,6 +564,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
         if(!mech.flying){
             clampPosition();
         }
+
+        if(scale != 0f){
+            scale = Mathf.lerp(scale, 0f, 0.025f);
+        }
     }
 
     protected void updateKeyboard(){
