@@ -22,6 +22,7 @@ public class FunctionCall extends Node {
         private InterpreterObject[] params;
         private int index = 0;
         private boolean finished = false;
+        private InterpreterObject[] scopes;
         public Stepper(FunctionCall node, Interpreter interpreter) {
             super(interpreter);
             this.node = node;
@@ -30,7 +31,12 @@ public class FunctionCall extends Node {
         @Override
         public boolean step(InterpreterObject returnValue) {
             if(finished) {
-                interpreter.scopes.pop();
+                while(interpreter.scopes.size() > 0){
+                    interpreter.scopes.pop();
+                }
+                for(InterpreterObject scope: scopes){
+                    interpreter.scopes.push(scope);
+                }
                 interpreter.returnValue(returnValue);
                 return true;
             }
@@ -46,6 +52,16 @@ public class FunctionCall extends Node {
                                     InterpreterObject.create(funcExp.params.get(i)),
                                     params[i]
                             );
+                        }
+                        //Save the original scopes
+                        scopes = new InterpreterObject[interpreter.scopes.size()];
+                        System.arraycopy(interpreter.scopes.array(), 0, scopes, 0, scopes.length);
+                        //Turn the scopes stack into the function expression's scopes stack
+                        while(interpreter.scopes.size() > 0){
+                            interpreter.scopes.pop();
+                        }
+                        for(InterpreterObject s: funcExp.scopes){
+                            interpreter.scopes.push(s);
                         }
                         interpreter.scopes.push(scope);
                         interpreter.stack.push(funcExp.body);
