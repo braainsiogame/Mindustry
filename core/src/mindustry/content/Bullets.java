@@ -37,7 +37,7 @@ public class Bullets implements ContentList{
     waterShot, cryoShot, slagShot, oilShot,
 
     //environment, misc.
-    fireball, basicFlame, pyraFlame, driverBolt, healBullet, healBulletBig, frag, eruptorShot,
+    fireball, basicFlame, pyraFlame, driverBolt, riverBolt, healBullet, healBulletBig, frag, eruptorShot,
 
     //bombs
     bombExplosive, bombIncendiary, bombOil;
@@ -640,6 +640,7 @@ public class Bullets implements ContentList{
         };
 
         driverBolt = new MassDriverBolt();
+        riverBolt = new MassRiverBolt();
 
         frag = new BasicBulletType(5f, 8, "bullet"){{
             bulletWidth = 8f;

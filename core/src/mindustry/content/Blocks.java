@@ -60,7 +60,7 @@ public class Blocks implements ContentList{
     conveyor, titaniumConveyor, armoredConveyor, distributor, junction, itemBridge, phaseConveyor, sorter, invertedSorter, router, overflowGate, massDriver,
 
     //liquids
-    mechanicalPump, rotaryPump, thermalPump, conduit, pulseConduit, platedConduit, liquidRouter, liquidTank, liquidJunction, bridgeConduit, phaseConduit,
+    mechanicalPump, rotaryPump, thermalPump, conduit, pulseConduit, platedConduit, liquidRouter, liquidTank, liquidJunction, bridgeConduit, phaseConduit, massRiver,
 
     //power
     combustionGenerator, thermalGenerator, turbineGenerator, differentialGenerator, rtgGenerator, solarPanel, largeSolarPanel, thoriumReactor,
@@ -1024,6 +1024,15 @@ public class Blocks implements ContentList{
             hasPower = true;
             canOverdrive = false;
             consumes.power(0.30f);
+        }};
+
+        massRiver = new MassRiver("mass-river"){{
+            requirements(Category.liquid, ItemStack.with(Items.titanium, 125, Items.silicon, 75, Items.lead, 125, Items.thorium, 50));
+            size = 3;
+            liquidCapacity = 120;
+            reloadTime = 200f;
+            range = 440f;
+            consumes.power(1.75f);
         }};
 
         //endregion
