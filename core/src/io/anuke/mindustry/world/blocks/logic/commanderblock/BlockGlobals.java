@@ -17,7 +17,7 @@ public class BlockGlobals {
             this.entity = entity;
         }
     }
-    public static void modifyGlobals(Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity, InterpreterObject global){
+    public static void modifyGlobals(InterpreterObject global, Interpreter interpreter, DroneCommanderBlock.DroneCommanderBlockEntity entity){
         global.setProperty(InterpreterObject.create("Debug"), new Debug_(interpreter, entity).global());
         global.setProperty(InterpreterObject.create("Block"), new Block_(interpreter, entity).global());
     }

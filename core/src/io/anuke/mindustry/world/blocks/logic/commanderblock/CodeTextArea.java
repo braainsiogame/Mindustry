@@ -48,10 +48,14 @@ public class CodeTextArea extends TextArea {
         float offsetY = 0.0F;
         int firstLineShowing = getFirstLineShowing();
         int linesShowing = getLinesShowing();
+        BitmapFont.BitmapFontData fontData = font.getData();
         for(int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
-            for(int j = 0; j < displayText.length(); j++){
-                font.draw(displayText.subSequence(j, j + 1), x + j, y + offsetY, linesBreak.items[i], j, 0.0F, 8, false);
+            for(int j = linesBreak.items[i]; j < linesBreak.items[i + 1]; j++){
+                char c = displayText.charAt(j);
+                float calcX = (j - linesBreak.items[i]) * fontData.getGlyph(c).width + x + 1;
+                font.draw(Character.toString(c), calcX, y + offsetY);
             }
+            //font.draw(displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1], 0.0F, 8, false);
             offsetY -= font.getLineHeight();
         }
     }*/

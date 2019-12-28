@@ -12,6 +12,11 @@ public class Globals {
             this.interpreter = interpreter;
         }
     }
+    public static void modifyGlobals(InterpreterObject global, Interpreter interpreter){
+        global.setProperty(InterpreterObject.create("Object"), new Object_(interpreter).global());
+        global.setProperty(InterpreterObject.create("Math"), new Math_(interpreter).global());
+        global.setProperty(InterpreterObject.create("List"), new List_(interpreter).global());
+    }
     public static class Math_ extends Global {
         public Math_(Interpreter interpreter) {
             super(interpreter);
@@ -79,10 +84,55 @@ public class Globals {
             return InterpreterObject.create();
         }
     }
-    public static InterpreterObject createGlobalObject(Interpreter interpreter){
-        InterpreterObject global = InterpreterObject.create();
-        global.setProperty(InterpreterObject.create("Object"), new Object_(interpreter).global());
-        global.setProperty(InterpreterObject.create("Math"), new Math_(interpreter).global());
-        return global;
+    public static class List_ extends Global {
+        private static InterpreterObject listLength = InterpreterObject.create("length");
+        private static InterpreterObject listPush = InterpreterObject.create("push");
+        private static InterpreterObject listPop = InterpreterObject.create("pop");
+        private static InterpreterObject listRemove = InterpreterObject.create("remove");
+        private static InterpreterObject listInsert = InterpreterObject.create("insert");
+        public List_(Interpreter interpreter) {
+            super(interpreter);
+        }
+        public InterpreterObject global(){
+            InterpreterObject obj = InterpreterObject.create();
+            obj.setProperty(InterpreterObject.create("create"), InterpreterObject.create(new NativeFunction(this::create)));
+            return obj;
+        }
+        public InterpreterObject create(InterpreterObject[] _args){
+            InterpreterObject list = InterpreterObject.create();
+            list.setProperty(listLength, InterpreterObject.create(0f));
+            NativeFunction listPushFunc = new NativeFunction(args -> {
+                Object obj = list.getProperty(listLength).value();
+                if(obj instanceof Float){
+                    int index = Mathf.floor((float) obj);
+                    for(InterpreterObject arg: args){
+                        list.setProperty(InterpreterObject.create((float) index++), arg);
+                    }
+                    list.setProperty(listLength, InterpreterObject.create((float) index));
+                }
+                return list;
+            });
+            list.setProperty(listPush, InterpreterObject.create(listPushFunc));
+            NativeFunction listPopFunc = new NativeFunction(args -> {
+                Object obj = list.getProperty(listLength).value();
+                if(obj instanceof Float){
+                    int index = Mathf.floor((float) obj);
+                    list.removeProperty(InterpreterObject.create((float) --index));
+                    list.setProperty(listLength, InterpreterObject.create((float) index));
+                }
+                return list;
+            });
+            list.setProperty(listPop, InterpreterObject.create(listPopFunc));
+            return list;
+        }
+        private InterpreterObject indexFunc(InterpreterObject[] args, Func<Integer, InterpreterObject> op){
+            if(args.length == 1){
+                Object n = args[0].value();
+                if(n instanceof Float){
+                    return op.get(Mathf.floor((float) n));
+                }
+            }
+            return InterpreterObject.nullObject;
+        }
     }
 }

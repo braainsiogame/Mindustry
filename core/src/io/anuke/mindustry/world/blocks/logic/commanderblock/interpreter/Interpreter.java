@@ -12,7 +12,9 @@ public class Interpreter {
     private InterpreterObject returnValue = null;
     public Interpreter(Node AST){
         stack.push(AST);
-        scopes.push(Globals.createGlobalObject(this));
+        InterpreterObject global = InterpreterObject.create();
+        Globals.modifyGlobals(global, this);
+        scopes.push(global);
     }
     public void returnValue(InterpreterObject value){
         returnValue = value;

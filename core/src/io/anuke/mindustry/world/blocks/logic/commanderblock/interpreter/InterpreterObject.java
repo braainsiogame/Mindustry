@@ -37,6 +37,10 @@ public class InterpreterObject {
         InterpreterObject value = map.get(key.value());
         return value == null ? InterpreterObject.nullObject : value;
     }
+    public void removeProperty(InterpreterObject key){
+        throwIfSelfIsNullObject(key);
+        map.remove(key.value());
+    }
     private void throwIfSelfIsNullObject(InterpreterObject key){
         if(this == nullObject){
             throw new TypeError("Can't access property \"" + key.value() + "\" of null.");

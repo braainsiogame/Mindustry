@@ -225,7 +225,7 @@ public class DroneCommanderBlock extends Block{
             try {
                 Codeblock programAST = Parser.parse(new TokenStream(charStream));
                 interpreter = new Interpreter(programAST);
-                BlockGlobals.modifyGlobals(interpreter, this, interpreter.scopes.peek());
+                BlockGlobals.modifyGlobals(interpreter.scopes.peek(), interpreter, this);
             } catch (Parser.SyntaxError e) {
                 e.printStackTrace();
                 handleError(e, charStream.lines(), charStream.chars());
