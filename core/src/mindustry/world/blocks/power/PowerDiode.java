@@ -86,4 +86,9 @@ public class PowerDiode extends Block{
                 arrow.getHeight() * req.animScale * Draw.scl,
                 !rotate ? 0 : req.rotation * 90);
     }
+
+    @Override
+    protected TextureRegion[] generateIcons(){
+        return new TextureRegion[]{Core.atlas.find(name), Core.atlas.find(name + "-arrow-0")};
+    }
 }

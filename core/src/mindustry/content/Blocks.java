@@ -70,7 +70,7 @@ public class Blocks implements ContentList{
     mechanicalDrill, pneumaticDrill, laserDrill, blastDrill, waterExtractor, oilExtractor, cultivator,
 
     //storage
-    coreShard, coreFoundation, coreNucleus, vault, container, unloader, launchPad, launchPadLarge,
+    coreShard, coreFoundation, coreNucleus, vault, container, unloader, launchPad, launchPadLarge, yourPrincessIsInAnotherCastle,
 
     //turrets
     duo, scatter, scorch, hail, arc, wave, lancer, swarmer, salvo, fuse, ripple, cyclone, spectre, meltdown,
@@ -1293,6 +1293,9 @@ public class Blocks implements ContentList{
             consumes.power(2f);
         }};
 
+        yourPrincessIsInAnotherCastle = new MarioToad("your-princess-is-in-another-castle"){{
+            requirements(Category.effect, ItemStack.with(Items.scrap, 50));
+        }};
 
         //endregion
         //region turrets
