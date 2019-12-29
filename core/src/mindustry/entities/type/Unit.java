@@ -1,6 +1,7 @@
 package mindustry.entities.type;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -9,6 +10,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.ArcAnnotate.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.effect.*;
@@ -23,6 +25,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.meta.*;
 
 import java.io.*;
 
@@ -455,4 +458,88 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
     public abstract float mass();
 
     public abstract boolean isFlying();
+
+    protected void from(float x2, float y2, float rotation2, Cons<Boolean> callback){
+        x += x2;
+        y += y2;
+        rotation += rotation2;
+        callback.get(true);
+        x -= x2;
+        y -= y2;
+        rotation -= rotation2;
+    }
+
+    protected void superposition(Cons<Boolean> drawer){
+        from(0, 0, 0, bool -> drawer.get(true));
+
+//        Tile over = world.ltileWorld(x, y);
+//        if(over == null || !over.block().flags.contains(BlockFlag.aperture)) return;
+
+        Tile over = Geometry.findClosest(x, y, indexer.getAllied(team, BlockFlag.aperture));
+        if(over == null || dst(over) > 5 * tilesize) return;
+
+        for(Tile other : indexer.getAllied(team, BlockFlag.aperture)){
+            if(other == over) continue;
+
+            Vec2 a1 = new Vec2(over.drawx(), over.drawy());
+            Vec2 a2 = new Vec2(other.drawx(), other.drawy());
+
+            a2.x = a2.x - a1.x;
+            a2.y = a2.y - a1.y;
+
+            // sanity
+            if(true){
+                from(a2.x, a2.y, 0, bool -> drawer.get(true));
+            }else{
+//
+//            a1.sub(x, y);
+
+//            Log.info(a1.add(a2).x);
+//            Log.info(a1.add(a2).y);
+//            Log.info("");
+
+                Rect rect = new Rect();
+
+                float size = 1000f;
+//            float dim = other.block().size * tilesize / 2f - (size / 2f);
+
+                int cw = (int)(Core.camera.width * renderer.landScale());
+                int ch = (int)(Core.camera.height * renderer.landScale());
+
+                Camera camera = Core.camera;
+
+                int crangex = (int)(camera.width / (64 * tilesize)) + 1;
+                int crangey = (int)(camera.height / (64 * tilesize)) + 1;
+
+                float tmph = 3 * tilesize * renderer.camerascale;
+                float tmpw = tmph;
+
+//            Log.info(renderer.sc);
+
+                if(ScissorStack.pushScissors(rect.set(other.drawx(), other.drawy(), tmpw, tmph))){
+//            if(ScissorStack.pushScissors(rect.set(other.drawx() * renderer.landScale(), other.drawy() - (Core.camera.position.y/2), tmpw, tmph))){
+//            if(ScissorStack.pushScissors(rect.set(Core.camera.position.x / 2 + other.drawx(), other.drawy() - (Core.camera.position.y/2), 3 * tilesize * renderer.landScale(), 100))){
+//            if(ScissorStack.pushScissors(rect.set(other.drawx() * 2 + (Core.camera.position.x), other.drawy() - (Core.camera.position.y/2), 100, 100))){
+                    Log.info("scissors");
+//                Log.info(Core.camera.position.x);
+//                Log.info(player.con.viewX);
+
+                    Draw.alpha(0.25f); // uncomment this line to visualize the problem v
+                    Draw.rect(Core.atlas.find("zone-ruinousShores"), other.drawx(), other.drawy(), 10000, 10000);
+                    Draw.alpha(1f);
+
+                    from(a2.x, a2.y, 0, bool -> drawer.get(true));
+                    ScissorStack.popScissors();
+                }
+            }
+        }
+
+//        from(0, 25, 180, bool -> drawer.get(true));
+
+//        for(int i=0; i < 10; i++){
+//            for(int j=0; j < 10; j++){
+//                from(20 * i, 20 * j, 0, bool -> drawer.get(true));
+//            }
+//        }
+    }
 }

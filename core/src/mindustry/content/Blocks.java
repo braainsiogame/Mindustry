@@ -80,7 +80,7 @@ public class Blocks implements ContentList{
     fortressFactory, repairPoint,
 
     //upgrades
-    dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad;
+    dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad, aperture;
 
     @Override
     public void load(){
@@ -1782,6 +1782,12 @@ public class Blocks implements ContentList{
             mech = Mechs.glaive;
             size = 3;
             consumes.power(1.2f);
+        }};
+
+        aperture = new Aperture("aperture"){{
+            requirements(Category.upgrade, ItemStack.with(Items.titanium, 1, Items.thorium, 1, Items.plastanium, 1));
+            health = 1337;
+            size = 3;
         }};
 
         //endregion

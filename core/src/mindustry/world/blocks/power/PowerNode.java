@@ -310,7 +310,11 @@ public class PowerNode extends PowerBlock{
         return Intersector.overlaps(Tmp.cr1.set(src.worldx() + offset(), src.worldy() + offset(), laserRange * tilesize), Tmp.r1.setSize(size * tilesize).setCenter(other.worldx() + offset(), other.worldy() + offset()));
     }
 
-    protected void drawLaser(Tile tile, Tile target){
+    public void drawLaser(Tile tile, Tile target){
+        drawLaser(tile, target, Pal.powerLight, tile.entity.power.graph.getSatisfaction());
+    }
+
+    public void drawLaser(Tile tile, Tile target, Color color, float satisfaction){
         int opacityPercentage = Core.settings.getInt("lasersopacity");
         if(opacityPercentage == 0) return;
 
@@ -328,9 +332,9 @@ public class PowerNode extends PowerBlock{
         x2 += t2.x;
         y2 += t2.y;
 
-        float fract = 1f - tile.entity.power.graph.getSatisfaction();
+        float fract = 1f - satisfaction;
 
-        Draw.color(Color.white, Pal.powerLight, fract * 0.86f + Mathf.absin(3f, 0.1f));
+        Draw.color(Color.white, color, fract * 0.86f + Mathf.absin(3f, 0.1f));
         Draw.alpha(opacity);
         Drawf.laser(laser, laserEnd, x1, y1, x2, y2, 0.25f);
         Draw.color();

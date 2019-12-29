@@ -38,8 +38,9 @@ public class Renderer implements ApplicationListener{
     private Bloom bloom;
     private Color clearColor;
     private float targetscale = Scl.scl(4);
-    private float camerascale = targetscale;
-    private float landscale = 0f, landTime;
+    public float camerascale = targetscale;
+    public float landscale = 0f;
+    private float landTime;
     private float minZoomScl = Scl.scl(0.01f);
     private Rect rect = new Rect(), rect2 = new Rect();
     private float shakeIntensity, shaketime;
@@ -256,9 +257,12 @@ public class Renderer implements ApplicationListener{
         drawFlyerShadows();
 
         blocks.drawBlocks(Layer.power);
-        blocks.drawBlocks(Layer.lights);
 
         drawAllTeams(true);
+
+        blocks.drawBlocks(Layer.lights);
+
+//        drawAllTeams(true);
 
         Draw.flush();
         if(bloom != null && !pixelator.enabled()){

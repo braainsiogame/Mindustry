@@ -279,6 +279,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public void drawShadow(float offsetX, float offsetY){
+        superposition(bool -> _drawShadow(offsetX, offsetY));
+    }
+
+    private void _drawShadow(float offsetX, float offsetY){
         float scl = mech.flying ? 1f : boostHeat / 2f;
 
         Draw.rect(getIconRegion(), x + offsetX * scl, y + offsetY * scl, rotation - 90);
@@ -286,6 +290,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public void draw(){
+        superposition(bool -> _draw());
+    }
+
+    private void _draw(){
         if(dead) return;
 
         if(!movement.isZero() && moved && !state.isPaused()){
@@ -356,6 +364,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public void drawOver(){
+        superposition(bool -> _drawOver());
+    }
+
+    private void _drawOver(){
         if(dead) return;
 
         if(isBuilding() && isBuilding){
@@ -369,6 +381,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public void drawUnder(){
+        superposition(bool -> _drawUnder());
+    }
+
+    private void _drawUnder(){
         if(dead) return;
 
         float size = mech.engineSize * (mech.flying ? 1f : boostHeat);
