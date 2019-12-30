@@ -47,6 +47,26 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
 
     protected int spawner = noSpawner;
 
+    public UnitOverrider overrider = null;
+    public abstract void override();
+    /** Un-overrides a unit */
+    public void reset(){
+        overrider = null;
+        setState(getStartState());
+    }
+    /** Overrides drone control */
+    public static abstract class UnitOverrider implements UnitState {
+        /** For subclasses to use */
+        private BaseUnit unit;
+        protected UnitOverrider(BaseUnit unit){
+            this.unit = unit;
+        }
+        public abstract void moveTo(float x, float y);
+        public void shootAt(float x, float y){
+            unit.getWeapon().update(unit, x, y);
+        }
+    }
+
     /** internal constructor used for deserialization, DO NOT USE */
     public BaseUnit(){
     }

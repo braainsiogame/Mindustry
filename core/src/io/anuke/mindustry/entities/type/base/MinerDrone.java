@@ -4,6 +4,7 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.Structs;
 import io.anuke.mindustry.content.Blocks;
 import io.anuke.mindustry.entities.traits.MinerTrait;
+import io.anuke.mindustry.entities.type.BaseUnit;
 import io.anuke.mindustry.entities.type.TileEntity;
 import io.anuke.mindustry.entities.units.UnitState;
 import io.anuke.mindustry.gen.Call;
@@ -106,6 +107,22 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
         }
     };
 
+    @Override
+    public void override() {
+        if(overrider == null) {
+            overrider = new UnitOverrider(this);
+            setState(overrider);
+        }
+    }
+    public static class UnitOverrider extends FlyingUnit.UnitOverrider{
+        public UnitOverrider(FlyingUnit unit) {
+            super(unit);
+        }
+        @Override
+        public void shootAt(float x, float y) {
+            //Don't be silly, miners can't shoot! Right. . . ?
+        }
+    }
     @Override
     public UnitState getStartState(){
         return mine;

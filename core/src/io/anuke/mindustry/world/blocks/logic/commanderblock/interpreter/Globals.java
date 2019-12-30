@@ -6,16 +6,24 @@ import io.anuke.arc.math.Mathf;
 import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
 
 public class Globals {
+    public Object_ object;
+    public Math_ math;
+    public List_ list;
+    public Globals(Interpreter interpreter){
+        object = new Object_(interpreter);
+        math = new Math_(interpreter);
+        list = new List_(interpreter);
+    }
+    public void modifyGlobals(InterpreterObject global){
+        global.setProperty(InterpreterObject.create("Object"), object.global());
+        global.setProperty(InterpreterObject.create("Math"), math.global());
+        global.setProperty(InterpreterObject.create("List"), list.global());
+    }
     public abstract static class Global{
         protected Interpreter interpreter;
         public Global(Interpreter interpreter){
             this.interpreter = interpreter;
         }
-    }
-    public static void modifyGlobals(InterpreterObject global, Interpreter interpreter){
-        global.setProperty(InterpreterObject.create("Object"), new Object_(interpreter).global());
-        global.setProperty(InterpreterObject.create("Math"), new Math_(interpreter).global());
-        global.setProperty(InterpreterObject.create("List"), new List_(interpreter).global());
     }
     public static class Math_ extends Global {
         public Math_(Interpreter interpreter) {
@@ -85,11 +93,11 @@ public class Globals {
         }
     }
     public static class List_ extends Global {
-        private static InterpreterObject listLength = InterpreterObject.create("length");
-        private static InterpreterObject listPush = InterpreterObject.create("push");
-        private static InterpreterObject listPop = InterpreterObject.create("pop");
-        private static InterpreterObject listRemove = InterpreterObject.create("remove");
-        private static InterpreterObject listInsert = InterpreterObject.create("insert");
+        public static InterpreterObject listLength = InterpreterObject.create("length");
+        public static InterpreterObject listPush = InterpreterObject.create("push");
+        public static InterpreterObject listPop = InterpreterObject.create("pop");
+        public static InterpreterObject listRemove = InterpreterObject.create("remove");
+        public static InterpreterObject listInsert = InterpreterObject.create("insert");
         public List_(Interpreter interpreter) {
             super(interpreter);
         }

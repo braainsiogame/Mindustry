@@ -1,5 +1,6 @@
 package io.anuke.mindustry.entities.type.base;
 
+import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.math.*;
@@ -12,6 +13,7 @@ import io.anuke.mindustry.entities.bullet.*;
 import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.entities.units.*;
 import io.anuke.mindustry.game.*;
+import io.anuke.mindustry.input.Placement;
 import io.anuke.mindustry.type.*;
 import io.anuke.mindustry.world.*;
 import io.anuke.mindustry.world.blocks.*;
@@ -73,6 +75,71 @@ public class GroundUnit extends BaseUnit{
             moveAwayFromCore();
         }
     };
+    @Override
+    public void override(){
+        if(overrider == null) {
+            overrider = new UnitOverrider(this);
+            setState(overrider);
+        }
+    }
+    public static class UnitOverrider extends BaseUnit.UnitOverrider{
+        GroundUnit unit;
+        Point2 target = new Point2(Integer.MIN_VALUE, Integer.MIN_VALUE);
+        Array<Point2> path = new Array<>();
+        int pathIndex = 0;
+        public UnitOverrider(GroundUnit unit) {
+            super(unit);
+            this.unit = unit;
+        }
+        @Override
+        public void entered() {
+            unit.target = null;
+        }
+        @Override
+        public void update() {
+            while (pathIndex < path.size){
+                Point2 point = path.get(pathIndex);
+                if(point.equals(unit.tileX(), unit.tileY())){
+                    ++pathIndex;
+                } else {
+                    unit.velocity.add(vec.trns(unit.angleTo(point.x * tilesize, point.y * tilesize), unit.type.speed * Time.delta()));
+                    unit.rotation = Mathf.slerpDelta(unit.rotation, unit.baseRotation, unit.type.rotatespeed);
+                    break;
+                }
+            }
+        }
+        @Override
+        public void moveTo(float x, float y){
+            int newX = world.toTile(x);
+            int newY = world.toTile(y);
+            if(!target.equals(newX, newY)) {
+                Array<Point2> newPath = Placement.unitPathfind(unit.tileX(), unit.tileY(), newX, newY);
+                path.clear();
+                if(newPath != null){
+                    target.set(newX, newY);
+                    path = newPath.map(Point2::cpy);
+                }
+                pathIndex = 0;
+            }
+        }
+    }
+    /*
+    @Override
+    public void drawUnder() {
+        super.drawUnder();
+        if(overrider != null){
+            Lines.beginLine();
+            Lines.stroke(tilesize / 4f, Color.scarlet);
+            Point2 prev = null;
+            for(Point2 point: ((UnitOverrider) overrider).path){
+                if(prev != null){
+                    Lines.line(prev.x * tilesize, prev.y * tilesize, point.x * tilesize, point.y * tilesize);
+                }
+                prev = point;
+            }
+            Lines.endLine();
+        }
+    }*/
 
     @Override
     public void onCommand(UnitCommand command){

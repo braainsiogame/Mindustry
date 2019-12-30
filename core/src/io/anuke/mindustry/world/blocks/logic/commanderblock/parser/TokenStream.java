@@ -15,10 +15,10 @@ public class TokenStream {
         return Character.isWhitespace(c);
     }
     private boolean isIdentifierStart(char c){
-        return Character.isLetter(c);
+        return Character.isLetter(c) || c == '_';
     }
     private boolean isIdentifier(char c){
-        return Character.isLetterOrDigit(c);
+        return Character.isLetterOrDigit(c) || c == '_';
     }
     private boolean isKeyword(String value) {
         switch(value){

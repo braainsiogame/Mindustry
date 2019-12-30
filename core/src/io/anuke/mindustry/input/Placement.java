@@ -2,9 +2,11 @@ package io.anuke.mindustry.input;
 
 import io.anuke.arc.*;
 import io.anuke.arc.collection.*;
+import io.anuke.arc.func.Func2;
 import io.anuke.arc.math.*;
 import io.anuke.arc.math.geom.*;
 import io.anuke.arc.util.pooling.*;
+import io.anuke.mindustry.entities.type.BaseUnit;
 import io.anuke.mindustry.world.*;
 
 import java.util.*;
@@ -28,7 +30,7 @@ public class Placement{
 
         points.clear();
         if(conveyors && Core.settings.getBool("conveyorpathfinding")){
-            if(astar(startX, startY, endX, endY)){
+            if(astar(startX, startY, endX, endY, Placement::tileHeuristic, Placement::validNode, 1000)){
                 return points;
             }else{
                 return normalizeLine(startX, startY, endX, endY);
@@ -85,7 +87,7 @@ public class Placement{
         }
     }
 
-    private static boolean astar(int startX, int startY, int endX, int endY){
+    private static boolean astar(int startX, int startY, int endX, int endY, Func2<Tile, Tile, Float> tileHeuristic, Func2<Tile, Tile, Boolean> validNode, int nodeLimit){
         Tile start = world.tile(startX, startY);
         Tile end = world.tile(endX, endY);
         if(start == end || start == null || end == null) return false;
@@ -94,7 +96,6 @@ public class Placement{
         closed.clear();
         parents.clear();
 
-        int nodeLimit = 1000;
         int totalNodes = 0;
 
         PriorityQueue<Tile> queue = new PriorityQueue<>(10, (a, b) -> Float.compare(costs.get(a.pos(), 0f) + distanceHeuristic(a.x, a.y, end.x, end.y), costs.get(b.pos(), 0f) + distanceHeuristic(b.x, b.y, end.x, end.y)));
@@ -111,10 +112,10 @@ public class Placement{
             for(Point2 point : Geometry.d4){
                 int newx = next.x + point.x, newy = next.y + point.y;
                 Tile child = world.tile(newx, newy);
-                if(child != null && validNode(next, child)){
+                if(child != null && validNode.get(next, child)){
                     if(closed.add(child.pos())){
                         parents.put(child.pos(), next.pos());
-                        costs.put(child.pos(), tileHeuristic(next, child) + baseCost);
+                        costs.put(child.pos(), tileHeuristic.get(next, child) + baseCost);
                         queue.add(child);
                     }
                 }
@@ -140,6 +141,36 @@ public class Placement{
         points.reverse();
 
         return true;
+    }
+
+    public static Array<Point2> unitPathfind(int startX, int startY, int endX, int endY){
+        if(world.solid(endX, endY)) return null;
+        Pools.freeAll(points);
+        points.clear();
+        final int nodeLimit = 5000;
+        if(astar(startX, startY, endX, endY, Placement::unitTileHeuristic, Placement::unitValidNode, nodeLimit)){
+            return points;
+        }
+        points.clear();
+        if(astar(endX, endY, startX, startY, Placement::unitTileHeuristic, Placement::unitValidNode, nodeLimit)){
+            points.reverse();
+            return points;
+        }
+        return null;
+    }
+
+    private static float unitTileHeuristic(Tile tile, Tile other){
+        if(parents.containsKey(tile.pos())){
+            Tile prev = world.tile(parents.get(tile.pos(), 0));
+            if(tile.relativeTo(prev) != other.relativeTo(tile)){
+                return 8;
+            }
+        }
+        return 1;
+    }
+
+    private static boolean unitValidNode(Tile tile, Tile other){
+        return !other.solid();
     }
 
     /**

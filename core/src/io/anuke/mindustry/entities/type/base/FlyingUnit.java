@@ -1,5 +1,6 @@
 package io.anuke.mindustry.entities.type.base;
 
+import io.anuke.arc.collection.Array;
 import io.anuke.arc.graphics.*;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.math.*;
@@ -110,7 +111,34 @@ public class FlyingUnit extends BaseUnit{
 
             circle(targetHasFlag(BlockFlag.repair) ? 20f : 60f + Mathf.randomSeed(id) * 50, 0.65f * type.speed);
         }
-    };;
+    };
+    @Override
+    public void override() {
+        if(overrider == null) {
+            overrider = new UnitOverrider(this);
+            setState(overrider);
+        }
+    }
+    public static class UnitOverrider extends BaseUnit.UnitOverrider{
+        FlyingUnit unit;
+        Vector2 target = new Vector2(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+        public UnitOverrider(FlyingUnit unit){
+            super(unit);
+            this.unit = unit;
+        }
+        @Override
+        public void update() {
+            Tmp.v1.set(target.x - unit.x, target.y - unit.y);
+            float dst = target.dst(unit.x, unit.y);
+            float spdMul = target.dst(unit.x, unit.y) > tilesize ? 1f : dst / tilesize / tilesize;
+            Tmp.v1.setLength(unit.type.speed * Time.delta() * spdMul);
+            unit.velocity.add(Tmp.v1);
+        }
+        @Override
+        public void moveTo(float x, float y) {
+            target.set(Mathf.floor(x) + 0.5f, Mathf.floor(y) + 0.5f);
+        }
+    }
 
     @Override
     public void onCommand(UnitCommand command){

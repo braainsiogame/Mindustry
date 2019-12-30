@@ -9,11 +9,13 @@ import java.util.Iterator;
 public class Interpreter {
     public Stack<Node> stack = new Stack<>(new Node[1024]);
     public Stack<InterpreterObject> scopes = new Stack<>(new InterpreterObject[1024]);
+    public Globals globals;
     private InterpreterObject returnValue = null;
     public Interpreter(Node AST){
         stack.push(AST);
         InterpreterObject global = InterpreterObject.create();
-        Globals.modifyGlobals(global, this);
+        globals = new Globals(this);
+        globals.modifyGlobals(global);
         scopes.push(global);
     }
     public void returnValue(InterpreterObject value){
