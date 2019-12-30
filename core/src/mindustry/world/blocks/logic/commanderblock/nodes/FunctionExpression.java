@@ -1,8 +1,8 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.nodes;
+package mindustry.world.blocks.logic.commanderblock.nodes;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
+import arc.struct.Array;
+import mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 
 public class FunctionExpression extends Node {
     public Node body;

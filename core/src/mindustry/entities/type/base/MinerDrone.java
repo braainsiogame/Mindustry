@@ -1,19 +1,3 @@
-<<<<<<< HEAD:core/src/io/anuke/mindustry/entities/type/base/MinerDrone.java
-package io.anuke.mindustry.entities.type.base;
-
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.Structs;
-import io.anuke.mindustry.content.Blocks;
-import io.anuke.mindustry.entities.traits.MinerTrait;
-import io.anuke.mindustry.entities.type.BaseUnit;
-import io.anuke.mindustry.entities.type.TileEntity;
-import io.anuke.mindustry.entities.units.UnitState;
-import io.anuke.mindustry.gen.Call;
-import io.anuke.mindustry.type.Item;
-import io.anuke.mindustry.type.ItemType;
-import io.anuke.mindustry.world.Pos;
-import io.anuke.mindustry.world.Tile;
-=======
 package mindustry.entities.type.base;
 
 import arc.math.Mathf;
@@ -27,7 +11,6 @@ import mindustry.type.Item;
 import mindustry.type.ItemType;
 import mindustry.world.Pos;
 import mindustry.world.Tile;
->>>>>>> master:core/src/mindustry/entities/type/base/MinerDrone.java
 
 import java.io.*;
 

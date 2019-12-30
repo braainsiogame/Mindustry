@@ -1,4 +1,4 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter;
+package mindustry.world.blocks.logic.commanderblock.interpreter;
 
 import java.util.HashMap;
 

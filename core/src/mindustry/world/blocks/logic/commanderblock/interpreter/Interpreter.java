@@ -1,7 +1,7 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter;
+package mindustry.world.blocks.logic.commanderblock.interpreter;
 
-import io.anuke.arc.math.Mathf;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.*;
+import arc.math.Mathf;
+import mindustry.world.blocks.logic.commanderblock.nodes.*;
 
 import java.util.HashMap;
 import java.util.Iterator;

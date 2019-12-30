@@ -1,8 +1,8 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.parser;
+package mindustry.world.blocks.logic.commanderblock.parser;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.func.Func;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.*;
+import arc.struct.Array;
+import arc.func.Func;
+import mindustry.world.blocks.logic.commanderblock.nodes.*;
 
 public class Parser {
     private static TokenStream stream;

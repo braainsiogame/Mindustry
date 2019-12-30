@@ -1,17 +1,18 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock;
+package mindustry.world.blocks.logic.commanderblock;
 
-import io.anuke.arc.func.Func2;
-import io.anuke.arc.math.Mathf;
-import io.anuke.mindustry.content.Fx;
-import io.anuke.mindustry.entities.Effects;
-import io.anuke.mindustry.entities.type.BaseUnit;
-import io.anuke.mindustry.world.blocks.logic.DroneCommanderBlock;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Globals;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
+import arc.func.Func2;
+import arc.math.Mathf;
+import mindustry.content.Fx;
+import mindustry.entities.Effects;
+import mindustry.entities.Units;
+import mindustry.entities.type.BaseUnit;
+import mindustry.world.blocks.logic.DroneCommanderBlock;
+import mindustry.world.blocks.logic.commanderblock.interpreter.Globals;
+import mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
+import mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
 
-import static io.anuke.mindustry.Vars.unitGroups;
+import static mindustry.Vars.unitGroup;
 
 public class BlockGlobals {
     public Debug_ debug;
@@ -99,37 +100,41 @@ public class BlockGlobals {
             InterpreterObject list = interpreter.globals.list.create(null);
             NativeFunction push = (NativeFunction) list.getProperty(Globals.List_.listPush).value();
             InterpreterObject[] unitObj = new InterpreterObject[1];
-            for(BaseUnit unit: unitGroups[entity.getTeam().ordinal()].all()){
-                unitObj[0] = InterpreterObject.create();
-                unitObj[0].setProperty(unitX, InterpreterObject.create(new NativeFunction(a ->
-                        unit.isValid() ? InterpreterObject.create(unit.x) : InterpreterObject.nullObject))
-                );
-                unitObj[0].setProperty(unitY, InterpreterObject.create(new NativeFunction(a ->
-                        unit.isValid() ? InterpreterObject.create(unit.y) : InterpreterObject.nullObject))
-                );
-                unitObj[0].setProperty(unitKill, InterpreterObject.create(new NativeFunction(a -> {
-                    if(unit.isValid()) unit.kill();
-                    return InterpreterObject.nullObject;
-                })));
-                unitObj[0].setProperty(unitOverride, InterpreterObject.create(new NativeFunction(a -> {
-                    if(unit.isValid()) unit.override();
-                    return InterpreterObject.nullObject;
-                })));
-                unitObj[0].setProperty(unitReset, InterpreterObject.create(new NativeFunction(a -> {
-                    if(unit.isValid()) unit.reset();
-                    return InterpreterObject.nullObject;
-                })));
-                unitObj[0].setProperty(unitMoveTo, wrapOverriderTwoFloatsFunc(unit, (x, y) -> {
-                    unit.overrider.moveTo(x, y);
-                    return null;
-                }));
-                unitObj[0].setProperty(unitShootAt, wrapOverriderTwoFloatsFunc(unit, (x, y) -> {
-                    unit.overrider.shootAt(x, y);
-                    return null;
-                }));
+            Units.each(entity.getTeam(), unit -> {
+                unitObj[0] = createUnitObject(unit);
                 push.func.get(unitObj);
-            }
+            });
             return list;
+        }
+        private InterpreterObject createUnitObject(BaseUnit unit){
+            InterpreterObject unitObj = InterpreterObject.create();
+            unitObj.setProperty(unitX, InterpreterObject.create(new NativeFunction(a ->
+                    unit.isValid() ? InterpreterObject.create(unit.x) : InterpreterObject.nullObject))
+            );
+            unitObj.setProperty(unitY, InterpreterObject.create(new NativeFunction(a ->
+                    unit.isValid() ? InterpreterObject.create(unit.y) : InterpreterObject.nullObject))
+            );
+            unitObj.setProperty(unitKill, InterpreterObject.create(new NativeFunction(a -> {
+                if(unit.isValid()) unit.kill();
+                return InterpreterObject.nullObject;
+            })));
+            unitObj.setProperty(unitOverride, InterpreterObject.create(new NativeFunction(a -> {
+                if(unit.isValid()) unit.override();
+                return InterpreterObject.nullObject;
+            })));
+            unitObj.setProperty(unitReset, InterpreterObject.create(new NativeFunction(a -> {
+                if(unit.isValid()) unit.reset();
+                return InterpreterObject.nullObject;
+            })));
+            unitObj.setProperty(unitMoveTo, wrapOverriderTwoFloatsFunc(unit, (x, y) -> {
+                unit.overrider.moveTo(x, y);
+                return null;
+            }));
+            unitObj.setProperty(unitShootAt, wrapOverriderTwoFloatsFunc(unit, (x, y) -> {
+                unit.overrider.shootAt(x, y);
+                return null;
+            }));
+            return unitObj;
         }
         private InterpreterObject wrapOverriderTwoFloatsFunc(BaseUnit unit, Func2<Float, Float, Void> func){
             return InterpreterObject.create(new NativeFunction(args -> {

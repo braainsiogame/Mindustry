@@ -1,14 +1,14 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock;
+package mindustry.world.blocks.logic.commanderblock;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.collection.IntArray;
-import io.anuke.arc.func.Func2;
-import io.anuke.arc.graphics.g2d.BitmapFont;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.scene.Element;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.ui.TextArea;
-import io.anuke.arc.scene.utils.Disableable;
+import arc.struct.Array;
+import arc.struct.IntArray;
+import arc.func.Func2;
+import arc.graphics.g2d.BitmapFont;
+import arc.input.KeyCode;
+import arc.scene.Element;
+import arc.scene.event.InputEvent;
+import arc.scene.ui.TextArea;
+import arc.scene.utils.Disableable;
 
 import java.lang.reflect.Field;
 

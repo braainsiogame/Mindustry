@@ -1,23 +1,3 @@
-<<<<<<< HEAD:core/src/io/anuke/mindustry/entities/type/base/FlyingUnit.java
-package io.anuke.mindustry.entities.type.base;
-
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.g2d.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.math.geom.*;
-import io.anuke.arc.util.*;
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.bullet.*;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.entities.units.*;
-import io.anuke.mindustry.graphics.*;
-import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.meta.*;
-
-import static io.anuke.mindustry.Vars.*;
-=======
 package mindustry.entities.type.base;
 
 import arc.graphics.*;
@@ -35,7 +15,6 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
->>>>>>> master:core/src/mindustry/entities/type/base/FlyingUnit.java
 
 public class FlyingUnit extends BaseUnit{
     protected float[] weaponAngles = {0,0};
@@ -141,7 +120,7 @@ public class FlyingUnit extends BaseUnit{
     }
     public static class UnitOverrider extends BaseUnit.UnitOverrider{
         FlyingUnit unit;
-        Vector2 target = new Vector2(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+        Vec2 target = new Vec2(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
         public UnitOverrider(FlyingUnit unit){
             super(unit);
             this.unit = unit;

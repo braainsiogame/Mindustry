@@ -1,4 +1,4 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.parser;
+package mindustry.world.blocks.logic.commanderblock.parser;
 
 public class Token {
     public Type type;

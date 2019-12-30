@@ -1,33 +1,10 @@
-<<<<<<< HEAD:core/src/io/anuke/mindustry/entities/type/base/GroundUnit.java
-package io.anuke.mindustry.entities.type.base;
-
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.g2d.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.math.geom.*;
-import io.anuke.arc.util.*;
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.ai.Pathfinder.*;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.bullet.*;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.entities.units.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.input.Placement;
-import io.anuke.mindustry.type.*;
-import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.blocks.*;
-import io.anuke.mindustry.world.meta.*;
-
-import static io.anuke.mindustry.Vars.*;
-=======
 package mindustry.entities.type.base;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.Array;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.Pathfinder.*;
@@ -36,13 +13,13 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.type.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
+import mindustry.input.Placement;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
->>>>>>> master:core/src/mindustry/entities/type/base/GroundUnit.java
 
 public class GroundUnit extends BaseUnit{
     protected static Vec2 vec = new Vec2();

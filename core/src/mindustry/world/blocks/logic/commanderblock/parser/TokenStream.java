@@ -1,6 +1,6 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.parser;
+package mindustry.world.blocks.logic.commanderblock.parser;
 
-import io.anuke.arc.func.Func;
+import arc.func.Func;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

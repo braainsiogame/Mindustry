@@ -1,6 +1,6 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.nodes;
+package mindustry.world.blocks.logic.commanderblock.nodes;
 
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.*;
+import mindustry.world.blocks.logic.commanderblock.interpreter.*;
 
 public class Assignment extends Node {
     public Identifier left;

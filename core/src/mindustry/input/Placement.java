@@ -1,22 +1,12 @@
 package mindustry.input;
 
-<<<<<<< HEAD:core/src/io/anuke/mindustry/input/Placement.java
-import io.anuke.arc.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.func.Func2;
-import io.anuke.arc.math.*;
-import io.anuke.arc.math.geom.*;
-import io.anuke.arc.util.pooling.*;
-import io.anuke.mindustry.entities.type.BaseUnit;
-import io.anuke.mindustry.world.*;
-=======
 import arc.*;
+import arc.func.Func2;
 import arc.struct.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.pooling.*;
 import mindustry.world.*;
->>>>>>> master:core/src/mindustry/input/Placement.java
 
 import java.util.*;
 

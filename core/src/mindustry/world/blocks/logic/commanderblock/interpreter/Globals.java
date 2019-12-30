@@ -1,9 +1,9 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter;
+package mindustry.world.blocks.logic.commanderblock.interpreter;
 
-import io.anuke.arc.func.Func;
-import io.anuke.arc.func.Func2;
-import io.anuke.arc.math.Mathf;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
+import arc.func.Func;
+import arc.func.Func2;
+import arc.math.Mathf;
+import mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
 
 public class Globals {
     public Object_ object;

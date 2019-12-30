@@ -1,7 +1,7 @@
-package io.anuke.mindustry.world.blocks.logic.commanderblock.nodes;
+package mindustry.world.blocks.logic.commanderblock.nodes;
 
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
+import mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
 
 public class While extends Node {
     public Node condition;

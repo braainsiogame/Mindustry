@@ -1,40 +1,40 @@
-package io.anuke.mindustry.world.blocks.logic;
+package mindustry.world.blocks.logic;
 
-import io.anuke.annotations.Annotations.*;
-import io.anuke.arc.*;
-import io.anuke.arc.Input.*;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.g2d.*;
-import io.anuke.arc.input.KeyCode;
-import io.anuke.arc.math.Mathf;
-import io.anuke.arc.math.geom.*;
-import io.anuke.arc.scene.event.InputEvent;
-import io.anuke.arc.scene.ui.*;
-import io.anuke.arc.scene.ui.layout.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.pooling.*;
-import io.anuke.mindustry.content.Fx;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.effect.Fire;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.gen.*;
-import io.anuke.mindustry.net.*;
-import io.anuke.mindustry.ui.*;
-import io.anuke.mindustry.ui.dialogs.*;
-import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.BlockGlobals;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.CodeTextArea;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.CharStream;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.Parser;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.parser.TokenStream;
-import io.anuke.mindustry.world.blocks.logic.commanderblock.nodes.Codeblock;
+import mindustry.annotations.Annotations.*;
+import arc.*;
+import arc.Input.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.input.KeyCode;
+import arc.math.Mathf;
+import arc.math.geom.*;
+import arc.scene.event.InputEvent;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
+import arc.util.*;
+import arc.util.pooling.*;
+import mindustry.content.Fx;
+import mindustry.entities.*;
+import mindustry.entities.effect.Fire;
+import mindustry.entities.type.*;
+import mindustry.gen.*;
+import mindustry.net.*;
+import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
+import mindustry.world.*;
+import mindustry.world.blocks.logic.commanderblock.BlockGlobals;
+import mindustry.world.blocks.logic.commanderblock.CodeTextArea;
+import mindustry.world.blocks.logic.commanderblock.interpreter.Interpreter;
+import mindustry.world.blocks.logic.commanderblock.interpreter.InterpreterObject;
+import mindustry.world.blocks.logic.commanderblock.nodes.NativeFunction;
+import mindustry.world.blocks.logic.commanderblock.parser.CharStream;
+import mindustry.world.blocks.logic.commanderblock.parser.Parser;
+import mindustry.world.blocks.logic.commanderblock.parser.TokenStream;
+import mindustry.world.blocks.logic.commanderblock.nodes.Codeblock;
 
 import java.io.*;
 
-import static io.anuke.mindustry.Vars.*;
+import static mindustry.Vars.*;
 
 public class DroneCommanderBlock extends Block{
     protected static int maxTextLength = 22000;
@@ -156,7 +156,7 @@ public class DroneCommanderBlock extends Block{
 
     @Override
     public void updateTableAlign(Tile tile, Table table){
-        Vector2 pos = Core.input.mouseScreen(tile.drawx(), tile.drawy() + tile.block().size * tilesize / 2f + 1);
+        Vec2 pos = Core.input.mouseScreen(tile.drawx(), tile.drawy() + tile.block().size * tilesize / 2f + 1);
         table.setPosition(pos.x, pos.y, Align.bottom);
     }
 
