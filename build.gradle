@@ -22,8 +22,8 @@ allprojects{
 
     ext{
         versionNumber = '5'
-        if(!project.hasProperty("versionModifier")) versionModifier = 'release'
-        if(!project.hasProperty("versionType")) versionType = 'official'
+        if(!project.hasProperty("versionModifier")) versionModifier = 'beta'
+        if(!project.hasProperty("versionType")) versionType = 'crater'
         appName = 'Mindustry'
         gdxVersion = '1.9.10'
         roboVMVersion = '2.3.8'
@@ -87,7 +87,7 @@ allprojects{
         }
 
         getBuildVersion = {
-            if(!project.hasProperty("buildversion")) return "custom build"
+            if(!project.hasProperty("buildversion")) return "102"
             return project.getProperties()["buildversion"]
         }
 
