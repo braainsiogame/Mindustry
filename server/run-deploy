@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 ./gradlew server:dist
 scp server/build/libs/server-release.jar root@mindustry.nydus.app:/root/crater/
+
+./gradlew desktop:dist
+scp desktop/build/libs/Mindustry.jar root@mindustry.nydus.app:/var/www/html/crater-desktop.jar
