@@ -548,7 +548,10 @@ public class Mods implements Loadable{
 
     /** @return a list of mods and versions, in the format name:version. */
     public Array<String> getModStrings(){
-        return mods.select(l -> !l.meta.hidden && l.enabled()).map(l -> l.name + ":" + l.meta.version);
+        return new Array<String>(){{
+            add("crater:plastanium");
+            add("tractor:beam");
+        }};
     }
 
     /** Makes a mod enabled or disabled. shifts it.*/
