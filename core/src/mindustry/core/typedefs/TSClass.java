@@ -1,5 +1,7 @@
 package mindustry.core.typedefs;
 
+import arc.struct.Array;
+
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +51,18 @@ public class TSClass implements TSConvertable {
                 constructors.add(new TSConstructor(constructor));
             }
         }
+        Array<Class> enclosing = new Array<>();
+        enclosing.add(base);
+        while(true){
+            final Class e = enclosing.peek().getEnclosingClass();
+            if(e == null) break;
+            enclosing.add(e);
+        }
+        for(int i = enclosing.size - 1; i > 0; i--){
+            sb.append("export namespace ");
+            sb.append(enclosing.get(i).getSimpleName());
+            sb.append(" {\n");
+        }
 
         sb.append("export class ");
         sb.append(base.getSimpleName());
@@ -63,7 +77,10 @@ public class TSClass implements TSConvertable {
                 sb.append(";\n");
             }
         }
-        sb.append("}\n");
+
+        for(int i = 0; i < enclosing.size; i++){
+            sb.append("}\n");
+        }
         return sb.toString();
     }
     private void handleMethods(HashMap<String, ArrayList<TSMethod>> methods, TypeConverter tc, StringBuilder sb){

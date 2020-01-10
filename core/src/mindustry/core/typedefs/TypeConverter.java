@@ -54,24 +54,38 @@ public class TypeConverter {
         //System.out.println(base);
         resolved.add(base);
         TSClass tsClass = new TSClass(base);
-        Class enclosing = base.getEnclosingClass();
-        String[] names = escapeNamespaces((enclosing == null ? base : enclosing).getCanonicalName()).split("\\.");
+        boolean enclosed = false;
+        while(true){
+            Class enclosing = base.getEnclosingClass();
+            if(enclosing == null) break;
+            base = enclosing;
+            if(enclosed){
+                System.out.println(base.getCanonicalName());
+            }
+            enclosed = true;
+        }
+        String[] names = escapeNamespaces(base.getCanonicalName()).split("\\.");
         TSModule currentModule = module;
-        String resolved = tsClass.toString(this);
         for(String name: names){
             if(name.equals(names[names.length - 1])){
-                if(enclosing != null) {
-                    currentModule.add("export namespace ");
-                    currentModule.add(name);
-                    currentModule.add(" {\n");
+                char[] resolved = tsClass.toString(this).toCharArray();
+                StringBuilder content = new StringBuilder();
+                //Beautify time
+                int indent = 0;
+                int i = 0;
+                while(true){
+                    char c = resolved[i++];
+                    content.append(c);
+                    if(c == '{') ++indent;
+                    if(i >= resolved.length) break;
+                    if(resolved[i] == '}') --indent;
+                    if(c == '\n'){
+                        for(int j = 0; j < indent; j++){
+                            content.append("    ");
+                        }
+                    }
                 }
-                currentModule.add(resolved); //Has to resolve into another namespace declaration for nested namespaces - But how?
-                if(enclosing != null) currentModule.add("}\n");
-
-                if(false && enclosing == null){
-                    System.out.println(currentModule.root.relativize(currentModule.path).toString());
-                    System.out.println(name);
-                }
+                currentModule.add(content.toString());
             } else {
                 currentModule = currentModule.child(name);
             }
@@ -101,16 +115,16 @@ public class TypeConverter {
             baseType = baseType.getComponentType();
         }
         String arrayAmount = arrayAmountBuilder.toString();
-        StringBuilder sb = new StringBuilder("Packages.");
+        StringBuilder sb = new StringBuilder();
         Class boxed = toBoxed.getOrDefault(baseType, baseType);
-        sb.append(escapeNamespaces(boxed.getName()));
-        sb.append(arrayAmount);
         String tsName = toTSName.get(boxed);
-        if(tsName != null){
-            sb.append(" | ");
+        if(tsName == null){
+            sb.append("Packages.");
+            sb.append(escapeNamespaces(boxed.getName()));
+        } else {
             sb.append(tsName);
-            sb.append(arrayAmount);
         }
+        sb.append(arrayAmount);
         return sb.toString();
     }
     public String escapeKeywords(String string){

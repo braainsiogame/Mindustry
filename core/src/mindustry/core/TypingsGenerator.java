@@ -1,4 +1,4 @@
-package io.anuke.mindustry.core;
+package mindustry.core;
 
 import mindustry.world.Block;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-
+//Outdated!
 public class TypingsGenerator {
     private static void generate(Class entryClass, HashMap<Class, TypingsClass> generated){
         final TypingsClass typingsClass = new TypingsClass();
