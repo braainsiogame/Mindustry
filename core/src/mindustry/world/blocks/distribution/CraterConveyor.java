@@ -4,7 +4,6 @@ import arc.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.ui.*;
-import arc.math.geom.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import arc.graphics.g2d.*;
@@ -13,7 +12,6 @@ import mindustry.entities.*;
 import mindustry.graphics.*;
 import arc.scene.ui.layout.*;
 import mindustry.world.meta.*;
-import mindustry.entities.type.*;
 
 import java.io.*;
 
@@ -45,8 +43,8 @@ public class CraterConveyor extends BaseConveyor{
     public void setStats(){
         super.setStats();
 
-        stats.add(BlockStat.maxUnits, 1, StatUnit.none);
         stats.add(BlockStat.boostEffect, "$blocks.itemcapacity");
+        stats.add(BlockStat.itemsMoved, speed * 60, StatUnit.perSecond);
     }
 
     @Override
@@ -75,20 +73,18 @@ public class CraterConveyor extends BaseConveyor{
         float b = tile.rotation() * 90;
         if(from.rotation() == 3 && tile.rotation() == 0) a = -1 * 90;
         if(from.rotation() == 0 && tile.rotation() == 3) a = 4 * 90;
-        float rotation = Mathf.lerp(a, b, Interpolation.linear.apply(1f - entity.reload));
+        float rotation = Mathf.lerp(a, b, Interpolation.linear.apply(1f - Mathf.clamp(entity.reload * 2, 0f, 1f)));
 
         // draw crater
         Draw.rect(crater, Tmp.v1.x, Tmp.v1.y, rotation - 90);
 
+        // failsafe
         if(entity.dominant() == null) return;
 
         // draw resource
-        float size = itemSize / 1.5f;
+        float size = itemSize / 2f;
+        size += entity.items.total() * 0.1f / (itemCapacity / 8f);
         Draw.rect(entity.dominant().icon(Cicon.medium), Tmp.v1.x, Tmp.v1.y, size, size, 0);
-
-        // draw amount
-        Fonts.outline.draw(tile.entity.items.total() + "", Tmp.v1.x, Tmp.v1.y - 1,
-        Pal.accent, 0.25f * 0.5f / Scl.scl(1f), false, Align.center);
     }
 
 
@@ -111,7 +107,6 @@ public class CraterConveyor extends BaseConveyor{
         }else{
             // poof out crater
             if(entity.items.total() == 0){
-                Effects.effect(Fx.plasticburn, tile.drawx(), tile.drawy());
                 entity.link = Pos.invalid;
                 return;
             }
@@ -120,13 +115,20 @@ public class CraterConveyor extends BaseConveyor{
         if(shouldLaunch(tile)){
             Tile destination = tile.front();
 
+            // failsafe
+            if(destination == null) return;
+
+            // prevent trading
+            if(destination.getTeam() != tile.getTeam()) return;
+
             // update the target first to potentially make room
             destination.block().update(destination);
 
             // when near the center of the target tile...
             if(entity.reload < 0.25f){
-                if(!(destination.block() instanceof CraterConveyor)){ // ...and if its not a crater conveyor, start unloading (everything)
+                if(!(destination.block() instanceof CraterConveyor) && (entity.link != tile.pos() || !isStart(tile))){ // ...and if its not a crater conveyor, start unloading (everything)
                     while(entity.items.total() > 0 && entity.dominant() != null && offloadDir(tile, entity.dominant())) entity.items.remove(entity.dominant(), 1);
+                    if(entity.items.total() == 0) Effects.effect(Fx.plasticburn, tile.drawx(), tile.drawy());
                 }
             }
 
@@ -194,6 +196,13 @@ public class CraterConveyor extends BaseConveyor{
         if(tile.front() == source) return false;
 
         return true;
+    }
+
+    @Override
+    public int removeStack(Tile tile, Item item, int amount){
+        int i = super.removeStack(tile, item, amount);
+        if(tile.entity.items.total() == 0) Effects.effect(Fx.plasticburn, tile.drawx(), tile.drawy());
+        return i;
     }
 
     @Override
