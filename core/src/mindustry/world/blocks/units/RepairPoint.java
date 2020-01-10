@@ -28,6 +28,7 @@ public class RepairPoint extends Block{
     public float powerUse;
     public TextureRegion baseRegion;
     public TextureRegion laser, laserEnd;
+    public Color laserColor;
 
     public RepairPoint(String name){
         super(name);
@@ -38,6 +39,7 @@ public class RepairPoint extends Block{
         layer2 = Layer.power;
         hasPower = true;
         outlineIcon = true;
+        laserColor = Color.valueOf("e8ffd7");
         entityType = RepairPointEntity::new;
     }
 
@@ -45,9 +47,9 @@ public class RepairPoint extends Block{
     public void load(){
         super.load();
 
-        baseRegion = Core.atlas.find(name + "-base");
         laser = Core.atlas.find("laser");
         laserEnd = Core.atlas.find("laser-end");
+        baseRegion = Core.atlas.find(name + "-base");
     }
 
     @Override
@@ -64,12 +66,12 @@ public class RepairPoint extends Block{
 
     @Override
     public void drawSelect(Tile tile){
-        Drawf.dashCircle(tile.drawx(), tile.drawy(), repairRadius, Pal.accent);
+        Drawf.circles(tile.drawx(), tile.drawy(), repairRadius, Pal.accent);
     }
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
-        Drawf.dashCircle(x * tilesize + offset(), y * tilesize + offset(), repairRadius, Pal.accent);
+        Drawf.circles(x * tilesize + offset(), y * tilesize + offset(), repairRadius, Pal.accent);
     }
 
     @Override
@@ -89,11 +91,11 @@ public class RepairPoint extends Block{
         RepairPointEntity entity = tile.ent();
 
         if(entity.target != null &&
-        Angles.angleDist(entity.angleTo(entity.target), entity.rotation) < 30f){
+        Angles.angleDist(entity.angleTo(entity.target), entity.rotation) < 30f && entity.laser){
             float ang = entity.angleTo(entity.target);
             float len = 5f;
 
-            Draw.color(Color.valueOf("e8ffd7"));
+            Draw.color(laserColor);
             Drawf.laser(laser, laserEnd,
                 tile.drawx() + Angles.trnsx(ang, len), tile.drawy() + Angles.trnsy(ang, len),
                 entity.target.x, entity.target.y, entity.strength);
@@ -142,6 +144,7 @@ public class RepairPoint extends Block{
 
     public class RepairPointEntity extends TileEntity{
         public Unit target;
+        public boolean laser = true;
         public float strength, rotation = 90;
     }
 }
