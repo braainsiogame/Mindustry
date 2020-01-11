@@ -18,7 +18,7 @@ import static mindustry.Vars.tilesize;
 public class TractorBeam extends RepairPoint{
     protected float trackRadius = 1.2f; // modifier, not a value
 
-    protected Boolf<Unit> targetValid = u -> !u.isDead() && u.isFlying();
+    protected Boolf<Unit> locked = u -> u != null && !u.isDead() && u.isFlying();
 
     public TractorBeam(String name){
         super(name);
@@ -38,7 +38,7 @@ public class TractorBeam extends RepairPoint{
         public void update(Tile tile){
             TractorBeamEntity entity = tile.ent();
             if(!entity.timer.get(timerTarget, 20)) return;
-            Unit target = Units.closest(null, tile.drawx(), tile.drawy(), repairRadius * trackRadius, targetValid); //fixme: target enemy team, this is just to demo
+            Unit target = Units.closest(null, tile.drawx(), tile.drawy(), repairRadius * trackRadius, locked); //fixme: target enemy team, this is just to demo
             if(target == null) return;
             entity.target = target;
             entity.state.set(tile, track);
@@ -119,10 +119,9 @@ public class TractorBeam extends RepairPoint{
     public void update(Tile tile){
         TractorBeamEntity entity = tile.ent();
 
-        if(entity.target == null) entity.state.set(tile, idle);
-        if(entity.target != null && !targetValid.get(entity.target)) entity.state.set(tile, idle);
-
         if(entity.state.current() == null) entity.state.set(tile, idle);
+        if(!locked.get(entity.target)) entity.state.set(tile, idle);
+
         entity.state.update(tile);
 
     }
