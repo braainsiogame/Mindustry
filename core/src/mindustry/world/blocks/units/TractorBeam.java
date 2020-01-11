@@ -38,7 +38,7 @@ public class TractorBeam extends RepairPoint{
         public void update(Tile tile){
             TractorBeamEntity entity = tile.ent();
             if(!entity.timer.get(timerTarget, 20)) return;
-            Unit target = Units.closest(null, tile.drawx(), tile.drawy(), repairRadius * trackRadius, locked); //fixme: target enemy team, this is just to demo
+            Unit target = Units.closestEnemy(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius * trackRadius, locked); //fixme: target enemy team, this is just to demo
             if(target == null) return;
             entity.target = target;
             entity.state.set(tile, track);
