@@ -119,6 +119,7 @@ public class TractorBeam extends RepairPoint{
     public void update(Tile tile){
         TractorBeamEntity entity = tile.ent();
 
+        if(entity.target == null) entity.state.set(tile, idle);
         if(entity.target != null && !targetValid.get(entity.target)) entity.state.set(tile, idle);
 
         if(entity.state.current() == null) entity.state.set(tile, idle);
