@@ -124,7 +124,7 @@ public class Vars implements Loadable{
     /** whether steam is enabled for this game */
     public static boolean steam;
     /** whether typing into the console is enabled - developers only */
-    public static boolean enableConsole = false;
+    public static boolean enableConsole = true;
     /** application data directory, equivalent to {@link Settings#getDataDirectory()} */
     public static Fi dataDirectory;
     /** data subdirectory used for screenshots */
