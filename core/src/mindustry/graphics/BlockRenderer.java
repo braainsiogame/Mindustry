@@ -176,10 +176,10 @@ public class BlockRenderer implements Disposable{
     }
 
     enum Menders{
-        smallDefault(entity -> entity.tile.block() == Blocks.mender && entity.phaseHeat == 0, -2f, 2f),
-        smallSilicon(entity -> entity.tile.block() == Blocks.mender && entity.phaseHeat != 0, -2f, -2f),
-        largeDefault(entity -> entity.tile.block() == Blocks.mendProjector && entity.phaseHeat == 0, 2f, 2f),
-        largePhased (entity -> entity.tile.block() == Blocks.mendProjector && entity.phaseHeat != 0, 2f, -2f);
+        smallDefault(entity -> entity.tile.block() == Blocks.mender        && entity.phaseHeat == 0, -2f,  2f),
+        smallSilicon(entity -> entity.tile.block() == Blocks.mender        && entity.phaseHeat != 0, -2f, -2f),
+        largeDefault(entity -> entity.tile.block() == Blocks.mendProjector && entity.phaseHeat == 0,  2f,  2f),
+        largePhased (entity -> entity.tile.block() == Blocks.mendProjector && entity.phaseHeat != 0,  2f, -2f);
 
         private Boolf<MendEntity> filter;
         public float x, y;
