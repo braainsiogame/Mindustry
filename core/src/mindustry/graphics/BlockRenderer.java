@@ -1,6 +1,8 @@
 package mindustry.graphics;
 
 import arc.*;
+import arc.func.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.graphics.*;
 import arc.graphics.Texture.*;
@@ -14,6 +16,9 @@ import mindustry.game.Teams.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.MendProjector.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.camera;
 import static mindustry.Vars.*;
@@ -34,6 +39,7 @@ public class BlockRenderer implements Disposable{
     private FrameBuffer fog = new FrameBuffer(2, 2);
     private Array<Tile> outArray = new Array<>();
     private Array<Tile> shadowEvents = new Array<>();
+    private ObjectMap<Tile, ObjectSet<MendEntity>> mending = new ObjectMap<>();
 
     public BlockRenderer(){
 
@@ -143,6 +149,45 @@ public class BlockRenderer implements Disposable{
                 Draw.rect(b.icon(Cicon.full), block.x * tilesize + b.offset(), block.y * tilesize + b.offset(), b.rotate ? block.rotation * 90 : 0f);
             }
             Draw.reset();
+        }
+    }
+
+    public void drawMended(){
+        if(!(control.input.block instanceof MendProjector)) return;
+
+        mending.clear();
+
+        for (Tile mender : indexer.getAllied(player.getTeam(), BlockFlag.mender)){
+            ((MendProjector)Blocks.mender).targets(mender.ent(), other -> {
+                if(mending.get(other) == null) mending.put(other, new ObjectSet<>());
+                mending.get(other).add(mender.ent());
+            });
+        }
+
+        for(Tile mended : mending.keys()){
+            for(Menders type : Menders.values()){
+                Fonts.outline.draw(mending.get(mended).select(type.filter).size + "",
+                mended.drawx() + type.x,
+                mended.drawy() + 1.5f + type.y,
+                Pal.accent, 0.15f, false, Align.center
+                );
+            }
+        }
+    }
+
+    enum Menders{
+        smallDefault(entity -> entity.tile.block() == Blocks.mender && entity.items.total() == 0, -2f, 2f),
+        smallSilicon(entity -> entity.tile.block() == Blocks.mender && entity.items.total() != 0, -2f, -2f),
+        largeDefault(entity -> entity.tile.block() == Blocks.mendProjector && entity.items.total() == 0, 2f, 2f),
+        largePhased (entity -> entity.tile.block() == Blocks.mendProjector && entity.items.total() != 0, 2f, -2f);
+
+        private Boolf<MendEntity> filter;
+        public float x, y;
+
+        Menders(Boolf<MendEntity> filter, float x, float y){
+            this.filter = filter;
+            this.x = x;
+            this.y = y;
         }
     }
 

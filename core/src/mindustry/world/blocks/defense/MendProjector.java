@@ -1,7 +1,8 @@
 package mindustry.world.blocks.defense;
 
 import arc.Core;
-import arc.struct.IntSet;
+import arc.func.*;
+import arc.struct.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
@@ -38,6 +39,7 @@ public class MendProjector extends Block{
         hasPower = true;
         hasItems = true;
         entityType = MendEntity::new;
+        flags = EnumSet.of(BlockFlag.mender);
     }
 
     @Override
@@ -75,26 +77,33 @@ public class MendProjector extends Block{
         }
 
         if(entity.charge >= reload){
-            float realRange = range + entity.phaseHeat * phaseRangeBoost;
             entity.charge = 0f;
-
-            int tileRange = (int)(realRange / tilesize + 1);
             healed.clear();
 
-            for(int x = -tileRange + tile.x; x <= tileRange + tile.x; x++){
-                for(int y = -tileRange + tile.y; y <= tileRange + tile.y; y++){
-                    if(!Mathf.within(x * tilesize, y * tilesize, tile.drawx(), tile.drawy(), realRange)) continue;
-
-                    Tile other = world.ltile(x, y);
-
-                    if(other == null) continue;
-
-                    if(other.getTeamID() == tile.getTeamID() && !healed.contains(other.pos()) && other.entity != null && other.entity.health < other.entity.maxHealth()){
-                        other.entity.healBy(other.entity.maxHealth() * (healPercent + entity.phaseHeat * phaseBoost) / 100f * entity.efficiency());
-                        Effects.effect(Fx.healBlockFull, Tmp.c1.set(baseColor).lerp(phaseColor, entity.phaseHeat), other.drawx(), other.drawy(), other.block().size);
-                        healed.add(other.pos());
-                    }
+            targets(entity, other -> {
+                if(!healed.contains(other.pos()) && other.entity != null && other.entity.health < other.entity.maxHealth()){
+                    other.entity.healBy(other.entity.maxHealth() * (healPercent + entity.phaseHeat * phaseBoost) / 100f * entity.efficiency());
+                    Effects.effect(Fx.healBlockFull, Tmp.c1.set(baseColor).lerp(phaseColor, entity.phaseHeat), other.drawx(), other.drawy(), other.block().size);
+                    healed.add(other.pos());
                 }
+            });
+        }
+    }
+
+    public void targets(MendEntity entity, Cons<Tile> cons){
+        float realRange = ((MendProjector)entity.block).range + entity.phaseHeat * phaseRangeBoost;
+        int tileRange = (int)(realRange / tilesize + 1);
+
+        for(int x = -tileRange + entity.tile.x; x <= tileRange + entity.tile.x; x++){
+            for(int y = -tileRange + entity.tile.y; y <= tileRange + entity.tile.y; y++){
+                if(!Mathf.within(x * tilesize, y * tilesize, entity.tile.drawx(), entity.tile.drawy(), realRange)) continue;
+
+                Tile other = world.ltile(x, y);
+
+                if(other == null) continue;
+                if(other.getTeamID() != entity.tile.getTeamID()) continue;
+
+                cons.get(other);
             }
         }
     }
@@ -137,7 +146,7 @@ public class MendProjector extends Block{
         renderer.lights.add(tile.drawx(), tile.drawy(), 50f * tile.entity.efficiency(), baseColor, 0.7f * tile.entity.efficiency());
     }
 
-    class MendEntity extends TileEntity{
+    public class MendEntity extends TileEntity{
         float heat;
         float charge = Mathf.random(reload);
         float phaseHeat;
