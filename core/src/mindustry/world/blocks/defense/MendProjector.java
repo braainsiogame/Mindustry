@@ -149,7 +149,7 @@ public class MendProjector extends Block{
     public class MendEntity extends TileEntity{
         float heat;
         float charge = Mathf.random(reload);
-        float phaseHeat;
+        public float phaseHeat;
 
         @Override
         public void write(DataOutput stream) throws IOException{
