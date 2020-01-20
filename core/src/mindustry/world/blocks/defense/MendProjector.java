@@ -91,6 +91,7 @@ public class MendProjector extends Block{
     }
 
     public void targets(MendEntity entity, Cons<Tile> cons){
+        if(entity == null) return;
         float realRange = ((MendProjector)entity.block).range + entity.phaseHeat * phaseRangeBoost;
         int tileRange = (int)(realRange / tilesize + 1);
 
