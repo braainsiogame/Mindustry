@@ -126,17 +126,18 @@ public class GroundUnit extends BaseUnit{
 
     @Override
     public void draw(){
-        Draw.mixcol(Color.white, hitTime / hitDuration);
+        Draw.mixcol(Color.white.cpy().a(drawf()), hitTime / hitDuration);
 
         float ft = Mathf.sin(walkTime * type.speed * 5f, 6f, 2f + type.hitsize / 15f);
 
         Floor floor = getFloorOn();
 
         if(floor.isLiquid){
-            Draw.color(Color.white, floor.color, 0.5f);
+            Draw.color(Color.white.cpy().a(drawf()), floor.color, 0.5f);
         }
 
         for(int i : Mathf.signs){
+            Draw.alpha(drawf());
             Draw.rect(type.legRegion,
             x + Angles.trnsx(baseRotation, ft * i),
             y + Angles.trnsy(baseRotation, ft * i),
@@ -144,9 +145,9 @@ public class GroundUnit extends BaseUnit{
         }
 
         if(floor.isLiquid){
-            Draw.color(Color.white, floor.color, drownTime * 0.4f);
+            Draw.color(Color.white.cpy().a(drawf()), floor.color.cpy().a(drawf()), drownTime * 0.4f);
         }else{
-            Draw.color(Color.white);
+            Draw.color(Color.white.cpy().a(drawf()));
         }
 
         Draw.rect(type.baseRegion, x, y, baseRotation - 90);

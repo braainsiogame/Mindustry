@@ -383,6 +383,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
 
     public void drawStats(){
         Draw.color(Color.black, team.color, healthf() + Mathf.absin(Time.time(), Math.max(healthf() * 5f, 1f), 1f - healthf()));
+        Draw.alpha(drawf());
         Draw.rect(getPowerCellRegion(), x, y, rotation - 90);
         Draw.color();
 
@@ -401,7 +402,8 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
             float backTrns = 5f;
             float size = (itemSize + Mathf.absin(Time.time(), 5f, 1f)) * itemtime;
 
-            Draw.mixcol(Pal.accent, Mathf.absin(Time.time(), 5f, 0.5f));
+            Draw.mixcol(Pal.accent.cpy().a(drawf()), Mathf.absin(Time.time(), 5f, 0.5f));
+            Draw.alpha(drawf());
             Draw.rect(item.item.icon(Cicon.medium),
                 x + Angles.trnsx(rotation + 180f, backTrns),
                 y + Angles.trnsy(rotation + 180f, backTrns),
@@ -409,7 +411,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
 
             Draw.mixcol();
 
-            Lines.stroke(1f, Pal.accent);
+            Lines.stroke(1f, Pal.accent.cpy().a(drawf()));
             Lines.circle(
                 x + Angles.trnsx(rotation + 180f, backTrns),
                 y + Angles.trnsy(rotation + 180f, backTrns),
@@ -439,7 +441,10 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
     }
 
     public void drawShadow(float offsetX, float offsetY){
+        Draw.getColor().a *= drawf();
         Draw.rect(getIconRegion(), x + offsetX, y + offsetY, rotation - 90);
+        Draw.getColor().a /= drawf();
+
     }
 
     public float getSize(){

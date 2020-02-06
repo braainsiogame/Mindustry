@@ -142,12 +142,14 @@ public class FlyingUnit extends BaseUnit{
 
     @Override
     public void draw(){
+        Draw.alpha(drawf());
         Draw.mixcol(Color.white, hitTime / hitDuration);
         Draw.rect(type.region, x, y, rotation - 90);
 
         drawWeapons();
 
         Draw.mixcol();
+        Draw.alpha(1);
     }
 
     public void drawWeapons(){
@@ -161,11 +163,11 @@ public class FlyingUnit extends BaseUnit{
     }
 
     public void drawEngine(){
-        Draw.color(Pal.engine);
+        Draw.color(Pal.engine.cpy().a(drawf()));
         Fill.circle(x + Angles.trnsx(rotation + 180, type.engineOffset), y + Angles.trnsy(rotation + 180, type.engineOffset),
         type.engineSize + Mathf.absin(Time.time(), 2f, type.engineSize / 4f));
 
-        Draw.color(Color.white);
+        Draw.color(Color.white.cpy().a(drawf()));
         Fill.circle(x + Angles.trnsx(rotation + 180, type.engineOffset - 1f), y + Angles.trnsy(rotation + 180, type.engineOffset - 1f),
         (type.engineSize + Mathf.absin(Time.time(), 2f, type.engineSize / 4f)) / 2f);
         Draw.color();
