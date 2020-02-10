@@ -22,6 +22,7 @@ import mindustry.input.Placement.*;
 import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 
@@ -228,6 +229,21 @@ public class Schematics implements Loadable{
             });
 
             requests.each(req -> req.block.drawRequestConfigTop(req, requests::each));
+
+            requests.each(req -> {
+
+                IntArray power = null;
+                String key = "x-power-links:" + Pos.get(req.x, req.y);
+                if(schematic.tags.containsKey(key)){
+                    power = JsonIO.read(IntArray.class, schematic.tags.get(key));
+                }
+
+                if(power != null){
+                    for(int pos : power.toArray()){
+                        ((PowerNode)Blocks.powerNode).drawLaser(req.tile(), world.tile(Pos.x(pos) - req.originalX, Pos.y(pos) - req.originalY));
+                    }
+                }
+            });
 
             Draw.flush();
             Draw.trans().idt();
