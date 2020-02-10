@@ -124,7 +124,7 @@ public class PowerNode extends PowerBlock{
         });
         tempTiles.each(valid, other -> {
             if(!tile.entity.power.links.contains(other.pos())){
-                tile.configureAny(other.pos());
+//                tile.configureAny(other.pos());
             }
         });
 
