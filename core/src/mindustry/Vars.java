@@ -38,7 +38,7 @@ public class Vars implements Loadable{
     /** Whether the logger is loaded. */
     public static boolean loadedLogger = false, loadedFileLogger = false;
     /** Maximum schematic size.*/
-    public static final int maxSchematicSize = 32;
+    public static final int maxSchematicSize = Integer.MAX_VALUE;
     /** All schematic base64 starts with this string.*/
     public static final String schematicBaseStart ="bXNjaAB";
     /** IO buffer size. */
