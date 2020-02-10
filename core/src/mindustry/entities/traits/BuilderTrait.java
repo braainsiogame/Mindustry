@@ -1,10 +1,11 @@
 package mindustry.entities.traits;
 
 import arc.*;
-import arc.struct.Queue;
+import arc.struct.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.Queue;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
 import mindustry.*;
@@ -224,6 +225,8 @@ public interface BuilderTrait extends Entity, TeamTrait{
         }else{
             buildQueue().addFirst(place);
         }
+
+        if(place.power != null) BuildBlock.power.put(tile.pos(), place);
     }
 
     /**
@@ -304,6 +307,15 @@ public interface BuilderTrait extends Entity, TeamTrait{
         /** Visual scale. Used only for rendering.*/
         public float animScale = 0f;
 
+        /** Power overwhelming! */
+        public IntArray power;
+
+        /** This creates a archon request. */
+        public BuildRequest(int x, int y, int rotation, Block block, IntArray power){
+            this(x, y, rotation, block);
+            this.power = power;
+        }
+
         /** This creates a build request. */
         public BuildRequest(int x, int y, int rotation, Block block){
             this.x = x;
@@ -340,6 +352,7 @@ public interface BuilderTrait extends Entity, TeamTrait{
             copy.progress = progress;
             copy.initialized = initialized;
             copy.animScale = animScale;
+            copy.power = power;
             return copy;
         }
 

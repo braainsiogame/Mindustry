@@ -19,6 +19,7 @@ import mindustry.game.EventType.*;
 import mindustry.game.Schematic.*;
 import mindustry.input.*;
 import mindustry.input.Placement.*;
+import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.production.*;
@@ -244,8 +245,26 @@ public class Schematics implements Loadable{
 
     /** Creates an array of build requests from a schematic's data, centered on the provided x+y coordinates. */
     public Array<BuildRequest> toRequests(Schematic schem, int x, int y){
-        return schem.tiles.map(t -> new BuildRequest(t.x + x - schem.width/2, t.y + y - schem.height/2, t.rotation, t.block).original(t.x, t.y, schem.width, schem.height).configure(t.config))
-            .removeAll(s -> !s.block.isVisible() || !s.block.unlockedCur());
+
+//        schem.tags.each((key, value) -> {
+//            if(!key.startsWith("x-power-links:")) return;
+//            int pos = Integer.parseInt(key.split(":")[1]);
+//            IntArray power = JsonIO.read(IntArray.class, value);
+////            Log.info(pos);
+////            Log.info(power);
+//        });
+
+        return schem.tiles.map(t -> {
+
+            IntArray power = null;
+
+            String key = "x-power-links:" + Pos.get(t.x, t.y);
+            if(schem.tags.containsKey(key)){
+                power = JsonIO.read(IntArray.class, schem.tags.get(key));
+            }
+
+            return new BuildRequest(t.x + x - schem.width/2, t.y + y - schem.height/2, t.rotation, t.block, power).original(t.x, t.y, schem.width, schem.height).configure(t.config);
+        }).removeAll(s -> !s.block.isVisible() || !s.block.unlockedCur());
     }
 
     public void placeLoadout(Schematic schem, int x, int y){
@@ -305,6 +324,8 @@ public class Schematics implements Loadable{
         x2 = result.x2;
         y2 = result.y2;
 
+        StringMap tags = new StringMap();
+
         int ox = x, oy = y, ox2 = x2, oy2 = y2;
 
         Array<Stile> tiles = new Array<>();
@@ -350,13 +371,25 @@ public class Schematics implements Loadable{
                         config = Pos.get(Pos.x(config) + offsetX, Pos.y(config) + offsetY);
                     }
 
+                    if(tile.entity.power != null){
+                        if(!tile.entity.power.links.isEmpty()){
+                            IntArray links = new IntArray();
+                            for(int pos : tile.entity.power.links.toArray()) links.add(Pos.get(Pos.x(pos) + offsetX, Pos.y(pos) + offsetY));
+                            tags.put("x-power-links:" + Pos.get(tile.x + offsetX, tile.y + offsetY), JsonIO.write(links));
+                        }
+                    }
+
+//                    Log.info(tile.x + offsetX);
+//                    Log.info(tile.y + offsetY);
+
                     tiles.add(new Stile(tile.block(), tile.x + offsetX, tile.y + offsetY, config, tile.rotation()));
                     counted.add(tile.pos());
                 }
             }
         }
 
-        return new Schematic(tiles, new StringMap(), width, height);
+//        Log.info(tags);
+        return new Schematic(tiles, tags, width, height);
     }
 
     /** Converts a schematic to base64. Note that the result of this will always start with 'bXNjaAB'.*/

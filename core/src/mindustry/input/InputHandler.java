@@ -290,6 +290,24 @@ public abstract class InputHandler implements InputProcessor, GestureListener{
                 req.config = Pos.get(cx + req.originalX, cy + req.originalY);
             }
 
+            IntArray power = new IntArray();
+            if(req.power != null){
+                for(int pos : req.power.toArray()){
+                    int cx = Pos.x(pos) - req.originalX, cy = Pos.y(pos) - req.originalY;
+                    int lx = cx;
+
+                    if(direction >= 0){
+                        cx = -cy;
+                        cy = lx;
+                    }else{
+                        cx = cy;
+                        cy = -lx;
+                    }
+                    power.add(Pos.get(cx + req.originalX, cy + req.originalY));
+                }
+            }
+            req.power = power;
+
             //rotate actual request, centered on its multiblock position
             float wx = (req.x - ox) * tilesize + req.block.offset(), wy = (req.y - oy) * tilesize + req.block.offset();
             float x = wx;
@@ -329,6 +347,31 @@ public abstract class InputHandler implements InputProcessor, GestureListener{
                     req.config = Pos.get(Pos.x(req.config), nvalue);
                 }
             }
+
+            IntArray power = new IntArray();
+            if(req.power != null){
+                int nvalue, corigin = 0;
+
+                for(int pos : req.power.toArray()){
+                    corigin = x ? req.originalWidth/2 : req.originalHeight/2;
+                    nvalue = -((x ? Pos.x(pos) : Pos.y(pos)) - corigin) + corigin;
+                    if(x){
+                        pos = Pos.get(nvalue, Pos.y(pos));
+                    }else{
+                        pos = Pos.get(Pos.x(pos), nvalue);
+                    }
+                    power.add(pos);
+                }
+
+                if (!req.block.posConfig){
+                    if(x){
+                        req.originalX = -(req.originalX - corigin) + corigin;
+                    }else{
+                        req.originalY = -(req.originalY - corigin) + corigin;
+                    }
+                }
+            }
+            req.power = power;
 
             //flip rotation
             if(x == (req.rotation % 2 == 0)){

@@ -1,6 +1,7 @@
 package mindustry.world.blocks;
 
 import arc.*;
+import arc.struct.*;
 import mindustry.annotations.Annotations.*;
 import arc.Graphics.*;
 import arc.Graphics.Cursor.*;
@@ -33,6 +34,8 @@ public class BuildBlock extends Block{
     private static long lastTime = 0;
     private static int pitchSeq = 0;
     private static long lastPlayed;
+
+    public static IntMap<BuildRequest> power = new IntMap<>();
 
     public BuildBlock(int size){
         super("build" + size);
@@ -76,6 +79,20 @@ public class BuildBlock extends Block{
                 tile.block().playerPlaced(tile);
             }
         }
+
+//        Log.info(power);
+//        Log.info(tile.pos());
+        if(power.containsKey(tile.pos())){
+//            Log.info(power.get(tile.pos()).power);
+//            Log.info("bar");
+            for(int pos : power.get(tile.pos()).power.toArray()){
+                Tile other = world.tile( power.get(tile.pos()).x + Pos.x(pos) - power.get(tile.pos()).originalX, power.get(tile.pos()).y + Pos.y(pos) - power.get(tile.pos()).originalY);
+//                Log.info(other);
+                tile.configure(other.pos());
+            }
+            power.remove(tile.pos());
+        }
+
         Effects.effect(Fx.placeBlock, tile.drawx(), tile.drawy(), block.size);
     }
 

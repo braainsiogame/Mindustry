@@ -9,10 +9,14 @@ import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.core.GameState.*;
+import mindustry.entities.*;
+import mindustry.entities.Effects.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -20,6 +24,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
+import mindustry.world.blocks.power.*;
 
 import static arc.Core.scene;
 import static mindustry.Vars.*;
@@ -110,6 +116,22 @@ public class DesktopInput extends InputHandler{
         for(BuildRequest request : selectRequests){
             request.animScale = 1f;
             drawRequest(request);
+        }
+
+        for(BuildRequest request : selectRequests){
+            if(request.power != null){
+                for(int pos : request.power.toArray()){
+//                    Log.info(Pos.x(pos));
+//                    Log.info(Pos.y(pos));
+                    Tile other = world.tile( request.x + Pos.x(pos) - request.originalX, request.y + Pos.y(pos) - request.originalY);
+//                    Log.info(other);
+//                    Log.info("");
+
+//                    Effects.effect(Fx.smeltsmoke, other);
+
+                    ((PowerNode)Blocks.powerNode).drawLaser(request.tile(), other);
+                }
+            }
         }
 
         if(sreq != null){
@@ -241,9 +263,21 @@ public class DesktopInput extends InputHandler{
         schematicY = tileY(getMouseY());
 
         selectRequests.clear();
-        selectRequests.addAll(schematics.toRequests(schem, schematicX, schematicY));
+
+        Array<BuildRequest> observe = schematics.toRequests(schem, schematicX, schematicY);
+        selectRequests.addAll(observe);
+//        observe.each(this::observe);
         mode = none;
+
+//        observe.each(br -> BuildBlock.power.put(br.tile().pos(), br));
+//        Log.info(BuildBlock.power);
     }
+
+//    private void observe(BuildRequest req){
+//        if(req.tile() != req.block) {
+//
+//        }
+//    }
 
     @Override
     public boolean isBreaking(){
