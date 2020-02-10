@@ -43,7 +43,7 @@ public abstract class InputHandler implements InputProcessor, GestureListener{
     /** Used for dropping items. */
     final static float playerSelectRange = mobile ? 17f : 11f;
     /** Maximum line length. */
-    final static int maxLength = 100;
+    final static int maxLength = maxSchematicSize;
     final static Vec2 stackTrns = new Vec2();
     final static Rect r1 = new Rect(), r2 = new Rect();
     /** Distance on the back from where items originate. */
