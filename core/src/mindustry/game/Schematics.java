@@ -235,7 +235,8 @@ public class Schematics implements Loadable{
                 IntArray power = null;
                 String key = "x-power-links:" + Pos.get(req.x, req.y);
                 if(schematic.tags.containsKey(key)){
-                    power = JsonIO.read(IntArray.class, schematic.tags.get(key));
+                    power = new IntArray();
+                    for(String str : schematic.tags.get(key).split(",")) power.add(Integer.parseInt(str));
                 }
 
                 if(power != null){
@@ -266,7 +267,8 @@ public class Schematics implements Loadable{
             IntArray power = null;
             String key = "x-power-links:" + Pos.get(t.x, t.y);
             if(schem.tags.containsKey(key)){
-                power = JsonIO.read(IntArray.class, schem.tags.get(key));
+                power = new IntArray();
+                for(String str : schem.tags.get(key).split(",")) power.add(Integer.parseInt(str));
             }
 
             return new BuildRequest(t.x + x - schem.width/2, t.y + y - schem.height/2, t.rotation, t.block, power).original(t.x, t.y, schem.width, schem.height).configure(t.config);
@@ -381,7 +383,7 @@ public class Schematics implements Loadable{
                         if(!tile.entity.power.links.isEmpty()){
                             IntArray links = new IntArray();
                             for(int pos : tile.entity.power.links.toArray()) links.add(Pos.get(Pos.x(pos) + offsetX, Pos.y(pos) + offsetY));
-                            tags.put("x-power-links:" + Pos.get(tile.x + offsetX, tile.y + offsetY), JsonIO.write(links));
+                            tags.put("x-power-links:" + Pos.get(tile.x + offsetX, tile.y + offsetY), links.toString(","));
                         }
                     }
 
