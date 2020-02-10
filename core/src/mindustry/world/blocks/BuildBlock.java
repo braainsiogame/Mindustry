@@ -79,15 +79,10 @@ public class BuildBlock extends Block{
                 tile.block().playerPlaced(tile);
             }
         }
-
-//        Log.info(power);
-//        Log.info(tile.pos());
+        
         if(power.containsKey(tile.pos())){
-//            Log.info(power.get(tile.pos()).power);
-//            Log.info("bar");
             for(int pos : power.get(tile.pos()).power.toArray()){
                 Tile other = world.tile( power.get(tile.pos()).x + Pos.x(pos) - power.get(tile.pos()).originalX, power.get(tile.pos()).y + Pos.y(pos) - power.get(tile.pos()).originalY);
-//                Log.info(other);
                 tile.configure(other.pos());
             }
             power.remove(tile.pos());

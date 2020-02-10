@@ -121,15 +121,7 @@ public class DesktopInput extends InputHandler{
         for(BuildRequest request : selectRequests){
             if(request.power != null){
                 for(int pos : request.power.toArray()){
-//                    Log.info(Pos.x(pos));
-//                    Log.info(Pos.y(pos));
-                    Tile other = world.tile( request.x + Pos.x(pos) - request.originalX, request.y + Pos.y(pos) - request.originalY);
-//                    Log.info(other);
-//                    Log.info("");
-
-//                    Effects.effect(Fx.smeltsmoke, other);
-
-                    ((PowerNode)Blocks.powerNode).drawLaser(request.tile(), other);
+                    ((PowerNode)Blocks.powerNode).drawLaser(request.tile(), world.tile( request.x + Pos.x(pos) - request.originalX, request.y + Pos.y(pos) - request.originalY));
                 }
             }
         }
@@ -264,20 +256,9 @@ public class DesktopInput extends InputHandler{
 
         selectRequests.clear();
 
-        Array<BuildRequest> observe = schematics.toRequests(schem, schematicX, schematicY);
-        selectRequests.addAll(observe);
-//        observe.each(this::observe);
+        selectRequests.addAll(schematics.toRequests(schem, schematicX, schematicY));
         mode = none;
-
-//        observe.each(br -> BuildBlock.power.put(br.tile().pos(), br));
-//        Log.info(BuildBlock.power);
     }
-
-//    private void observe(BuildRequest req){
-//        if(req.tile() != req.block) {
-//
-//        }
-//    }
 
     @Override
     public boolean isBreaking(){

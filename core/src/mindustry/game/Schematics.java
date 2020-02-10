@@ -245,19 +245,9 @@ public class Schematics implements Loadable{
 
     /** Creates an array of build requests from a schematic's data, centered on the provided x+y coordinates. */
     public Array<BuildRequest> toRequests(Schematic schem, int x, int y){
-
-//        schem.tags.each((key, value) -> {
-//            if(!key.startsWith("x-power-links:")) return;
-//            int pos = Integer.parseInt(key.split(":")[1]);
-//            IntArray power = JsonIO.read(IntArray.class, value);
-////            Log.info(pos);
-////            Log.info(power);
-//        });
-
         return schem.tiles.map(t -> {
 
             IntArray power = null;
-
             String key = "x-power-links:" + Pos.get(t.x, t.y);
             if(schem.tags.containsKey(key)){
                 power = JsonIO.read(IntArray.class, schem.tags.get(key));
@@ -379,16 +369,12 @@ public class Schematics implements Loadable{
                         }
                     }
 
-//                    Log.info(tile.x + offsetX);
-//                    Log.info(tile.y + offsetY);
-
                     tiles.add(new Stile(tile.block(), tile.x + offsetX, tile.y + offsetY, config, tile.rotation()));
                     counted.add(tile.pos());
                 }
             }
         }
 
-//        Log.info(tags);
         return new Schematic(tiles, tags, width, height);
     }
 
