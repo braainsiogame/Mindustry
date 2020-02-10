@@ -387,7 +387,6 @@ public class Schematics implements Loadable{
             }
         }
 
-        Log.info(tags);
         return new Schematic(tiles, tags, width, height);
     }
 
