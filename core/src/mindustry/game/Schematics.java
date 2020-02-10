@@ -234,10 +234,7 @@ public class Schematics implements Loadable{
 
                 IntArray power = null;
                 String key = "x-power-links:" + Pos.get(req.x, req.y);
-                if(schematic.tags.containsKey(key)){
-                    power = new IntArray();
-                    for(String str : schematic.tags.get(key).split(",")) power.add(Integer.parseInt(str));
-                }
+                if(schematic.tags.containsKey(key)) power = csv(schematic.tags.get(key));
 
                 if(power != null){
                     for(int pos : power.toArray()){
@@ -266,10 +263,7 @@ public class Schematics implements Loadable{
 
             IntArray power = null;
             String key = "x-power-links:" + Pos.get(t.x, t.y);
-            if(schem.tags.containsKey(key)){
-                power = new IntArray();
-                for(String str : schem.tags.get(key).split(",")) power.add(Integer.parseInt(str));
-            }
+            if(schem.tags.containsKey(key)) power = csv(schem.tags.get(key));
 
             return new BuildRequest(t.x + x - schem.width/2, t.y + y - schem.height/2, t.rotation, t.block, power).original(t.x, t.y, schem.width, schem.height).configure(t.config);
         }).removeAll(s -> !s.block.isVisible() || !s.block.unlockedCur());
@@ -383,7 +377,7 @@ public class Schematics implements Loadable{
                         if(!tile.entity.power.links.isEmpty()){
                             IntArray links = new IntArray();
                             for(int pos : tile.entity.power.links.toArray()) links.add(Pos.get(Pos.x(pos) + offsetX, Pos.y(pos) + offsetY));
-                            tags.put("x-power-links:" + Pos.get(tile.x + offsetX, tile.y + offsetY), links.toString(","));
+                            tags.put("x-power-links:" + Pos.get(tile.x + offsetX, tile.y + offsetY), csv(links));
                         }
                     }
 
@@ -393,6 +387,7 @@ public class Schematics implements Loadable{
             }
         }
 
+        Log.info(tags);
         return new Schematic(tiles, tags, width, height);
     }
 
@@ -511,4 +506,14 @@ public class Schematics implements Loadable{
     }
 
     //endregion
+
+    public static String csv(IntArray ints){
+        return ints.toString(",");
+    }
+
+    public static IntArray csv(String string){
+        IntArray ints = new IntArray();
+        for(String pos : string.split(",")) ints.add(Integer.parseInt(pos));
+        return ints;
+    }
 }
