@@ -83,7 +83,7 @@ public class BuildBlock extends Block{
         if(power.containsKey(tile.pos())){
             for(int pos : power.get(tile.pos()).power.toArray()){
                 Tile other = world.tile( power.get(tile.pos()).x + Pos.x(pos) - power.get(tile.pos()).originalX, power.get(tile.pos()).y + Pos.y(pos) - power.get(tile.pos()).originalY);
-                if(!tile.entity.power.links.contains(other.pos())) tile.configure(other.pos());
+                tile.configure(other.pos());
             }
             power.remove(tile.pos());
         }
