@@ -310,7 +310,7 @@ public interface BuilderTrait extends Entity, TeamTrait{
         /** Power overwhelming! */
         public IntArray power;
 
-        /** This creates a archon request. */
+        /** This creates an archon request. */
         public BuildRequest(int x, int y, int rotation, Block block, IntArray power){
             this(x, y, rotation, block);
             this.power = power;
