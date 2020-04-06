@@ -1,7 +1,6 @@
 package mindustry.server.nydus;
 
 import arc.*;
-import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.power.*;
