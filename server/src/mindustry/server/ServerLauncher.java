@@ -89,6 +89,7 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(new SpecialDelivery());
 
         Core.app.addListener(new JunctionYeeter());
+        Core.app.addListener(new PowerFlower());
 
         mods.eachClass(Mod::init);
 
