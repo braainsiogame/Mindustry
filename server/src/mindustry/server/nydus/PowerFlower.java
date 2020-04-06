@@ -29,7 +29,6 @@ public class PowerFlower implements ApplicationListener{
                 if(multiplier == state.rules.solarPowerMultiplier) return;
                 state.rules.solarPowerMultiplier = multiplier;
                 Call.onSetRules(state.rules);
-                Log.info(multiplier);
             });
         });
     }
