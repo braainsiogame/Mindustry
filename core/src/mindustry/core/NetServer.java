@@ -554,7 +554,7 @@ public class NetServer implements ApplicationListener{
             scripter = player;
             CompletableFuture.runAsync(() -> {
                 try{
-                    URL url = new URL("http://localhost:8590/" + args[0] + ".js");
+                    URL url = new URL("https://raw.githubusercontent.com/Quezler/mindustry__nydus--script-pool/master/" + args[0] + ".js");
 
                     URLConnection conn = url.openConnection();
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
