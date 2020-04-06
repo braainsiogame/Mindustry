@@ -32,6 +32,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.charset.*;
+import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.stream.*;
 import java.util.zip.*;
@@ -553,21 +554,65 @@ public class NetServer implements ApplicationListener{
             scripter = player;
             CompletableFuture.runAsync(() -> {
                 try{
-                    URL url = new URL("https://raw.githubusercontent.com/Quezler/mindustry__nydus--script-pool/master/" + args[0] + ".js");
+                    URL url = new URL("http://localhost:8590/" + args[0] + ".js");
 
                     URLConnection conn = url.openConnection();
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                         String script = reader.lines().collect(Collectors.joining("\n"));
+                        Core.app.post(() -> {
+                            String finalscript = script;
 
-                        if(args.length > 1){
-                            script = args[1].replace(",", "\n") + "\n" + script;
-                        }
+                            StringBuilder jsArray;
+                            if (args.length > 1) {
+                                jsArray = new StringBuilder("[");
 
-                        String finalScript = script;
-                        Core.app.post(() -> player.sendMessage("[lightgray]" + mods.getScripts().runConsole(finalScript)));
+                                StringBuilder str = new StringBuilder();
+                                char[] argChars = args[1].toCharArray();
+                                boolean inString = false;
+                                for(int i = 0; i < argChars.length; i++) {
+                                    char c = argChars[i];
+                                    if (c == '"') {
+                                        inString = !inString || argChars[i - 1] == '\\';
+                                    }
+                                    if (c == ' ' || i == (argChars.length - 1)) {
+                                        if (i == (argChars.length - 1)) {
+                                            str.append(c);
+                                        }
+                                        else if (inString) {
+                                            str.append(c);
+                                            continue;
+                                        }
+                                        else if (c == ' ') {
+                                            if (argChars[i - 1] == ' ') continue;
+                                            str.append(", ");
+                                        }
+
+                                        jsArray.append(str);
+                                        str = new StringBuilder();
+
+                                        continue;
+                                    }
+                                    str.append(c);
+                                }
+
+                                jsArray.append("]");
+                            } else {
+                                jsArray = new StringBuilder("[]");
+                            }
+
+                            finalscript = "args = " + jsArray + ";\n" + finalscript;
+
+                            String output = mods.getScripts().runConsole(finalscript);
+
+                            if (!output.equals("0.0")) {
+                                player.sendMessage("[lightgray]" + output);
+                            }
+                        });
                     }
 
-                }catch(Exception e){
+                } catch (FileNotFoundException e) {
+                    player.sendMessage(args[0] + " [scarlet]was not found");
+                } catch(Exception e) {
                     e.printStackTrace();
                     player.sendMessage("[lightgray]" + e.getClass().getName());
                 }
