@@ -7,12 +7,10 @@ import arc.struct.EnumSet;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import mindustry.Vars;
-import mindustry.content.*;
+import mindustry.content.Fx;
 import mindustry.entities.Effects;
 import mindustry.entities.traits.*;
 import mindustry.entities.type.*;
-import mindustry.entities.type.base.*;
-import mindustry.entities.units.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.Call;
 import mindustry.graphics.Pal;
@@ -22,8 +20,6 @@ import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.*;
@@ -38,8 +34,6 @@ public class UnitFactory extends Block{
     public TextureRegion topRegion;
     public int maxSpawn = 4;
     public int[] capacities;
-
-    private static final int mine = 100;
 
     public UnitFactory(String name){
         super(name);
@@ -64,35 +58,14 @@ public class UnitFactory extends Block{
         Effects.shake(2f, 3f, entity);
         Effects.effect(Fx.producesmoke, tile.drawx(), tile.drawy());
 
-        if(factory.unitType == UnitTypes.draug){
-
-            CoreEntity core = state.teams.closestCore(tile.drawy(), tile.drawy(), tile.getTeam());
-            if(core != null && tile.dst(core) <= mineTransferRange){
-                if(core.block.acceptStack(Items.copper, mine, core.tile, null) > 0) Call.transferItemTo(Items.copper, core.block.acceptStack(Items.copper, mine, core.tile, null), tile.drawx(), tile.drawy(), core.tile);
-                if(core.block.acceptStack(Items.lead, mine, core.tile, null) > 0) Call.transferItemTo(Items.lead, core.block.acceptStack(Items.lead, mine, core.tile, null), tile.drawx(), tile.drawy(), core.tile);
-            }else{
-                entity.items.set(Items.copper, mine);
-                entity.items.set(Items.lead, mine);
-                netServer.titanic.add(tile);
-            }
-            return;
-        }
-
         if(!net.client()){
-            spawn(tile, factory.unitType);
-//            if(factory.unitType == UnitTypes.draug) spawn(tile, UnitTypes.spirit);
-//            if(factory.unitType == UnitTypes.draug) spawn(tile, UnitTypes.phantom);
+            BaseUnit unit = factory.unitType.create(tile.getTeam());
+            unit.setSpawner(tile);
+            unit.set(tile.drawx() + Mathf.range(4), tile.drawy() + Mathf.range(4));
+            unit.add();
+            unit.velocity().y = factory.launchVelocity;
+            Events.fire(new UnitCreateEvent(unit));
         }
-    }
-
-    protected static void spawn(Tile tile, UnitType type){
-        BaseUnit unit = type.create(tile.getTeam());
-        unit.setSpawner(tile);
-        unit.set(tile.drawx() + Mathf.range(4), tile.drawy() + Mathf.range(4));
-        if(!(unit instanceof BaseDrone)) UnitDrops.seed(unit);
-        unit.add();
-        unit.velocity().y = ((UnitFactory)tile.block()).launchVelocity;
-        Events.fire(new UnitCreateEvent(unit));
     }
 
     @Override
@@ -141,8 +114,6 @@ public class UnitFactory extends Block{
         UnitFactoryEntity entity = tile.ent();
         entity.spawned--;
         entity.spawned = Math.max(entity.spawned, 0);
-
-//        if(((UnitFactory)tile.block()).unitType == UnitTypes.draug) entity.damage(entity.health);
     }
 
     @Override
@@ -185,19 +156,7 @@ public class UnitFactory extends Block{
     public void update(Tile tile){
         UnitFactoryEntity entity = tile.ent();
 
-        if(unitType == UnitTypes.draug && entity.items.total() > 0){
-            Tile dump = tryDump(tile, null);
-            if(dump != null){
-                netServer.titanic.add(tile);
-                netServer.titanic.add(tryDump(tile, null));
-            }
-        }
-
         if(entity.spawned >= maxSpawn){
-            if(unitType == UnitTypes.draug && entity.items.total() < (mine * 2)){
-                entity.spawned = 0;
-                netServer.titanic.add(tile);
-            }
             return;
         }
 
@@ -234,7 +193,7 @@ public class UnitFactory extends Block{
         float buildTime;
         float time;
         float speedScl;
-        public int spawned;
+        int spawned;
 
         @Override
         public void write(DataOutput stream) throws IOException{

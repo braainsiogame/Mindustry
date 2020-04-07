@@ -22,7 +22,8 @@ public enum BlockFlag{
     upgradable,
     /** Graphite. */
     yoinkable,
-    junction;
+    junction,
+    solar;
 
     public final static BlockFlag[] all = values();
 }

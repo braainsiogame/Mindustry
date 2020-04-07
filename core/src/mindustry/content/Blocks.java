@@ -1235,7 +1235,7 @@ public class Blocks implements ContentList{
             requirements(Category.power, ItemStack.with(Items.lead, 10, Items.silicon, 15));
             powerProduction = 0.06f;
 
-            flags = EnumSet.of(BlockFlag.scalable);
+            flags = EnumSet.of(BlockFlag.scalable, BlockFlag.solar);
             upscale = () -> largeSolarPanel;
         }};
 
