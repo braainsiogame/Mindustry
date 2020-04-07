@@ -1,8 +1,8 @@
 package mindustry.entities.type.base;
 
 import arc.math.Mathf;
-import arc.util.Structs;
-import mindustry.content.Blocks;
+import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.traits.MinerTrait;
 import mindustry.entities.type.TileEntity;
 import mindustry.entities.units.UnitState;
@@ -38,6 +38,7 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
             //core full of the target item, do nothing
             if(targetItem != null && entity.block.acceptStack(targetItem, 1, entity.tile, MinerDrone.this) == 0){
                 MinerDrone.this.clearItem();
+                if(mineTile != null) kill();
                 return;
             }
 
@@ -103,6 +104,11 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
             }
 
             circle(type.range / 1.8f);
+        }
+
+        @Override
+        public void exited(){
+            kill();
         }
     };
 
@@ -175,5 +181,11 @@ public class MinerDrone extends BaseDrone implements MinerTrait{
             return;
         }
         targetItem = Structs.findMin(type.toMine, indexer::hasOre, (a, b) -> -Integer.compare(entity.items.get(a), entity.items.get(b)));
+    }
+
+    @Override
+    public void kill(){
+        applyEffect(StatusEffects.overdrive, 60f);
+        Time.run(30f, super::kill);
     }
 }
