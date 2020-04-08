@@ -599,7 +599,7 @@ public class NetServer implements ApplicationListener{
                                 jsArray = new StringBuilder("[]");
                             }
 
-                            finalscript = "args = " + jsArray + ";\n" + finalscript;
+                            finalscript = "args = " + jsArray + ";" + finalscript;
 
                             StringBuilder output =  new StringBuilder(mods.getScripts().runConsole(finalscript));
                             // There probably a simpler way to do this
