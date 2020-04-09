@@ -237,7 +237,7 @@ public class HudFragment extends Fragment{
                         });
                     }
                 }).width(dsize * 5 + 4f);
-                editorMain.visible(() -> shown && state.isEditor());
+                editorMain.visible(() -> shown && state.isLegotick());
             }
 
             //fps display
@@ -364,6 +364,14 @@ public class HudFragment extends Fragment{
     public static void setPlayerTeamEditor(Player player, Team team){
         if(state.isEditor() && player != null){
             player.setTeam(team);
+        }
+
+        if(state.isLegotick() && player != null){
+            if(team == Team.derelict) logic.tileGroupBattery++;
+            if(team == Team.crux)     logic.tileGroupPausing = false;
+            if(team == Team.green)    logic.tileGroupPausing = true;
+            if(team == Team.purple)   logic.tileGroupBattery += 10;
+            if(team == Team.blue)     logic.tileGroupBattery += 60;
         }
     }
 
@@ -681,8 +689,7 @@ public class HudFragment extends Fragment{
             }else if(inLaunchWave()){
                 ui.showConfirm("$confirm", "$launch.skip.confirm", () -> !canSkipWave(), () -> state.wavetime = 0f);
             }else{
-                logic.tileGroupBattery++;
-                state.wave++;
+                state.wavetime = 0f;
             }
         }).growY().fillX().right().width(40f)
         .visible(this::canSkipWave);
