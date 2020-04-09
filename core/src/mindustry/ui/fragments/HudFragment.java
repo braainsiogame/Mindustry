@@ -681,7 +681,8 @@ public class HudFragment extends Fragment{
             }else if(inLaunchWave()){
                 ui.showConfirm("$confirm", "$launch.skip.confirm", () -> !canSkipWave(), () -> state.wavetime = 0f);
             }else{
-                state.wavetime = 0f;
+                logic.tileGroupBattery++;
+                state.wave++;
             }
         }).growY().fillX().right().width(40f)
         .visible(this::canSkipWave);

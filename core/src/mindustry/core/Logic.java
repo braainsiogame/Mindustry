@@ -31,6 +31,8 @@ import static mindustry.Vars.*;
  */
 public class Logic implements ApplicationListener{
 
+    public int tileGroupBattery = 0;
+
     public Logic(){
         Events.on(WaveEvent.class, event -> {
             for(Player p : playerGroup.all()){
@@ -238,7 +240,8 @@ public class Logic implements ApplicationListener{
                     puddleGroup.update();
                     shieldGroup.update();
                     bulletGroup.update();
-                    tileGroup.update();
+                    if(tileGroupBattery > 0) tileGroup.update();
+                    if(tileGroupBattery > 0) tileGroupBattery--;
                     fireGroup.update();
                 }else{
                     unitGroup.updateEvents();
