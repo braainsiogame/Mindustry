@@ -1490,9 +1490,6 @@ public class Blocks implements ContentList{
             ammoUseEffect = Fx.none;
             health = 400;
             shootSound = Sounds.flame;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPadLarge;
         }};
 
         hail = new ArtilleryTurret("hail"){{
@@ -1509,9 +1506,6 @@ public class Blocks implements ContentList{
             shootCone = 10f;
             health = 260;
             shootSound = Sounds.artillery;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPad;
         }};
 
         wave = new LiquidTurret("wave"){{
