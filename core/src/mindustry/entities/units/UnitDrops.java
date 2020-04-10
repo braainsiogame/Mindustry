@@ -32,6 +32,9 @@ public class UnitDrops{
 
         unit.item().item = item(unit.getType());
         unit.item().amount = 10;
+
+        if(unit.item().item == null) unit.item().amount = 0;
+        if(unit.item().item == null) unit.item().item = copper;
     }
 
     private static Item item(UnitType type){
