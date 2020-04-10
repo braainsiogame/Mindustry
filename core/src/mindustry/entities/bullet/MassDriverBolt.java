@@ -1,15 +1,14 @@
 package mindustry.entities.bullet;
 
+import arc.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.*;
 import mindustry.content.Fx;
-import mindustry.entities.Effects;
+import mindustry.entities.*;
 import mindustry.entities.type.Bullet;
 import mindustry.graphics.Pal;
-import mindustry.world.*;
 import mindustry.world.blocks.distribution.MassDriver.DriverBulletData;
 
 import static mindustry.Vars.*;
@@ -82,6 +81,14 @@ public class MassDriverBolt extends BulletType{
         if(intersect){
             data.to.handlePayload(b, data);
         }
+
+        Units.all(u -> {
+            if(u.isFlying()){
+                if(u.dst(b) < tilesize * 2){
+                    Core.app.post(u::kill);
+                }
+            }
+        });
     }
 
     @Override

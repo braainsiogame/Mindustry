@@ -76,6 +76,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
     private boolean moved;
 
     public ObjectMap<Tile, Integer> syncbeacons = new ObjectMap<>();
+    protected Array<Tile> tempTiles = new Array<>();
 
     public int idle = 0;
 
@@ -556,6 +557,8 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
                 }
             }
         }
+
+        if(isFlying() && tile != null) tile.getAroundTiles(tempTiles).each(t -> t.block.skyscraper, t -> Core.app.post(() -> t.entity.damage(velocity.len2())));
 
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);
         shootHeat = Mathf.lerpDelta(shootHeat, isShooting() ? 1f : 0f, 0.06f);

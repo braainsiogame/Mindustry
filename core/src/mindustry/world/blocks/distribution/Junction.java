@@ -83,7 +83,7 @@ public class Junction extends Block{
                     tile.entity.proximity().each(t -> tripod[0] += t.rotation == neighbor.rotation ? 1 : 0);
                     if(tripod[0] == 3){
                         Tile input = tile.entity.proximity().find(t -> t.rotation != neighbor.rotation);
-                        if(input.front() == tile){
+                        if(input.front() != null && input.front() == tile){
                             Tile air = input.getNearby(input.relativeTo(tile)).getNearby(input.relativeTo(tile)).getNearby((neighbor.rotation + 2) % 4);
                             if(air.block == Blocks.air){
                                 Call.onEffect(Fx.healBlockFull, air.drawx(), air.drawy(), tile.block.size, Pal.bar);

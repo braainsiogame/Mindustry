@@ -50,6 +50,7 @@ public class Block extends BlockStorage{
     /** whether unloaders work on this block*/
     public boolean unloadable = true;
     public boolean extractable = true;
+    public boolean skyscraper = false;
     /** whether this is solid */
     public boolean solid;
     /** whether this block CAN be solid. */
