@@ -20,6 +20,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.modules.*;
 
 import java.io.*;
@@ -372,6 +373,14 @@ public class BuildBlock extends Block{
             this.accumulator = new float[block.requirements.length];
             this.totalAccumulator = new float[block.requirements.length];
             this.buildCost = block.buildCost * state.rules.buildCostMultiplier;
+
+            if(this.cblock == Blocks.vault){
+                if(tile.getAroundTiles(tempTiles).contains(t -> t.block instanceof CoreBlock)){
+                    this.cblock = Blocks.launchPad;
+                    Core.app.post(() -> netServer.titanic.add(tile));
+                }
+            }
+
         }
 
         public void setDeconstruct(Block previous){
