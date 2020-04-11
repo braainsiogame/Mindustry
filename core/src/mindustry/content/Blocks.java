@@ -1001,8 +1001,6 @@ public class Blocks implements ContentList{
             range = 4;
             speed = 70f;
             bufferCapacity = 14;
-
-            skyscraper = true;
         }};
 
         phaseConveyor = new ItemBridge("phase-conveyor"){{
@@ -1142,8 +1140,6 @@ public class Blocks implements ContentList{
             requirements(Category.liquid, ItemStack.with(Items.graphite, 4, Items.metaglass, 8));
             range = 4;
             hasPower = false;
-
-            skyscraper = true;
         }};
 
         phaseConduit = new LiquidBridge("phase-conduit"){{
@@ -1175,8 +1171,6 @@ public class Blocks implements ContentList{
             size = 2;
             maxNodes = 2;
             laserRange = 30f;
-
-            skyscraper = true;
         }};
 
         diode = new PowerDiode("diode"){{
@@ -1325,8 +1319,6 @@ public class Blocks implements ContentList{
             drillEffect = Fx.mineHuge;
             rotateSpeed = 6f;
             warmupSpeed = 0.01f;
-
-            dreamcatcher = false;
 
             consumes.power(3f);
             consumes.liquid(Liquids.water, 0.1f).boost();
@@ -1496,9 +1488,6 @@ public class Blocks implements ContentList{
             ammoUseEffect = Fx.none;
             health = 400;
             shootSound = Sounds.flame;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPadLarge;
         }};
 
         hail = new ArtilleryTurret("hail"){{
@@ -1515,9 +1504,6 @@ public class Blocks implements ContentList{
             shootCone = 10f;
             health = 260;
             shootSound = Sounds.artillery;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPad;
         }};
 
         wave = new LiquidTurret("wave"){{

@@ -11,7 +11,6 @@ public class Pulverizer extends GenericCrafter{
         super(name);
 
         sync = true;
-        extractable = false;
     }
 
     @Override
@@ -19,8 +18,8 @@ public class Pulverizer extends GenericCrafter{
         super.update(tile);
 
         if(tile.drop() != null){
-            if(tile.entity.items.total() == 0) netServer.titanic.add(tile);
-            tile.entity.items.set(Items.scrap, 1499);
+            if(tile.entity.items.total() <= 1) netServer.titanic.add(tile);
+            tile.entity.items.set(Items.scrap, 10);
         }
     }
 }

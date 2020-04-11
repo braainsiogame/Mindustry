@@ -88,9 +88,7 @@ public class Door extends Wall{
             return;
         }
 
-        Time.run(5f, () -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> {
-            t.block().tapped(t, null);
-        }));
+        Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> t.block().tapped(t, null)));
 
         Call.onDoorToggle(null, tile, !entity.open);
     }

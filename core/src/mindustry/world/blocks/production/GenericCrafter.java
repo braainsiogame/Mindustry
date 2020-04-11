@@ -16,8 +16,6 @@ import mindustry.world.meta.*;
 
 import java.io.*;
 
-import static mindustry.Vars.netServer;
-
 public class GenericCrafter extends Block{
     public ItemStack outputItem;
     public LiquidStack outputLiquid;
@@ -103,7 +101,7 @@ public class GenericCrafter extends Block{
             entity.warmup = Mathf.lerp(entity.warmup, 0f, 0.02f);
         }
 
-        if(entity.progress >= 1f && entity.cons.valid()){
+        if(entity.progress >= 1f){
             entity.cons.trigger();
 
             if(outputItem != null){

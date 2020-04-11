@@ -1,9 +1,9 @@
 package mindustry.input;
 
 import arc.*;
+import arc.struct.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import arc.util.pooling.*;
 import mindustry.world.*;
 
@@ -15,7 +15,7 @@ public class Placement{
     private static final NormalizeResult result = new NormalizeResult();
     private static final NormalizeDrawResult drawResult = new NormalizeDrawResult();
     private static Bresenham2 bres = new Bresenham2();
-    public  static Array<Point2> points = new Array<>();
+    private static Array<Point2> points = new Array<>();
 
     //for pathfinding
     private static IntFloatMap costs = new IntFloatMap();
@@ -28,7 +28,7 @@ public class Placement{
 
         points.clear();
         if(conveyors && Core.settings.getBool("conveyorpathfinding")){
-            if(astar(startX, startY, endX, endY, control.input.block)){
+            if(astar(startX, startY, endX, endY)){
                 return points;
             }else{
                 return normalizeLine(startX, startY, endX, endY);
@@ -56,7 +56,9 @@ public class Placement{
         return points;
     }
 
-    private static float tileHeuristic(Tile tile, Tile other, Block block){
+    private static float tileHeuristic(Tile tile, Tile other){
+        Block block = control.input.block;
+
         if((!other.block().alwaysReplace && !(block != null && block.canReplace(other.block()))) || other.floor().isDeep()){
             return 20;
         }else{
@@ -74,7 +76,8 @@ public class Placement{
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
-    private static boolean validNode(Tile tile, Tile other, Block block){
+    private static boolean validNode(Tile tile, Tile other){
+        Block block = control.input.block;
         if(block != null && block.canReplace(other.block())){
             return true;
         }else{
@@ -82,7 +85,7 @@ public class Placement{
         }
     }
 
-    public static boolean astar(int startX, int startY, int endX, int endY, Block block){
+    private static boolean astar(int startX, int startY, int endX, int endY){
         Tile start = world.tile(startX, startY);
         Tile end = world.tile(endX, endY);
         if(start == end || start == null || end == null) return false;
@@ -108,10 +111,10 @@ public class Placement{
             for(Point2 point : Geometry.d4){
                 int newx = next.x + point.x, newy = next.y + point.y;
                 Tile child = world.tile(newx, newy);
-                if(child != null && validNode(next, child, block)){
+                if(child != null && validNode(next, child)){
                     if(closed.add(child.pos())){
                         parents.put(child.pos(), next.pos());
-                        costs.put(child.pos(), tileHeuristic(next, child, block) + baseCost);
+                        costs.put(child.pos(), tileHeuristic(next, child) + baseCost);
                         queue.add(child);
                     }
                 }

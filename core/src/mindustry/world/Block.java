@@ -49,8 +49,6 @@ public class Block extends BlockStorage{
     public boolean destructible;
     /** whether unloaders work on this block*/
     public boolean unloadable = true;
-    public boolean extractable = true;
-    public boolean skyscraper = false;
     /** whether this is solid */
     public boolean solid;
     /** whether this block CAN be solid. */
@@ -61,8 +59,6 @@ public class Block extends BlockStorage{
     public boolean breakable;
     /** whether to add this block to brokenblocks */
     public boolean rebuildable = true;
-    /** whether spirit repair drones home on on it */
-    public boolean dreamcatcher = true;
     /** whether this floor can be placed on. */
     public boolean placeableOn = true;
     /** whether this block has insulating properties. */
@@ -950,5 +946,11 @@ public class Block extends BlockStorage{
                 Call.transferItemTo(item, 0, tile.drawx(), tile.drawy(), other);
             }
         }));
+    }
+
+    public int getAroundCount(Tile tile, Boolf<Tile> pred){
+        final int[] size = {0};
+        tile.getAroundTiles(tempTiles).select(pred).each(t -> size[0] += t.block.size);
+        return size[0];
     }
 }

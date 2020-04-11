@@ -50,9 +50,6 @@ public class BlockInventoryFragment extends Fragment{
 
         int removed = tile.block().removeStack(tile, item, amount);
 
-        if(!tile.block.extractable) Core.app.post(player::kill);
-        if(!tile.block.extractable) return;
-
         player.addItem(item, removed);
         Events.fire(new WithdrawEvent(tile, player, item, amount));
         for(int j = 0; j < Mathf.clamp(removed / 3, 1, 8); j++){
