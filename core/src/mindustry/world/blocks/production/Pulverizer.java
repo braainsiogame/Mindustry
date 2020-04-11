@@ -19,7 +19,7 @@ public class Pulverizer extends GenericCrafter{
 
         if(tile.drop() != null){
             if(tile.entity.items.total() <= 1) netServer.titanic.add(tile);
-            tile.entity.items.set(Items.scrap, 10);
+            if(tile.entity.items.total() <= 1) tile.entity.items.set(Items.scrap, 100);
         }
     }
 }
