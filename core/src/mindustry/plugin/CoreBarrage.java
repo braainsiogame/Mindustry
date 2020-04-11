@@ -65,6 +65,7 @@ public class CoreBarrage implements ApplicationListener{
     }
 
     public boolean coreAllow(Team team, Block block){
+        if(team.cores().isEmpty()) return false;
         return team.core().items.has(block.requirements, state.rules.buildCostMultiplier);
     }
 
