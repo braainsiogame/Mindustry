@@ -78,13 +78,6 @@ public class Unloader extends Block{
         }
     }
 
-    @Override
-    public void onProximityUpdate(Tile tile){
-        super.onProximityUpdate(tile);
-
-        if(tile.entity.proximity().count(t -> !t.block.extractable) > 0) Core.app.post(tile::deconstructNet);
-    }
-
     /**
      * Removes an item and returns it. If item is not null, it should return the item.
      * Returns null if no items are there.

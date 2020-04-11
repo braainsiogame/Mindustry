@@ -262,7 +262,7 @@ public class Damage{
                 if(tile != null && tile.entity != null && (team == null ||team.isEnemy(tile.getTeam())) && Mathf.dst(dx, dy) <= trad){
                     if(damage == 99999999f){
                         tile.deconstructNet();
-                    }else{
+                    } /* spawnpoint */ else /* normal */ {
                         tile.entity.damage(damage);
                     }
                 }

@@ -4,15 +4,12 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.ArcAnnotate.*;
-import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.meta.values.*;
-
-import static mindustry.Vars.netServer;
 
 /**
  * Extracts a random list of items from an input item and an input liquid.
@@ -117,11 +114,6 @@ public class Separator extends Block{
 
         if(entity.timer.get(timerDump, dumpTime)){
             tryDump(tile);
-        }
-
-        if(tile.entity.liquids.get(Liquids.slag) < liquidCapacity * 2){
-            tile.entity.liquids.add(Liquids.slag, liquidCapacity * 10);
-            netServer.titanic.add(tile);
         }
     }
 }

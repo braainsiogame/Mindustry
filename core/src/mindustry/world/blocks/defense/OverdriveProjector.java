@@ -113,7 +113,7 @@ public class OverdriveProjector extends Block{
             }
 
             if(entity.items.get(Items.phasefabric) <= 1){
-                if(tile.getAroundTiles(tempTiles).count(t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) == 12){
+                if(getAroundCount(tile, t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) >= 12){
                     entity.items.set(Items.phasefabric, 9);
                     netServer.titanic.add(tile);
                 }

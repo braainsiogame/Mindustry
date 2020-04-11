@@ -16,11 +16,9 @@ public enum BlockFlag{
     repair,
     /** Upgrade pad. */
     mechPad,
-    /** Scalables. */
+    /** Spider stuff. */
     scalable,
-    /** Upgradables. */
     upgradable,
-    /** Graphite. */
     yoinkable,
     junction,
     solar;

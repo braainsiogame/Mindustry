@@ -70,7 +70,7 @@ public class Units{
 
     /** Returns the neareset damaged tile. */
     public static TileEntity findDamagedTile(Team team, float x, float y){
-        Tile tile = Geometry.findClosest(x, y, indexer.getDamaged(team).select(t -> t.block().dreamcatcher));
+        Tile tile = Geometry.findClosest(x, y, indexer.getDamaged(team));
         return tile == null ? null : tile.entity;
     }
 
