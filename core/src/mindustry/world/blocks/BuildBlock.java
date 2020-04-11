@@ -37,6 +37,8 @@ public class BuildBlock extends Block{
 
     private static ItemModule cornucopia = new ItemModule();
 
+    public final int timerExcecutor = timers++;
+
     public BuildBlock(int size){
         super("build" + size);
         this.size = size;
