@@ -232,7 +232,7 @@ public class BuildBlock extends Block{
                 setConstruct(previous, cblock);
             }
 
-            ItemModule inventory = core.items;
+            ItemModule inventory = core == null ? null : core.items;
 
             if(builder instanceof Player){
                 builderID = builder.getID();
