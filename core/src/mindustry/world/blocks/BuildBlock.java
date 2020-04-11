@@ -377,8 +377,7 @@ public class BuildBlock extends Block{
             this.buildCost = block.buildCost * state.rules.buildCostMultiplier;
 
             if(this.cblock == Blocks.vault){
-                // fixme, around tiles also gets the non adjecent corners (as intended elsewhere)
-                if(tile.getAroundTiles(tempTiles).contains(t -> t.block instanceof CoreBlock)){
+                if(proximity().contains(t -> t.block instanceof CoreBlock)){
                     this.cblock = Blocks.launchPad;
                     Core.app.post(() -> netServer.titanic.add(tile));
                 }
