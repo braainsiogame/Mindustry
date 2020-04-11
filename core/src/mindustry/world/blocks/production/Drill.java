@@ -303,6 +303,8 @@ public class Drill extends Block{
         super.placed(tile);
         DrillEntity entity = tile.ent();
 
+        update(tile);
+
         if(tile.block == Blocks.pneumaticDrill && entity.dominantItem != Items.coal){
             Core.app.post(() -> {
                 Tile other = indexer.getAllied(tile.getTeam(), BlockFlag.yoinkable).select(t -> t.<DrillEntity>ent().dominantItem == Items.coal && !coreBarrage.pending.contains(t)).asArray().random();
