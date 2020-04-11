@@ -113,12 +113,4 @@ public class MassDriverBolt extends BulletType{
         super.hit(b, hitx, hity);
         despawned(b);
     }
-
-    @Override
-    public void removed(Bullet b){
-        if(upgrading.containsKey(b)){
-            upgrading.get(b).block.upgrade(upgrading.get(b));
-            upgrading.remove(b);
-        }
-    }
 }

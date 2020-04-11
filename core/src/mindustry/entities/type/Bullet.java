@@ -1,5 +1,6 @@
 package mindustry.entities.type;
 
+import arc.func.*;
 import mindustry.annotations.Annotations.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -27,6 +28,8 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
     protected BulletType type;
     protected Entity owner;
     protected float time;
+
+    public Cons<Bullet> deathrattle = bullet -> {};
 
     /** Internal use only! */
     public Bullet(){
@@ -272,7 +275,7 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
 
     @Override
     public void removed(){
-        type.removed(this);
+        deathrattle.get(this);
         Pools.free(this);
     }
 
