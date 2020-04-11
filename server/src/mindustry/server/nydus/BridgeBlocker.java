@@ -29,7 +29,7 @@ public class BridgeBlocker implements ApplicationListener{
             link.<ItemBridgeEntity>ent().incoming.each(pos -> {
                 if (world.tile(pos) != tile) world.tile(pos).configure(Pos.invalid);
             });
-            
+
             cascade(link);
         }
     }
