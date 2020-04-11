@@ -25,6 +25,13 @@ public class CoreBarrage implements ApplicationListener{
     @Override
     public void init(){
         ((ItemTurret)Blocks.ripple).ammo.each((item, bullet) -> bullets.add(bullet));
+
+        bullets.addAll(
+        Bullets.artilleryDense,
+//        Bullets.artilleryHoming,
+        Bullets.artilleryIncendiary,
+        Bullets.artilleryExplosive,
+        Bullets.artilleryPlastic);
     }
 
     public void fire(Tile tile, Tile other){

@@ -1278,7 +1278,7 @@ public class Blocks implements ContentList{
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.05f).boost();
 
-            flags = EnumSet.of(BlockFlag.upgradable);
+            flags = EnumSet.of(BlockFlag.upgradable, BlockFlag.yoinkable);
             upgrade = t -> pneumaticDrill;
         }};
 
@@ -1290,7 +1290,6 @@ public class Blocks implements ContentList{
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.06f).boost();
 
-            flags = EnumSet.of(yoinkable);
             downgrade = () -> mechanicalDrill;
         }};
 
