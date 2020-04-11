@@ -5,10 +5,14 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import mindustry.content.Fx;
+import arc.math.geom.*;
+import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.type.Bullet;
+import mindustry.entities.type.*;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.MassDriver.DriverBulletData;
 
 import static mindustry.Vars.*;
@@ -82,10 +86,13 @@ public class MassDriverBolt extends BulletType{
             data.to.handlePayload(b, data);
         }
 
-        Units.all(u -> {
-            if(u.isFlying()){
-                if(u.dst(b) < tilesize * 2){
-                    Core.app.post(u::kill);
+        Geometry.circle(world.tileWorld(b.x, b.y).x, world.tileWorld(b.x, b.y).y, 2, (x, y) -> {
+            Tile other = world.tile(x, y);
+            if(other.block instanceof StaticWall){
+                other.deconstructNet();
+                for(Player p : playerGroup){
+                    p.syncbeacons.put(other, tilesize * 3);
+                    Call.createBullet(p, Bullets.slagShot, p.getTeam(), other.drawx(), other.drawy(), 0, 0, 10000f);
                 }
             }
         });
