@@ -86,9 +86,10 @@ public class MassDriverBolt extends BulletType{
             data.to.handlePayload(b, data);
         }
 
+        if(world.tileWorld(b.x, b.y) == null) return;
         Geometry.circle(world.tileWorld(b.x, b.y).x, world.tileWorld(b.x, b.y).y, 2, (x, y) -> {
             Tile other = world.tile(x, y);
-            if(other.block instanceof StaticWall){
+            if(other != null && other.block instanceof StaticWall){
                 other.deconstructNet();
                 for(Player p : playerGroup){
                     p.syncbeacons.put(other, tilesize * 3);
