@@ -71,6 +71,7 @@ public class ShockMine extends Block{
 
         for(int i = 0; i < 5; ++i){
             Tile target = tempTiles.pop();
+            if(target == null) continue;
             Bullet bullet = coreBarrage.bullet(Bullets.artilleryHoming, tile, target);
             bullet.deathrattle = b -> {
                 if(target.x == b.tileX() && target.y == b.tileY() && Build.validPlace(team, target.x, target.y, Blocks.shockMine, 0)) target.constructNet(Blocks.shockMine, team, (byte)0);
