@@ -268,7 +268,7 @@ public class ServerControl implements ApplicationListener{
             if(!maps.all().isEmpty()){
                 info("Maps:");
                 for(Map map : maps.all()){
-                    info("  &ly{0}: &lb&fi{1} / {2}x{3}", map.name(), map.custom ? "Custom" : "Default", map.width, map.height);
+                    info("  &ly{0}: &lb&fi{1} / {2}x{3} &lc({4})", map.name(), map.custom ? "Custom" : "Default", map.width, map.height, map.file.path());
                 }
             }else{
                 info("No maps found.");

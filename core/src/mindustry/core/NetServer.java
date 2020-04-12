@@ -27,6 +27,7 @@ import mindustry.net.Packets.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
+import mindustry.world.blocks.units.*;
 
 import java.io.*;
 import java.net.*;
@@ -261,6 +262,7 @@ public class NetServer implements ApplicationListener{
             player.setNet(player.x, player.y);
             player.color.set(packet.color);
             player.color.a = 1f;
+            player.lastSpawner = MechPad.coco.get(player.uuid);
 
             if(!spiderweb.has(player.uuid)) spiderweb.add(player.uuid);
             player.spiderling = spiderweb.get(player.uuid);
@@ -540,7 +542,7 @@ public class NetServer implements ApplicationListener{
             }
 
             scripter = player;
-            player.sendMessage("[lightgray]" + mods.getScripts().runConsole(args[0]));
+            player.sendMessage("[lightgray]" + mods.getScripts().runConsole("me = Vars.scripter\n" + args[0]));
         });
 
         clientCommands.<Player>register("ts", "<script> [arguments...]", "Run typed Javascript.", (args, player) -> {
