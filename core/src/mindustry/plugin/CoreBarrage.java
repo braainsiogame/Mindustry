@@ -3,6 +3,7 @@ package mindustry.plugin;
 import arc.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -20,7 +21,7 @@ public class CoreBarrage implements ApplicationListener{
 
     private Array<BulletType> bullets = new Array<>();
 
-    public ObjectSet<Tile> pending = new ObjectSet<>();
+    public ObjectMap<Tile, Block> pending = new ObjectMap<>();
 
     @Override
     public void init(){
@@ -38,7 +39,7 @@ public class CoreBarrage implements ApplicationListener{
         bullets.shuffle();
         BulletType type = bullets.first();
 
-        pending.add(other);
+        pending.put(other, other.block.upgrade.get(other));
         coreWithdraw(tile.getTeam(), other.block.upgrade.get(other));
 
         Vec2 predict = Predict.intercept(tile, other, type.speed);
@@ -48,16 +49,23 @@ public class CoreBarrage implements ApplicationListener{
         Call.createBullet(type, tile.getTeam(), tile.drawx(), tile.drawy(), tile.angleTo(other), 1f, (dst / maxTraveled));
         Bullet fired = bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
 
-        fired.deathrattle = b -> Core.app.post(() -> { // todo, refund on failure
-            other.block.upgrade(other);
+        fired.deathrattle = b -> Core.app.post(() -> {
+            if(pending.get(other) == null) return; // fixme, why is this needed?
+
+            if(other.block.upgrade.get(other) == pending.get(other)){
+                other.block.upgrade(other);
+            }else{
+                coreDeposit(b.getTeam(), pending.get(other));
+            }
+
             pending.remove(other);
         });
     }
 
     public Array<Tile> upgradable(Team team){
         return indexer.getAllied(team, BlockFlag.upgradable).select(t -> {
-            if(pending.contains(t)) return false;
-            if(t == null || t.block.upgrade == null || t.block.upgrade.get(t) == null) return false;
+            if(pending.containsKey(t)) return false;
+            if(t.block.upgrade == null || t.block.upgrade.get(t) == null) return false;
             if(!coreAllow(team, t.block.upgrade.get(t))) return false;
             if((t.block.upgrade.get(t) == Blocks.armoredConveyor || t.block.upgrade.get(t) == Blocks.platedConduit) && Units.closest(team, t.drawx(), t.drawy(), tilesize * 22, u -> u instanceof Player) != null) return false;
             return true;
@@ -66,7 +74,7 @@ public class CoreBarrage implements ApplicationListener{
 
     public boolean coreAllow(Team team, Block block){
         if(team.cores().isEmpty()) return false;
-        return team.core().items.has(block.requirements, state.rules.buildCostMultiplier);
+        return team.core().items.has(block.requirements, state.rules.buildCostMultiplier * 11);
     }
 
     public void coreWithdraw(Team team, Block block){
