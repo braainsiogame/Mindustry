@@ -950,7 +950,7 @@ public class Block extends BlockStorage{
 
     public int getAroundCount(Tile tile, Boolf<Tile> pred){
         final int[] size = {0};
-        tile.getAroundTiles(tempTiles).select(pred).each(t -> size[0] += t.block.size);
+        tile.getAroundTiles(tempTiles).select(pred).each(t -> size[0] += (t.block.size * t.block.size));
         return size[0];
     }
 }
