@@ -1,14 +1,16 @@
 package mindustry.world.blocks.defense;
 
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.math.Mathf;
-import mindustry.entities.effect.Lightning;
-import mindustry.entities.type.Unit;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.world.Block;
-import mindustry.world.Tile;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import mindustry.content.*;
+import mindustry.entities.effect.*;
+import mindustry.entities.type.*;
+import mindustry.game.*;
+import mindustry.graphics.*;
+import mindustry.world.*;
+
+import static mindustry.Vars.*;
 
 public class ShockMine extends Block{
     public final int timerDamage = timers++;
@@ -56,5 +58,25 @@ public class ShockMine extends Block{
             }
             tile.entity.damage(tileDamage);
         }
+    }
+
+    @Override
+    public void onDestroyed(Tile tile){
+
+        tempTiles.clear();
+        Geometry.circle(tile.x, tile.y, 5, (x, y) -> tempTiles.add(world.tile(x, y)));
+        tempTiles.shuffle();
+
+        Team team = tile.getTeam();
+
+        for(int i = 0; i < 5; ++i){
+            Tile target = tempTiles.pop();
+            Bullet bullet = coreBarrage.bullet(Bullets.artilleryHoming, tile, target);
+            bullet.deathrattle = b -> {
+                if(target.x == b.tileX() && target.y == b.tileY() && target.block == Blocks.air) target.constructNet(Blocks.shockMine, team, (byte)0);
+            };
+        }
+
+        super.onDestroyed(tile);
     }
 }

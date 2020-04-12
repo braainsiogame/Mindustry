@@ -42,12 +42,7 @@ public class CoreBarrage implements ApplicationListener{
         pending.put(other, other.block.upgrade.get(other));
         coreWithdraw(tile.getTeam(), other.block.upgrade.get(other));
 
-        Vec2 predict = Predict.intercept(tile, other, type.speed);
-        float dst = tile.dst(predict.x, predict.y);
-        float maxTraveled = type.lifetime * type.speed;
-
-        Call.createBullet(type, tile.getTeam(), tile.drawx(), tile.drawy(), tile.angleTo(other), 1f, (dst / maxTraveled));
-        Bullet fired = bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
+        Bullet fired = bullet(type, tile, other);
 
         fired.deathrattle = b -> Core.app.post(() -> {
             if(pending.get(other) == null) return; // fixme, why is this needed?
@@ -87,5 +82,14 @@ public class CoreBarrage implements ApplicationListener{
         for(ItemStack is: block.requirements){
             team.core().items.add(is.item, (int)(is.amount * state.rules.buildCostMultiplier));
         }
+    }
+
+    public Bullet bullet(BulletType type, Tile tile, Tile other){
+        Vec2 predict = Predict.intercept(tile, other, type.speed);
+        float dst = tile.dst(predict.x, predict.y);
+        float maxTraveled = type.lifetime * type.speed;
+
+        Call.createBullet(type, tile.getTeam(), tile.drawx(), tile.drawy(), tile.angleTo(other), 1f, (dst / maxTraveled));
+        return bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
     }
 }
