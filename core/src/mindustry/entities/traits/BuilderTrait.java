@@ -115,7 +115,7 @@ public interface BuilderTrait extends Entity, TeamTrait{
         current.stuck = Mathf.equal(current.progress, entity.progress);
         current.progress = entity.progress;
 
-        if(tile.block instanceof BuildBlock && !current.breaking){
+        if(tile.block instanceof BuildBlock && !current.breaking && current.stuck && this instanceof Player){
             if(entity.timer.get(((BuildBlock)tile.block).timerExcecutor, 60f - 2f) && core != null){
                 StringBuilder label = new StringBuilder();
 
@@ -126,7 +126,7 @@ public interface BuilderTrait extends Entity, TeamTrait{
                     if(!core.items.has(entity.cblock.requirements[i].item)) label.append(" ");
                 }
 
-                Call.onLabel(label.toString().trim(), 1f, entity.x, entity.y);
+                if(!label.toString().equals("")) Call.onLabel(((Player)this).con, label.toString().trim(), 1f, entity.x, entity.y);
             }
         }
     }

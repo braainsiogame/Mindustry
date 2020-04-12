@@ -24,6 +24,7 @@ import mindustry.maps.*;
 import mindustry.mod.*;
 import mindustry.net.Net;
 import mindustry.net.*;
+import mindustry.plugin.*;
 import mindustry.plugin.coreprotect.*;
 import mindustry.plugin.spiderchat.*;
 import mindustry.plugin.spiderweb.SpiderWeb;
@@ -184,6 +185,7 @@ public class Vars implements Loadable{
     public static CoreProtect coreProtect;
     public static SpiderChat spiderChat;
     public static SpiderWeb spiderweb;
+    public static CoreBarrage coreBarrage;
 
     public static Entities entities;
     public static EntityGroup<Player> playerGroup;
@@ -195,8 +197,6 @@ public class Vars implements Loadable{
     public static EntityGroup<Puddle> puddleGroup;
     public static EntityGroup<Fire> fireGroup;
     public static EntityGroup<BaseUnit> unitGroup;
-
-    public static ObjectMap<Bullet, Tile> upgrading;
 
     public static Player player;
     public static Player scripter;
@@ -257,8 +257,6 @@ public class Vars implements Loadable{
         shieldGroup = entities.add(ShieldEntity.class, false);
         fireGroup = entities.add(Fire.class).enableMapping();
         unitGroup = entities.add(BaseUnit.class).enableMapping();
-
-        upgrading = new ObjectMap<>();
 
         for(EntityGroup<?> group : entities.all()){
             group.setRemoveListener(entity -> {
