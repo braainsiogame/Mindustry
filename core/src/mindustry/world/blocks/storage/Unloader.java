@@ -68,7 +68,9 @@ public class Unloader extends Block{
             for(Tile other : tile.entity.proximity()){
                 if(other.interactable(tile.getTeam()) && other.block().unloadable && other.block().hasItems && entity.items.total() == 0 &&
                 ((entity.sortItem == null && other.entity.items.total() > 0) || hasItem(other, entity.sortItem))){
-                    offloadNear(tile, removeItem(other, entity.sortItem));
+                    Item item = removeItem(other, entity.sortItem);
+                    offloadNear(tile, item);
+                    if(item != null) other.block.unloaded(other, tile);
                 }
             }
         }
@@ -89,7 +91,6 @@ public class Unloader extends Block{
             return entity.items.take();
         }else{
             if(entity.items.has(item)){
-                entity.items.remove(item, 1);
                 return item;
             }
 
