@@ -27,6 +27,8 @@ public class Pulverizer extends GenericCrafter{
 
     @Override
     public void unloaded(Tile tile, Tile by){
-        Core.app.post(() -> tile.entity.kill());
+        Core.app.post(() -> {
+            if(tile.entity != null) tile.entity.kill();
+        });
     }
 }
