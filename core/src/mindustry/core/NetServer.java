@@ -603,15 +603,9 @@ public class NetServer implements ApplicationListener{
 
                             finalscript = "args = " + jsArray + ";" + finalscript;
 
-                            StringBuilder output =  new StringBuilder(mods.getScripts().runConsole(finalscript));
-                            // There probably a simpler way to do this
-                            if (output.toString().contains("console.js#") && (output.toString().contains("Exception") || output.toString().contains("EcmaError"))) {
-                                int lineNumber = Integer.parseInt(output.substring(output.lastIndexOf("#") + 1, output.lastIndexOf(")"))) - 1;
-                                output.replace(output.lastIndexOf("#")+1, output.lastIndexOf(")"), Integer.toString(lineNumber));
-                                player.sendMessage("[lightgray]" + output.toString());
-
-                            } else if (!output.toString().equals("0.0")) {
-                                player.sendMessage("[lightgray]" + output.toString());
+                            String output =  mods.getScripts().runConsole(finalscript);
+                            if(!output.equals("0.0")) {
+                                player.sendMessage("[lightgray]" + output);
                             }
                         });
                     }
