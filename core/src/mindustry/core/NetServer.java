@@ -610,6 +610,7 @@ public class NetServer implements ApplicationListener{
                                 player.sendMessage("[lightgray]" + output);
                             }
 
+                        });
                     }
 
                 } catch (FileNotFoundException e) {
