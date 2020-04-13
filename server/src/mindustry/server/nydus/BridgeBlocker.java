@@ -15,7 +15,7 @@ public class BridgeBlocker implements ApplicationListener{
     public void init(){
         Events.on(TapConfigEvent.class, event -> {
             if(event.tile.block == Blocks.itemBridge || event.tile.block == Blocks.bridgeConduit){
-                if(event.player.getTeam() != Team.cute) Core.app.post(() -> cascade(event.tile));
+                if(event.player == null || event.player.getTeam() != Team.cute) Core.app.post(() -> cascade(event.tile));
             }
         });
     }
