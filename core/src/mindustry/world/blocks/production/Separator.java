@@ -146,10 +146,4 @@ public class Separator extends Block{
             netServer.titanic.add(tile);
         }
     }
-
-    public void unloaded(Tile tile, Tile by){
-        Core.app.post(() -> {
-            if(tile.entity != null) tile.entity.kill();
-        });
-    }
 }

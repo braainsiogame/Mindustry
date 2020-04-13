@@ -91,6 +91,7 @@ public class Unloader extends Block{
             return entity.items.take();
         }else{
             if(entity.items.has(item)){
+                entity.items.remove(item, 1);
                 return item;
             }
 
