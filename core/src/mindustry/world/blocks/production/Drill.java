@@ -295,19 +295,24 @@ public class Drill extends Block{
                 entity.items.add(entity.dominantItem, 5);
                 netServer.titanic.add(tile);
             }
+        }
+    }
 
-            if(tile.block == Blocks.mechanicalDrill && entity.dominantItem == Items.coal && tile.entity.timer.get(timerYoink, 60 * 10)){
-                Tile victim = indexer.getAllied(tile.getTeam(), BlockFlag.yoinkable).select(t -> t.<DrillEntity>ent().dominantItem != Items.coal && t.<DrillEntity>ent().dominantItem != Items.titanium).asArray().random();
+    @Override
+    public void placed(Tile tile){
+        super.placed(tile);
+        DrillEntity entity = tile.ent();
 
-                if(victim != null){
-                    victim.setNet(Blocks.mechanicalDrill, tile.getTeam(), 0);
-                    tile.setNet(Blocks.pneumaticDrill, tile.getTeam(), 0);
+        update(tile);
 
-                    Call.onEffect(Fx.placeBlock, tile.drawx(), tile.drawy(), tile.block.size, Color.white);
-                    Call.onEffect(Fx.breakBlock, victim.drawx(), victim.drawy(), victim.block.size, Color.white);
+        if(tile.block == Blocks.pneumaticDrill && entity.dominantItem != Items.coal){
+            Core.app.post(() -> {
+                Tile other = indexer.getAllied(tile.getTeam(), BlockFlag.yoinkable).select(t -> t.<DrillEntity>ent().dominantItem == Items.coal && !coreBarrage.pending.containsKey(t)).asArray().random();
+                if(other != null){
+                    coreBarrage.fire(tile, other);
+                    tile.constructNet(Blocks.mechanicalDrill, tile.getTeam(), tile.rotation());
                 }
-
-            }
+            });
         }
     }
 

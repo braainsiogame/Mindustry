@@ -196,7 +196,6 @@ public class Tile implements Position, TargetTrait{
     }
 
     public void set(Block block, Team team, int rotation){
-
         setBlock(block, team, rotation);
         if(block.isMultiblock()){
             int offsetx = -(block.size - 1) / 2;
@@ -554,13 +553,11 @@ public class Tile implements Position, TargetTrait{
         tile.set(block, team, rotation);
     }
 
-    //nydus
-
-    public boolean border(){
-        return border(3);
+    public boolean isBorder(){
+        return isBorder(3);
     }
 
-    private boolean border(int distance){
+    private boolean isBorder(int distance){
         return x < distance || y < distance || x + distance >= world.width() || y + distance >= world.height();
     }
 }

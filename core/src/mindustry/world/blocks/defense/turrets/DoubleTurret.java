@@ -4,7 +4,6 @@ import arc.*;
 import arc.math.Mathf;
 import mindustry.content.*;
 import mindustry.entities.bullet.BulletType;
-import mindustry.type.*;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStat;
 import mindustry.world.meta.StatUnit;
@@ -41,10 +40,5 @@ public class DoubleTurret extends ItemTurret{
         useAmmo(tile);
 
         if(tile.block == Blocks.duo) Core.app.post(() -> tile.constructNet(Blocks.router, tile.getTeam(), tile.rotation()));
-    }
-
-    @Override
-    public void handleItem(Item item, Tile tile, Tile source){
-        super.handleItem(item, tile, source);
     }
 }

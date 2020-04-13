@@ -97,15 +97,6 @@ public class MendProjector extends Block{
                 }
             }
         }
-
-        if(tile.block == Blocks.mender){
-            if(entity.items.get(Items.silicon) <= 1){
-                if(entity.proximity().count(t -> t.block == Blocks.plastaniumWall || t.block == Blocks.plastaniumWallLarge) >= 2){
-                    entity.items.set(Items.silicon, 9);
-                    netServer.titanic.add(tile);
-                }
-            }
-        }
     }
 
     @Override

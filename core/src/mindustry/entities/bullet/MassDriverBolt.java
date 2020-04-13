@@ -1,15 +1,18 @@
 package mindustry.entities.bullet;
 
+import arc.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.*;
-import mindustry.content.Fx;
-import mindustry.entities.Effects;
-import mindustry.entities.type.Bullet;
+import arc.math.geom.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.type.*;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.MassDriver.DriverBulletData;
 
 import static mindustry.Vars.*;
@@ -82,6 +85,18 @@ public class MassDriverBolt extends BulletType{
         if(intersect){
             data.to.handlePayload(b, data);
         }
+
+        if(world.tileWorld(b.x, b.y) == null) return;
+        Geometry.circle(world.tileWorld(b.x, b.y).x, world.tileWorld(b.x, b.y).y, 2, (x, y) -> {
+            Tile other = world.tile(x, y);
+            if(other != null && other.block instanceof StaticWall){
+                other.deconstructNet();
+                for(Player p : playerGroup){
+                    p.syncbeacons.put(other, tilesize * 3);
+                    Call.createBullet(p, Bullets.slagShot, p.getTeam(), other.drawx(), other.drawy(), 0, 0, 10000f);
+                }
+            }
+        });
     }
 
     @Override
@@ -105,13 +120,5 @@ public class MassDriverBolt extends BulletType{
     public void hit(Bullet b, float hitx, float hity){
         super.hit(b, hitx, hity);
         despawned(b);
-    }
-
-    @Override
-    public void removed(Bullet b){
-        if(upgrading.containsKey(b)){
-            upgrading.get(b).block.upgrade(upgrading.get(b));
-            upgrading.remove(b);
-        }
     }
 }

@@ -1235,7 +1235,7 @@ public class Blocks implements ContentList{
             requirements(Category.power, ItemStack.with(Items.lead, 10, Items.silicon, 15));
             powerProduction = 0.06f;
 
-            flags = EnumSet.of(BlockFlag.scalable);
+            flags = EnumSet.of(BlockFlag.scalable, BlockFlag.solar);
             upscale = () -> largeSolarPanel;
         }};
 
@@ -1278,7 +1278,7 @@ public class Blocks implements ContentList{
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.05f).boost();
 
-            flags = EnumSet.of(BlockFlag.upgradable);
+            flags = EnumSet.of(BlockFlag.upgradable, BlockFlag.yoinkable);
             upgrade = t -> pneumaticDrill;
         }};
 
@@ -1290,7 +1290,6 @@ public class Blocks implements ContentList{
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.06f).boost();
 
-            flags = EnumSet.of(yoinkable);
             downgrade = () -> mechanicalDrill;
         }};
 
@@ -1319,8 +1318,6 @@ public class Blocks implements ContentList{
             drillEffect = Fx.mineHuge;
             rotateSpeed = 6f;
             warmupSpeed = 0.01f;
-
-            dreamcatcher = false;
 
             consumes.power(3f);
             consumes.liquid(Liquids.water, 0.1f).boost();
@@ -1490,9 +1487,6 @@ public class Blocks implements ContentList{
             ammoUseEffect = Fx.none;
             health = 400;
             shootSound = Sounds.flame;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPadLarge;
         }};
 
         hail = new ArtilleryTurret("hail"){{
@@ -1509,9 +1503,6 @@ public class Blocks implements ContentList{
             shootCone = 10f;
             health = 260;
             shootSound = Sounds.artillery;
-
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.scalable);
-            upscale = () -> launchPad;
         }};
 
         wave = new LiquidTurret("wave"){{

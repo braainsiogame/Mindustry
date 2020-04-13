@@ -20,6 +20,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.modules.*;
 
 import java.io.*;
@@ -35,6 +36,8 @@ public class BuildBlock extends Block{
     private static long lastPlayed;
 
     private static ItemModule cornucopia = new ItemModule();
+
+    public final int timerExcecutor = timers++;
 
     public BuildBlock(int size){
         super("build" + size);
@@ -231,7 +234,7 @@ public class BuildBlock extends Block{
                 setConstruct(previous, cblock);
             }
 
-            ItemModule inventory = core.items;
+            ItemModule inventory = core == null ? null : core.items;
 
             if(builder instanceof Player){
                 builderID = builder.getID();
@@ -372,6 +375,13 @@ public class BuildBlock extends Block{
             this.accumulator = new float[block.requirements.length];
             this.totalAccumulator = new float[block.requirements.length];
             this.buildCost = block.buildCost * state.rules.buildCostMultiplier;
+
+            if(this.cblock == Blocks.vault){
+                if(proximity().contains(t -> t.block instanceof CoreBlock)){
+                    this.cblock = Blocks.launchPad;
+                    Core.app.post(() -> netServer.titanic.add(tile));
+                }
+            }
         }
 
         public void setDeconstruct(Block previous){

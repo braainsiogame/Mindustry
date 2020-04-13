@@ -1,7 +1,6 @@
 package mindustry.entities.type;
 
 import arc.*;
-import arc.struct.*;
 import mindustry.annotations.Annotations.*;
 import arc.graphics.g2d.*;
 import arc.math.*;

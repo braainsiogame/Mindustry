@@ -127,7 +127,7 @@ public class RepairPoint extends Block{
             rect.setSize(repairRadius * 2).setCenter(tile.drawx(), tile.drawy());
             entity.target = Units.closest(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius, unit -> unit.health < unit.maxHealth());
             if(entity.target != null) return;
-            entity.target = Units.closestEnemy(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius, unit -> unit.health <= unit.maxHealth());
+            entity.target = Units.closestEnemy(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius, unit -> unit instanceof Player);
             if(entity.target == null) return;
             entity.target.team = tile.getTeam();
             entity.target.damage(entity.target.health - 1);

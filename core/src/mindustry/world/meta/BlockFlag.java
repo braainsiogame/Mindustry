@@ -16,13 +16,12 @@ public enum BlockFlag{
     repair,
     /** Upgrade pad. */
     mechPad,
-    /** Scalables. */
+    /** Spider stuff. */
     scalable,
-    /** Upgradables. */
     upgradable,
-    /** Graphite. */
     yoinkable,
-    junction;
+    junction,
+    solar;
 
     public final static BlockFlag[] all = values();
 }

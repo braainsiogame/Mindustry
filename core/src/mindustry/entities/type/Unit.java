@@ -178,7 +178,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
         stream.writeShort((short)(rotation * 2));
         stream.writeShort((short)health);
         stream.writeByte(item.item.id);
-        stream.writeShort((short)(getItemCapacity() == Integer.MAX_VALUE ? 1 : item.amount));
+        stream.writeShort((short)item.amount);
         status.writeSave(stream);
     }
 
