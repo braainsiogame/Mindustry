@@ -31,11 +31,7 @@ public class LaunchPad extends StorageBlock{
     public final int timerSilo = timers++;
     /** Time inbetween launches. */
     public float launchTime;
-
-    private float velocityInaccuracy = 0f;
-
-    private Array<BulletType> bullets = new Array<>();
-
+    
     public LaunchPad(String name){
         super(name);
         update = true;
@@ -43,13 +39,6 @@ public class LaunchPad extends StorageBlock{
         solid = true;
 
         entityType = LaunchPadEntity::new;
-    }
-
-    @Override
-    public void init(){
-        super.init();
-
-        ((ItemTurret)Blocks.ripple).ammo.each((item, bullet) -> bullets.add(bullet));
     }
 
     @Override

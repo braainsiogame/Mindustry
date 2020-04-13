@@ -55,8 +55,6 @@ public class Drill extends Block{
     public TextureRegion rotatorRegion;
     public TextureRegion topRegion;
 
-    private final int timerYoink = timers++;
-
     public Drill(String name){
         super(name);
         update = true;
