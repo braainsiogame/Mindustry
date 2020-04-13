@@ -45,16 +45,10 @@ public class CoreBarrage implements ApplicationListener{
         Bullet fired = bullet(type, tile, other);
 
         fired.deathrattle = b -> Core.app.post(() -> {
-            try{
-                if(pending.get(other) == null || b.getTeam() == null) return; // fixme, why is this needed?
-
-                if(other.block.upgrade.get(other) == pending.get(other)){
-                    other.block.upgrade(other);
-                }else{
-                    coreDeposit(b.getTeam(), pending.get(other));
-                }
-            }finally{
-                pending.remove(other);
+            if(other.block.upgrade.get(other) == pending.get(other)){
+                other.block.upgrade(other);
+            }else{
+                coreDeposit(b.getTeam(), pending.get(other));
             }
         });
     }
