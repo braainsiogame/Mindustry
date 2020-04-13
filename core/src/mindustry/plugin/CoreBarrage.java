@@ -53,6 +53,7 @@ public class CoreBarrage implements ApplicationListener{
             }else{
                 coreDeposit(owner, charged);
             }
+            pending.remove(other);
         });
     }
 

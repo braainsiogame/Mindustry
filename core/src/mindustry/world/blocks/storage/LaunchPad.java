@@ -31,7 +31,7 @@ public class LaunchPad extends StorageBlock{
     public final int timerSilo = timers++;
     /** Time inbetween launches. */
     public float launchTime;
-    
+
     public LaunchPad(String name){
         super(name);
         update = true;
