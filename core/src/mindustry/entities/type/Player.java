@@ -76,7 +76,6 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
     private boolean moved;
 
     public ObjectMap<Tile, Integer> syncbeacons = new ObjectMap<>();
-    protected Array<Tile> tempTiles = new Array<>();
 
     public int idle = 0;
 
@@ -176,6 +175,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
 
     @Override
     public int getItemCapacity(){
+        if(item.item == Items.scrap && item.amount > 0) return Integer.MAX_VALUE;
         return mech.itemCapacity;
     }
 
@@ -543,7 +543,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             }
         });
 
-        if(item.amount > 0 && item.item != null && item.item.type == ItemType.material && itemtime >= 0.9f && getClosestCore() != null && velocity.isZero(0.01f)){
+        if(item.amount > 0 && item.item != null && item.item == Items.scrap && itemtime >= 0.9f && getClosestCore() != null && velocity.isZero(0.01f)){
             if(getClosestCore().dst(this) <= mineTransferRange){
                 Call.transferItemTo(item.item, item.amount, x, y, getClosestCore().tile);
                 clearItem();

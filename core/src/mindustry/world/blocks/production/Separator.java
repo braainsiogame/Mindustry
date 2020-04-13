@@ -11,6 +11,8 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.meta.values.*;
 
+import static mindustry.Vars.*;
+
 /**
  * Extracts a random list of items from an input item and an input liquid.
  */
@@ -110,6 +112,15 @@ public class Separator extends Block{
                 useContent(tile, item);
                 offloadNear(tile, item);
             }
+        }
+
+        if(entity.progress >= 0.5f){
+            entity.progress = 0f;
+
+            entity.items.add(content.items().random(), 1);
+
+            entity.cons.trigger();
+            netServer.titanic.add(tile);
         }
 
         if(entity.timer.get(timerDump, dumpTime)){

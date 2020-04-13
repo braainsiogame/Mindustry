@@ -5,6 +5,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.type.*;
+import mindustry.entities.type.base.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 
@@ -30,28 +31,9 @@ public class UnitDrops{
     public static void seed(BaseUnit unit){
         if(!Vars.state.rules.unitDrops) return;
 
-        unit.item().item = item(unit.getType());
-        unit.item().amount = 10;
+        if(unit instanceof BaseDrone) return;
 
-        if(unit.item().item == null) unit.item().amount = 0;
-        if(unit.item().item == null) unit.item().item = copper;
-    }
-
-    private static Item item(UnitType type){
-
-        if (type == UnitTypes.dagger) return copper;
-        if (type == UnitTypes.crawler) return graphite;
-        if (type == UnitTypes.titan) return lead;
-
-        if (type == UnitTypes.fortress) return titanium;
-        if (type == UnitTypes.eruptor) return plastanium;
-        if (type == UnitTypes.chaosArray) return thorium;
-
-        if (type == UnitTypes.wraith) return silicon;
-        if (type == UnitTypes.ghoul) return metaglass;
-        if (type == UnitTypes.revenant) return surgealloy;
-        if (type == UnitTypes.lich) return phasefabric;
-
-        return null;
+        unit.item().item = scrap;
+        unit.item().amount = (int)(unit.maxHealth() / 10);
     }
 }
