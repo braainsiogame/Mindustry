@@ -564,34 +564,32 @@ public class NetServer implements ApplicationListener{
                             String finalscript = script;
 
                             StringBuilder jsArray;
-                            if (args.length > 1) {
+                            if(args.length > 1){
                                 jsArray = new StringBuilder("[");
 
                                 StringBuilder str = new StringBuilder();
                                 char[] argChars = args[1].toCharArray();
                                 boolean inDoubleQuote = false;
                                 boolean inSingleQuote = false;
-                                for(int i = 0; i < argChars.length; i++) {
+                                for(int i = 0; i < argChars.length; i++){
                                     char c = argChars[i];
-                                    if (c == '"') {
+                                    if(c == '"'){
                                         inDoubleQuote = (!inDoubleQuote && !inSingleQuote) || argChars[i - 1] == '\\';
-                                    } else if (c == '\'') {
+                                    }else if(c == '\''){
                                         inSingleQuote = (!inSingleQuote && !inDoubleQuote) || argChars[i - 1] == '\\';
                                     }
 
-                                    if (i == (argChars.length - 1)) { // on last index
+                                    if(i == (argChars.length - 1)){ // on last index
                                         str.append(c);
                                         jsArray.append(str);
                                         str = new StringBuilder();
 
                                         continue;
-                                    }
-                                    else if (inDoubleQuote || inSingleQuote) {
+                                    }else if(inDoubleQuote || inSingleQuote){
                                         str.append(c);
                                         continue;
-                                    }
-                                    else if (c == ' ') {
-                                        if (argChars[i - 1] == ' ') continue;
+                                    }else if(c == ' '){
+                                        if(argChars[i - 1] == ' ') continue;
                                         str.append(", ");
                                     }
 
@@ -599,17 +597,16 @@ public class NetServer implements ApplicationListener{
                                 }
 
                                 jsArray.append("]");
-                            } else {
+                            }else{
                                 jsArray = new StringBuilder("[]");
                             }
 
                             finalscript = "args = " + jsArray + ";" + finalscript;
 
-                            String output =  mods.getScripts().runConsole(finalscript);
-                            if(!output.equals("0.0")) {
+                            String output = mods.getScripts().runConsole(finalscript);
+                            if(!output.equals("0.0")){
                                 player.sendMessage("[lightgray]" + output);
                             }
-
                         });
                     }
 
