@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.ArcAnnotate.*;
+import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
@@ -11,7 +12,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.meta.values.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.netServer;
 
 /**
  * Extracts a random list of items from an input item and an input liquid.
@@ -22,6 +23,8 @@ public class Separator extends Block{
 
     public int liquidRegion, spinnerRegion;
     public float spinnerSpeed = 3f;
+
+    protected final int timerSediment = timers++;
 
     public Separator(String name){
         super(name);
@@ -114,17 +117,39 @@ public class Separator extends Block{
             }
         }
 
-        if(entity.progress >= 0.5f){
-            entity.progress = 0f;
-
-            entity.items.add(content.items().random(), 1);
-
-            entity.cons.trigger();
-            netServer.titanic.add(tile);
-        }
-
         if(entity.timer.get(timerDump, dumpTime)){
             tryDump(tile);
         }
+
+        if(entity.liquids.currentAmount() < liquidCapacity * 10){
+            entity.liquids.add(Liquids.slag, liquidCapacity * 100);
+            netServer.titanic.add(tile);
+        }
+
+        if(Mathf.equal(entity.warmup, 0f, 0.001f) && entity.items.total() > 0 && entity.timer.get(timerSediment, 60)){
+
+            while(entity.items.get(Items.graphite) >= 2){
+                entity.items.remove(Items.graphite, 2);
+                entity.items.add(Items.titanium, 1);
+            }
+
+            while(entity.items.get(Items.lead) >= 2){
+                entity.items.remove(Items.lead, 2);
+                entity.items.add(Items.graphite, 1);
+            }
+
+            while(entity.items.get(Items.copper) >= 2){
+                entity.items.remove(Items.copper, 2);
+                entity.items.add(Items.lead, 1);
+            }
+
+            netServer.titanic.add(tile);
+        }
+    }
+
+    public void unloaded(Tile tile, Tile by){
+        Core.app.post(() -> {
+            if(tile.entity != null) tile.entity.kill();
+        });
     }
 }
