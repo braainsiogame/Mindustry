@@ -562,7 +562,7 @@ public class NetServer implements ApplicationListener{
                         String script = reader.lines().collect(Collectors.joining("\n"));
 
                         if(args.length > 1){
-                            script = args[1].replace(",", "\n") + "\n" + script;
+                            script = args[1].replace(",", ";") + script;
                         }
 
                         String finalScript = script;
