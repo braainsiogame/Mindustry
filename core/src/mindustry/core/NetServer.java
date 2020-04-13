@@ -573,24 +573,23 @@ public class NetServer implements ApplicationListener{
                                     if (c == '"') {
                                         inString = !inString || argChars[i - 1] == '\\';
                                     }
-                                    if (c == ' ' || i == (argChars.length - 1)) {
-                                        if (i == (argChars.length - 1)) {
-                                            str.append(c);
-                                        }
-                                        else if (inString) {
-                                            str.append(c);
-                                            continue;
-                                        }
-                                        else if (c == ' ') {
-                                            if (argChars[i - 1] == ' ') continue;
-                                            str.append(", ");
-                                        }
 
+                                    if (i == (argChars.length - 1)) { // on last index
+                                        str.append(c);
                                         jsArray.append(str);
                                         str = new StringBuilder();
 
                                         continue;
                                     }
+                                    else if (inString) {
+                                        str.append(c);
+                                        continue;
+                                    }
+                                    else if (c == ' ') {
+                                        if (argChars[i - 1] == ' ') continue;
+                                        str.append(", ");
+                                    }
+
                                     str.append(c);
                                 }
 
