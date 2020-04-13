@@ -51,7 +51,7 @@ public class CoreBarrage implements ApplicationListener{
             if(other.block.upgrade != null && other.block.upgrade.get(other) != null && other.block.upgrade.get(other) == pending.get(other)){
                 other.block.upgrade(other);
             }else{
-                coreDeposit(owner, charged);
+                if(!owner.cores().isEmpty()) coreDeposit(owner, charged);
             }
             pending.remove(other);
         });
