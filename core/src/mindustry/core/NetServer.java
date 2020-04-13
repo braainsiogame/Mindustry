@@ -567,11 +567,14 @@ public class NetServer implements ApplicationListener{
 
                                 StringBuilder str = new StringBuilder();
                                 char[] argChars = args[1].toCharArray();
-                                boolean inString = false;
+                                boolean inDoubleQuote = false;
+                                boolean inSingleQuote = false;
                                 for(int i = 0; i < argChars.length; i++) {
                                     char c = argChars[i];
                                     if (c == '"') {
-                                        inString = !inString || argChars[i - 1] == '\\';
+                                        inDoubleQuote = (!inDoubleQuote && !inSingleQuote) || argChars[i - 1] == '\\';
+                                    } else if (c == '\'') {
+                                        inSingleQuote = (!inSingleQuote && !inDoubleQuote) || argChars[i - 1] == '\\';
                                     }
 
                                     if (i == (argChars.length - 1)) { // on last index
@@ -581,7 +584,7 @@ public class NetServer implements ApplicationListener{
 
                                         continue;
                                     }
-                                    else if (inString) {
+                                    else if (inDoubleQuote || inSingleQuote) {
                                         str.append(c);
                                         continue;
                                     }
