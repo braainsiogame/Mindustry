@@ -39,16 +39,19 @@ public class CoreBarrage implements ApplicationListener{
         bullets.shuffle();
         BulletType type = bullets.first();
 
-        pending.put(other, other.block.upgrade.get(other));
-        coreWithdraw(tile.getTeam(), other.block.upgrade.get(other));
+        Team owner = tile.getTeam();
+        Block charged = other.block.upgrade.get(other);
+
+        pending.put(other, charged);
+        coreWithdraw(tile.getTeam(), charged);
 
         Bullet fired = bullet(type, tile, other);
 
         fired.deathrattle = b -> Core.app.post(() -> {
-            if(other.block.upgrade.get(other) == pending.get(other)){
+            if(other.block.upgrade != null && other.block.upgrade.get(other) != null && other.block.upgrade.get(other) == pending.get(other)){
                 other.block.upgrade(other);
             }else{
-                coreDeposit(b.getTeam(), pending.get(other));
+                coreDeposit(owner, charged);
             }
         });
     }

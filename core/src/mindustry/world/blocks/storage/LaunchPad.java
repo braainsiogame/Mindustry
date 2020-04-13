@@ -104,13 +104,15 @@ public class LaunchPad extends StorageBlock{
             }
         }
 
-        if(entity.timer.get(timerSilo, 60 * 5f) && entity.cons.valid()){
-            Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
-            for(int i = 0; i < itemCapacity / 5; ++i){
-                Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
-                if(other == null) continue;
-                coreBarrage.fire(tile, other);
-            }
+        if(entity.timer.get(timerSilo, 60 * 2.5f) && entity.cons.valid()){
+            Core.app.post(() -> {
+                Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+                for(int i = 0; i < itemCapacity / 5; ++i){
+                    Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
+                    if(other == null) continue;
+                    coreBarrage.fire(tile, other);
+                }
+            });
         }
     }
 
