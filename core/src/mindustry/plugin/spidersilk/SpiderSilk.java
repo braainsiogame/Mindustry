@@ -16,6 +16,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.modules.*;
 
 import java.io.*;
 import java.util.concurrent.*;
@@ -88,6 +89,8 @@ public class SpiderSilk implements ApplicationListener{
 
         public float weightMultiplier = 1f;
 
+        public ItemModule inventory;
+
         public Runnable added = () -> {
             footprint().each(t -> spiderSilk.reserved.add(t.pos()));
         };
@@ -104,9 +107,7 @@ public class SpiderSilk implements ApplicationListener{
         }
 
         protected void construct(Block block){
-            tile.getLinkedTilesAs(block, spiderSilk.tempTiles).each(t -> {
-                if(!team.cores().isEmpty()) team.core().items.add(block.requirements, state.rules.buildCostMultiplier);
-            });
+            tile.getLinkedTilesAs(block, spiderSilk.tempTiles).each(t -> inventory.add(t.block.requirements, state.rules.buildCostMultiplier));
 
             tile.constructNet(block, team, rotation);
             tile.block.placed(tile);

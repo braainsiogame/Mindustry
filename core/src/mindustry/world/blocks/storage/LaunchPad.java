@@ -23,6 +23,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import mindustry.world.modules.*;
 
 import java.util.concurrent.*;
 
@@ -98,18 +99,25 @@ public class LaunchPad extends StorageBlock{
         if(Nydus.launchpad_upgrading.active()){
             if(entity.timer.get(timerSilo, 60f * 5f) && entity.cons.valid()){
                 Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+
+                ItemModule inventory = tile.entity.items;
+
                 for(int i = 0; i < itemCapacity / 5; ++i){
+
                     Array<Silk> passed = spiderSilk.silky
                     .select(s -> s.team == tile.getTeam())
-                    .select(s -> tile.entity.items.has(s.requirements, state.rules.buildCostMultiplier * 11))
+                    .select(s -> inventory.has(s.requirements, state.rules.buildCostMultiplier * 11))
                     .select(s -> s.footprint().count(t -> spiderSilk.reserved.contains(t.pos())) == 0)
                     .select(s -> !s.abort.get());
 
                     if(!passed.isEmpty()){
+
                         Silk silk = passed.first();
-                        Bullet bullet = spiderSilk.bullet(spiderSilk.bullets.random(), tile, silk.tile);
+                        silk.inventory = inventory;
                         silk.added.run();
-                        tile.entity.items.sub(silk.requirements, state.rules.buildCostMultiplier);
+                        inventory.sub(silk.requirements, state.rules.buildCostMultiplier);
+
+                        Bullet bullet = spiderSilk.bullet(spiderSilk.bullets.random(), tile, silk.tile);
                         bullet.deathrattle = b -> {
                             Core.app.post(() -> {
                                 if(!silk.abort.get()){
@@ -117,7 +125,7 @@ public class LaunchPad extends StorageBlock{
                                     silk.trigger.run();
                                     silk.after.run();
                                 }else{
-                                    if(!silk.team.cores().isEmpty()) silk.team.core().items.add(silk.requirements, state.rules.buildCostMultiplier);
+                                    inventory.add(silk.requirements, state.rules.buildCostMultiplier);
                                 }
                                 silk.removed.run();
                             });
