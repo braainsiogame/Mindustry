@@ -9,11 +9,12 @@ import mindustry.entities.type.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import java.io.*;
 
-import static mindustry.Vars.content;
+import static mindustry.Vars.*;
 
 public class ItemSource extends Block{
     private static Item lastItem;
@@ -71,6 +72,15 @@ public class ItemSource extends Block{
     @Override
     public void update(Tile tile){
         ItemSourceEntity entity = tile.ent();
+
+        if(entity.outputItem == null){
+            entity.proximity().each(t -> t.block instanceof CoreBlock, core -> {
+                Item spoonfeed = Structs.findMin(content.items(), item -> item.type == ItemType.material, (a, b) -> -Integer.compare(core.entity.items.get(a), core.entity.items.get(b)));
+
+                if(spoonfeed != null && core.block.acceptItem(spoonfeed, core, null)) core.block.handleItem(spoonfeed, core, null);
+            });
+        }
+
         if(entity.outputItem == null) return;
 
         entity.items.set(entity.outputItem, 1);
