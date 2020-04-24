@@ -237,6 +237,14 @@ public class Logic implements ApplicationListener{
                     groundEffectGroup.update();
                 }
 
+                {
+                    if(unitGroup.size() > 2500 && !state.rules.editor){
+                        state.rules.editor = true;
+                        Call.onSetRules(state.rules);
+                        Events.fire(new GameOverEvent(Team.derelict));
+                    }
+                }
+
                 if(!state.isEditor()){
                     unitGroup.update();
                     puddleGroup.update();
