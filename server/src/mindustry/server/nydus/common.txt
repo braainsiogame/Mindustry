@@ -2,6 +2,6 @@ config motd off
 config allowCustomClients true
 config startCommands load autosave
 playerlimit 33
-
+config port 6060
 config name  [#8FA062]Nydus [#BDC386]Network [white]
 config desc [royal]@anuke [darkgray]mapping errors?
