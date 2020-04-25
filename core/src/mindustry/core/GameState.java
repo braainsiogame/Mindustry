@@ -57,6 +57,10 @@ public class GameState{
         return rules.editor;
     }
 
+    public boolean isNydus(){
+        return true;
+    }
+
     public boolean isPaused(){
         return (is(State.paused) && !net.active()) || (gameOver && !net.active());
     }
