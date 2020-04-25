@@ -13,6 +13,7 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.net.Net;
 import mindustry.net.*;
+import mindustry.server.nydus.*;
 
 import java.time.*;
 
@@ -77,6 +78,10 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(logic = new Logic());
         Core.app.addListener(netServer = new NetServer());
         Core.app.addListener(new ServerControl(args));
+
+        if(state.isNydus()){
+            Core.app.addListener(new Autosave());
+        }
 
         mods.eachClass(Mod::init);
 
