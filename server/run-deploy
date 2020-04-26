@@ -1,3 +1,5 @@
-./gradlew server:dist -PversionType="bleeding-edge"
-./gradlew desktop:dist -PversionType="bleeding-edge"
+version=$(curl -s https://api.github.com/repos/Anuken/MindustryBuilds/releases/latest | jq -r '.tag_name')
+
+./gradlew server:dist -PversionType="bleeding-edge" -Pbuildversion=$version
+./gradlew desktop:dist -PversionType="bleeding-edge" -Pbuildversion=$version
 scp server/build/libs/server-release.jar root@mindustry.nydus.app:/root/bleeding/
