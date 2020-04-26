@@ -1,7 +1,7 @@
 config motd off
 config allowCustomClients true
 config startCommands load autosave
-playerlimit 33
+playerlimit 10
 config port 6060
-config name  [#8FA062]Nydus [#BDC386]Network [white]
-config desc [royal]@anuke [darkgray]mapping errors?
+config name  [lightgray]Nydus [goldenrod]<-> [darkgray]Network [white]
+config desc [royal]@anuke [white]plastanium conveyor emoji?   
