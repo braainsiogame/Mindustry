@@ -853,6 +853,9 @@ public class Blocks implements ContentList{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with());
             health = 60 * wallHealthMultiplier;
             variants = 5;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> scrapWallLarge;
         }};
 
         scrapWallLarge = new Wall("scrap-wall-large"){{
