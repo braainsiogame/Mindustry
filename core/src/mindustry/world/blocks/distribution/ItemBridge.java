@@ -402,23 +402,4 @@ public class ItemBridge extends Block{
             }
         }
     }
-
-    @Override
-    public void silk(Tile tile, Cons<Silk> cons){
-        final int[] link = new int[1];
-
-        if(tile.block == Blocks.itemBridge) cons.get(new Silk(tile){{
-            requirements = Blocks.phaseConveyor.requirements;
-            trigger = () -> construct(Blocks.phaseConveyor);
-            before = () -> link[0] = tile.<ItemBridgeEntity>ent().config();
-            after = () -> tile.configureAny(link[0]);
-        }});
-
-        if(tile.block == Blocks.bridgeConduit) cons.get(new Silk(tile){{
-            requirements = Blocks.phaseConduit.requirements;
-            trigger = () -> construct(Blocks.phaseConduit);
-            before = () -> link[0] = tile.<ItemBridgeEntity>ent().config();
-            after = () -> tile.configureAny(link[0]);
-        }});
-    }
 }
