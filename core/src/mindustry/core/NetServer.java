@@ -670,6 +670,16 @@ public class NetServer implements ApplicationListener{
             player.sendMessage(Config.name.string().replace("[goldenrod]Nydus Network ", "") + " [goldenrod]" + Iconc.up);
 
         });
+
+        clientCommands.<Player>register("kil", "Server is kil.", (args, player) -> {
+
+            if(!player.isAdmin){
+                player.sendMessage("[scarlet]This command is reserved for admins.");
+                return;
+            }
+
+            System.exit(2);
+        });
     }
 
     public int votesRequired(){
