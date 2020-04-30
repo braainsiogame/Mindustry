@@ -1,11 +1,14 @@
 package mindustry.world.blocks.distribution;
 
-import arc.math.Mathf;
-import arc.util.Time;
+import arc.func.*;
+import arc.math.*;
+import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.type.*;
-import mindustry.type.Item;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
+import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.*;
 
 import java.io.*;
 
@@ -152,5 +155,13 @@ public class OverflowGate extends Block{
                 lastItem = items.first();
             }
         }
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.entity.proximity().count(t -> t.block instanceof Sorter) >= 2) cons.get(new Silk(tile){{
+            requirements = Blocks.shockMine.requirements;
+            trigger = () -> construct(Blocks.shockMine);
+        }});
     }
 }
