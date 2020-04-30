@@ -578,8 +578,6 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             achievedFlight = false;
         }
 
-        if(isLocal) isLocal = false; // stop it.
-
         if(!isLocal){
             interpolate();
             updateMechanics(); //building happens even with non-locals
