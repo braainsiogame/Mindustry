@@ -6,19 +6,17 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.*;
 import arc.util.ArcAnnotate.*;
-import mindustry.content.*;
+import mindustry.content.Fx;
+import mindustry.content.Liquids;
 import mindustry.entities.Effects;
 import mindustry.entities.Effects.Effect;
 import mindustry.entities.type.TileEntity;
 import mindustry.graphics.Pal;
-import mindustry.plugin.*;
-import mindustry.type.*;
+import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockStat;
-
-import static mindustry.Vars.netServer;
 
 /**
  * Pump that makes liquid from solids and takes in power. Only works on solid floor blocks.
@@ -30,8 +28,6 @@ public class SolidPump extends Pump{
     public float rotateSpeed = 1f;
     /** Attribute that is checked when calculating output. */
     public @Nullable Attribute attribute;
-
-    protected final int timerGroundwater = timers++;
 
     public SolidPump(String name){
         super(name);
@@ -109,15 +105,6 @@ public class SolidPump extends Pump{
         }
 
         fraction += entity.boost;
-
-        if(Nydus.ground_water_extractor.active() && tile.block == Blocks.waterExtractor && entity.timer.get(timerGroundwater, 60 * 2.5f)){
-            if(tile.getAroundTiles(tempTiles).contains(t -> t.block != Blocks.air && t.block.category != Category.liquid)){
-                if(entity.liquids.currentAmount() > -10){
-                    entity.liquids.reset(result, -100);
-                    netServer.titanic.add(tile);
-                }
-            }
-        }
 
         if(tile.entity.cons.valid() && typeLiquid(tile) < liquidCapacity - 0.001f){
             float maxPump = Math.min(liquidCapacity - typeLiquid(tile), pumpAmount * entity.delta() * fraction * entity.efficiency());
