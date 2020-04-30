@@ -86,13 +86,13 @@ public class LiquidModule extends BlockModule{
     public void write(DataOutput stream) throws IOException{
         byte amount = 0;
         for(float liquid : liquids){
-            if(liquid > 0) amount++;
+            if(liquid > 0 || liquid < 0) amount++;
         }
 
         stream.writeByte(amount); //amount of liquids
 
         for(int i = 0; i < liquids.length; i++){
-            if(liquids[i] > 0){
+            if(liquids[i] > 0 || liquids[i] < 0){
                 stream.writeByte(i); //liquid ID
                 stream.writeFloat(liquids[i]); //item amount
             }

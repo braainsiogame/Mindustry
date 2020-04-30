@@ -31,6 +31,7 @@ public enum Nydus{
 
     free_phase_overdrive(() -> true, "#overdrive-projector overdrivers get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
     free_phase_forcefield(() -> true, "#overdrive-projector forcefields get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
+    ground_water_extractor(() -> true, "#water-extractor blocks not from the #conduit liquid category {interfere} with groundwater"),
 
     duo_yeeter(() -> true, "#duo duo turrets can {lob} #copper-walls copper walls at the enemy"),
     repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
