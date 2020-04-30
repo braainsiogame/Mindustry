@@ -136,11 +136,26 @@ public class GenericCrafter extends Block{
             if(tile.entity.items.get(Items.lead) <= 1) netServer.titanic.add(tile);
             if(tile.entity.items.get(Items.lead) <= 1) tile.entity.items.set(Items.lead, 100);
         }
+
+        if(tile.block == Blocks.phaseWeaver && Nydus.free_thorium_weaver.active()){
+            if(entity.items.get(Items.thorium) <= 4){
+                if(getAroundCount(tile, t -> t.block == Blocks.thoriumWall || t.block == Blocks.thoriumWallLarge) >= 12){
+                    entity.items.set(Items.thorium, 20);
+                    netServer.titanic.add(tile);
+                }
+            }
+        }
     }
 
     @Override
     public void unloaded(Tile tile, Item item, Tile other){
-        if(tile.block == Blocks.pyratiteMixer && Nydus.pyratite_free_lead.active() && item == Items.lead){
+        if(tile.block == Blocks.pyratiteMixer && item == Items.lead && Nydus.pyratite_free_lead.active()){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
+        }
+
+        if(tile.block == Blocks.phaseWeaver && item == Items.thorium && Nydus.free_thorium_weaver.active()){
             Core.app.post(() -> {
                 if(tile.entity != null) tile.entity.kill();
             });
