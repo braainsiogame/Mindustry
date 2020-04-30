@@ -3,5 +3,4 @@ config allowCustomClients true
 config startCommands load autosave
 playerlimit 10
 config port 6060
-config name  [lightgray]Nydus [goldenrod]<-> [darkgray]Network [white]
-config desc [royal]@anuke [white]plastanium conveyor emoji?   
+config name  [lightgray]Nydus [goldenrod]<-> [darkgray]Network
