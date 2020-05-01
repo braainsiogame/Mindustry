@@ -90,7 +90,7 @@ public class Door extends Wall{
             return;
         }
 
-        if(Nydus.cascading_doors.active()) Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> t.block().tapped(t, null)));
+        if(Nydus.cascading_doors.active()) Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door && t.<DoorEntity>ent().open != entity.open).each(t -> t.block().tapped(t, null)));
 
         Call.onDoorToggle(null, tile, !entity.open);
     }
