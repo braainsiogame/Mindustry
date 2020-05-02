@@ -1,9 +1,9 @@
 package mindustry.entities.def;
 
+import arc.func.*;
 import arc.math.geom.QuadTree.*;
 import arc.math.geom.*;
 import mindustry.annotations.Annotations.*;
-import mindustry.async.PhysicsProcess.*;
 import mindustry.gen.*;
 
 @Component
@@ -11,7 +11,6 @@ abstract class HitboxComp implements Posc, QuadTreeObject{
     @Import float x, y;
 
     transient float lastX, lastY, hitSize;
-    transient PhysicRef body;
 
     @Override
     public void update(){
@@ -26,6 +25,10 @@ abstract class HitboxComp implements Posc, QuadTreeObject{
     @Override
     public void afterRead(){
         updateLastPosition();
+    }
+
+    void getCollisions(Cons<QuadTree> consumer){
+
     }
 
     void updateLastPosition(){

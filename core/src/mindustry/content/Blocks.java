@@ -907,7 +907,7 @@ public class Blocks implements ContentList{
             requirements(Category.distribution, ItemStack.with(Items.copper, 1, Items.lead, 1, Items.titanium, 1));
             health = 65;
             speed = 0.08f;
-            displayedSpeed = 10f;
+            displayedSpeed = 11f;
         }};
 
         plastaniumConveyor = new StackConveyor("plastanium-conveyor"){{
@@ -1673,13 +1673,11 @@ public class Blocks implements ContentList{
         groundFactory = new UnitFactory("ground-factory"){{
             requirements(Category.units, ItemStack.with(Items.copper, 30, Items.lead, 70));
             plans = new UnitPlan[]{
-                new UnitPlan(UnitTypes.dagger, 200f, ItemStack.with(Items.silicon, 10)),
-                new UnitPlan(UnitTypes.titan, 400f, ItemStack.with(Items.silicon, 10)),
+                new UnitPlan(UnitTypes.dagger, 500f, ItemStack.with(Items.silicon, 10)),
+                new UnitPlan(UnitTypes.titan, 800f, ItemStack.with(Items.silicon, 20, Items.titanium, 10)),
             };
             size = 3;
             consumes.power(1.2f);
-            //TODO this is incorrect
-            consumes.items(new ItemStack(Items.silicon, 10));
         }};
 
         airFactory = new UnitFactory("air-factory"){{
@@ -1690,8 +1688,6 @@ public class Blocks implements ContentList{
             };
             size = 3;
             consumes.power(1.2f);
-            //TODO
-            consumes.items(new ItemStack(Items.silicon, 10));
         }};
 
         navalFactory = new UnitFactory("naval-factory"){{
@@ -1702,8 +1698,6 @@ public class Blocks implements ContentList{
             size = 3;
             requiresWater = true;
             consumes.power(1.2f);
-            //TODO
-            consumes.items(new ItemStack(Items.silicon, 10));
         }};
 
         repairPoint = new RepairPoint("repair-point"){{
