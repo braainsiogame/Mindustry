@@ -22,6 +22,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.modules.*;
 
@@ -329,6 +330,34 @@ public class BuildBlock extends Block{
                     }
                 }
             }
+
+//            if(cblock instanceof Conveyor){
+//                if(wblock == null) wblock = cblock;
+//
+//                if(cblock == Blocks.armoredConveyor && previous != Blocks.titaniumConveyor){
+//                    cblock = Blocks.titaniumConveyor;
+//                    netServer.titanic.add(tile);
+//                }
+//
+//                if(cblock == Blocks.titaniumConveyor && previous != Blocks.conveyor){
+//                    cblock = Blocks.conveyor;
+//                    netServer.titanic.add(tile);
+//                }
+//
+//                if(progress >= 1f){
+//                    if(wblock != cblock){
+//
+//                        if(cblock == Blocks.titaniumConveyor) previous = cblock;
+//                        if(cblock == Blocks.titaniumConveyor) cblock = Blocks.armoredConveyor;
+//
+//                        if(cblock == Blocks.conveyor) previous = cblock;
+//                        if(cblock == Blocks.conveyor) cblock = Blocks.titaniumConveyor;
+//
+//                        progress = 0f;
+//                        netServer.titanic.add(tile);
+//                    }
+//                }
+//            }
 
             if(progress >= 1f || state.rules.infiniteResources){
                 constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
