@@ -174,12 +174,6 @@ public class ServerControl implements ApplicationListener{
             try{
                 JsonValue value = JsonIO.json().fromJson(null, Core.settings.getString("globalrules"));
                 JsonIO.json().readFields(state.rules, value);
-                state.rules.bannedBlocks.addAll(Blocks.titaniumConveyor, Blocks.armoredConveyor);
-                state.rules.bannedBlocks.addAll(Blocks.pulseConduit, Blocks.platedConduit);
-                state.rules.bannedBlocks.addAll(Blocks.titaniumWall, Blocks.titaniumWallLarge);
-                state.rules.bannedBlocks.addAll(Blocks.thoriumWall, Blocks.thoriumWallLarge);
-                state.rules.bannedBlocks.addAll(Blocks.surgeWall, Blocks.surgeWallLarge);
-                state.rules.bannedBlocks.addAll(Blocks.pneumaticDrill);
             }catch(Throwable t){
                 Log.err("Error applying custom rules, proceeding without them.", t);
             }
