@@ -21,6 +21,7 @@ import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.modules.*;
 
@@ -212,6 +213,7 @@ public class BuildBlock extends Block{
          */
         public @Nullable
         Block cblock;
+        Block wblock;
 
         public float progress = 0;
         public float buildCost;
@@ -263,6 +265,70 @@ public class BuildBlock extends Block{
             maxProgress = core == null ? maxProgress : checkRequired(inventory, maxProgress, true);
 
             progress = Mathf.clamp(progress + maxProgress);
+
+            if(cblock instanceof Wall){
+                if(wblock == null) wblock = cblock;
+
+                //
+                if(cblock == Blocks.surgeWall && previous != Blocks.thoriumWall){
+                    cblock = Blocks.thoriumWall;
+                    netServer.titanic.add(tile);
+                }
+
+                if(cblock == Blocks.thoriumWall && previous != Blocks.titaniumWall){
+                    cblock = Blocks.titaniumWall;
+                    netServer.titanic.add(tile);
+                }
+
+                if(cblock == Blocks.titaniumWall && previous != Blocks.copperWall){
+                    cblock = Blocks.copperWall;
+                    netServer.titanic.add(tile);
+                }
+                //
+                if(cblock == Blocks.surgeWallLarge && previous != Blocks.thoriumWallLarge){
+                    cblock = Blocks.thoriumWallLarge;
+                    netServer.titanic.add(tile);
+                }
+
+                if(cblock == Blocks.thoriumWallLarge && previous != Blocks.titaniumWallLarge){
+                    cblock = Blocks.titaniumWallLarge;
+                    netServer.titanic.add(tile);
+                }
+
+                if(cblock == Blocks.titaniumWallLarge && previous != Blocks.copperWallLarge){
+                    cblock = Blocks.copperWallLarge;
+                    netServer.titanic.add(tile);
+                }
+                //
+
+                if(progress >= 1f){
+                    if(wblock != cblock){
+
+                        //
+                        if(cblock == Blocks.thoriumWall)  previous = cblock;
+                        if(cblock == Blocks.thoriumWall)  cblock = Blocks.surgeWall;
+
+                        if(cblock == Blocks.titaniumWall) previous = cblock;
+                        if(cblock == Blocks.titaniumWall) cblock = Blocks.thoriumWall;
+
+                        if(cblock == Blocks.copperWall)   previous = cblock;
+                        if(cblock == Blocks.copperWall)   cblock = Blocks.titaniumWall;
+                        //
+                        if(cblock == Blocks.thoriumWallLarge)  previous = cblock;
+                        if(cblock == Blocks.thoriumWallLarge)  cblock = Blocks.surgeWallLarge;
+
+                        if(cblock == Blocks.titaniumWallLarge) previous = cblock;
+                        if(cblock == Blocks.titaniumWallLarge) cblock = Blocks.thoriumWallLarge;
+
+                        if(cblock == Blocks.copperWallLarge)   previous = cblock;
+                        if(cblock == Blocks.copperWallLarge)   cblock = Blocks.titaniumWallLarge;
+                        //
+
+                        progress = 0f;
+                        netServer.titanic.add(tile);
+                    }
+                }
+            }
 
             if(progress >= 1f || state.rules.infiniteResources){
                 constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
