@@ -275,32 +275,32 @@ public class BuildBlock extends Block{
 
                 //
                 if(cblock == Blocks.surgeWall && previous != Blocks.thoriumWall){
-                    cblock = Blocks.thoriumWall;
+                    setConstruct(previous, Blocks.thoriumWall);
                     netServer.titanic.add(tile);
                 }
 
                 if(cblock == Blocks.thoriumWall && previous != Blocks.titaniumWall){
-                    cblock = Blocks.titaniumWall;
+                    setConstruct(previous, Blocks.titaniumWall);
                     netServer.titanic.add(tile);
                 }
 
                 if(cblock == Blocks.titaniumWall && previous != Blocks.copperWall){
-                    cblock = Blocks.copperWall;
+                    setConstruct(previous, Blocks.copperWall);
                     netServer.titanic.add(tile);
                 }
                 //
                 if(cblock == Blocks.surgeWallLarge && previous != Blocks.thoriumWallLarge){
-                    cblock = Blocks.thoriumWallLarge;
+                    setConstruct(previous, Blocks.thoriumWallLarge);
                     netServer.titanic.add(tile);
                 }
 
                 if(cblock == Blocks.thoriumWallLarge && previous != Blocks.titaniumWallLarge){
-                    cblock = Blocks.titaniumWallLarge;
+                    setConstruct(previous, Blocks.titaniumWallLarge);
                     netServer.titanic.add(tile);
                 }
 
                 if(cblock == Blocks.titaniumWallLarge && previous != Blocks.copperWallLarge){
-                    cblock = Blocks.copperWallLarge;
+                    setConstruct(previous, Blocks.copperWallLarge);
                     netServer.titanic.add(tile);
                 }
                 //
@@ -309,23 +309,13 @@ public class BuildBlock extends Block{
                     if(wblock != cblock){
 
                         //
-                        if(cblock == Blocks.thoriumWall)  previous = cblock;
-                        if(cblock == Blocks.thoriumWall)  cblock = Blocks.surgeWall;
-
-                        if(cblock == Blocks.titaniumWall) previous = cblock;
-                        if(cblock == Blocks.titaniumWall) cblock = Blocks.thoriumWall;
-
-                        if(cblock == Blocks.copperWall)   previous = cblock;
-                        if(cblock == Blocks.copperWall)   cblock = Blocks.titaniumWall;
+                        if(cblock == Blocks.thoriumWall)  setConstruct(cblock, Blocks.surgeWall);
+                        if(cblock == Blocks.titaniumWall) setConstruct(cblock, Blocks.thoriumWall);
+                        if(cblock == Blocks.copperWall)   setConstruct(cblock, Blocks.titaniumWall);
                         //
-                        if(cblock == Blocks.thoriumWallLarge)  previous = cblock;
-                        if(cblock == Blocks.thoriumWallLarge)  cblock = Blocks.surgeWallLarge;
-
-                        if(cblock == Blocks.titaniumWallLarge) previous = cblock;
-                        if(cblock == Blocks.titaniumWallLarge) cblock = Blocks.thoriumWallLarge;
-
-                        if(cblock == Blocks.copperWallLarge)   previous = cblock;
-                        if(cblock == Blocks.copperWallLarge)   cblock = Blocks.titaniumWallLarge;
+                        if(cblock == Blocks.thoriumWallLarge)  setConstruct(cblock, Blocks.surgeWallLarge);
+                        if(cblock == Blocks.titaniumWallLarge) setConstruct(cblock, Blocks.thoriumWallLarge);
+                        if(cblock == Blocks.copperWallLarge)   setConstruct(cblock, Blocks.titaniumWallLarge);
                         //
 
                         progress = 0f;
@@ -333,34 +323,6 @@ public class BuildBlock extends Block{
                     }
                 }
             }
-
-//            if(cblock instanceof Conveyor){
-//                if(wblock == null) wblock = cblock;
-//
-//                if(cblock == Blocks.armoredConveyor && previous != Blocks.titaniumConveyor){
-//                    cblock = Blocks.titaniumConveyor;
-//                    netServer.titanic.add(tile);
-//                }
-//
-//                if(cblock == Blocks.titaniumConveyor && previous != Blocks.conveyor){
-//                    cblock = Blocks.conveyor;
-//                    netServer.titanic.add(tile);
-//                }
-//
-//                if(progress >= 1f){
-//                    if(wblock != cblock){
-//
-//                        if(cblock == Blocks.titaniumConveyor) previous = cblock;
-//                        if(cblock == Blocks.titaniumConveyor) cblock = Blocks.armoredConveyor;
-//
-//                        if(cblock == Blocks.conveyor) previous = cblock;
-//                        if(cblock == Blocks.conveyor) cblock = Blocks.titaniumConveyor;
-//
-//                        progress = 0f;
-//                        netServer.titanic.add(tile);
-//                    }
-//                }
-//            }
 
             if(progress >= 1f || state.rules.infiniteResources){
                 constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
