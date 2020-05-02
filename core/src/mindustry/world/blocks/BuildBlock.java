@@ -447,7 +447,7 @@ public class BuildBlock extends Block{
             if(Nydus.launchpad_upgrading.active()){
                 if(this.cblock == Blocks.vault){
                     if(proximity().contains(t -> t.block instanceof CoreBlock)){
-                        this.cblock = Blocks.launchPad;
+                        setConstruct(previous, Blocks.launchPad);
                         Core.app.post(() -> netServer.titanic.add(tile));
                     }
                 }
