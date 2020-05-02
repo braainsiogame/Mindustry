@@ -165,7 +165,10 @@ public class UnitFactory extends Block{
         if(entity.spawned >= maxSpawn){
             if(unitType == UnitTypes.draug && Nydus.draug_home_isolation.active() && entity.timer.get(timerDraug, 60) && !tile.getTeam().cores().isEmpty()){
                 Tile core = tile.getTeam().core().tile;
+                if(core.block.acceptItem(Items.copper, core, null) && core.entity.items.get(Items.copper) < 100 && Mathf.chance(0.25)) Call.transferItemTo(Items.copper, 1, tile.drawx(), tile.drawy(), core);
                 if(core.block.acceptItem(Items.copper, core, null)) core.block.handleItem(Items.copper, core, null);
+
+                if(core.block.acceptItem(Items.lead, core, null) && core.entity.items.get(Items.lead) < 100 && Mathf.chance(0.25)) Call.transferItemTo(Items.lead, 1, tile.drawx(), tile.drawy(), core);
                 if(core.block.acceptItem(Items.lead, core, null)) core.block.handleItem(Items.lead, core, null);
             }
             return;
