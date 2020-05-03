@@ -836,6 +836,8 @@ public class Blocks implements ContentList{
         door = new Door("door"){{
             requirements(Category.defense, ItemStack.with(Items.graphite, 6, Items.silicon, 4));
             health = 100 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.door);
         }};
 
         doorLarge = new Door("door-large"){{
@@ -844,9 +846,6 @@ public class Blocks implements ContentList{
             closefx = Fx.doorcloselarge;
             health = 100 * 4 * wallHealthMultiplier;
             size = 2;
-
-            flags = EnumSet.of(BlockFlag.scalable);
-            upscale = () -> doorLarge;
         }};
 
         scrapWall = new Wall("scrap-wall"){{

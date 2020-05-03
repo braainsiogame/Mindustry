@@ -94,6 +94,7 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(new SiliconValley());
 
         Core.app.addListener(new NileWater());
+        Core.app.addListener(new ConwayDoorway());
 
         Array<Tile> tempTiles = new Array<>();
         netServer.admins.addActionFilter(action -> {

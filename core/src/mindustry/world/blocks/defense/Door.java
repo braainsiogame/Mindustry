@@ -90,8 +90,6 @@ public class Door extends Wall{
             return;
         }
 
-        if(Nydus.cascading_doors.active()) Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door && t.<DoorEntity>ent().open != entity.open).each(t -> t.block().tapped(t, null)));
-
         Call.onDoorToggle(null, tile, !entity.open);
     }
 
@@ -108,6 +106,14 @@ public class Door extends Wall{
         public void read(DataInput stream, byte revision) throws IOException{
             super.read(stream, revision);
             open = stream.readBoolean();
+        }
+
+        public boolean dead(){
+            return open;
+        }
+
+        public boolean alive(){
+            return !open;
         }
     }
 
