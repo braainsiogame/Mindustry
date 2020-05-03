@@ -21,13 +21,12 @@ public class UnitTypes implements ContentList{
     public static @EntityDef({Unitc.class, Builderc.class}) UnitType phantom, spirit;
 
     //water
-    public static @EntityDef({Unitc.class, WaterMovec.class}) UnitType vanguard;
+    public static @EntityDef({Unitc.class, WaterMovec.class, Commanderc.class}) UnitType vanguard;
 
     @Override
     public void load(){
 
         dagger = new UnitType("dagger"){{
-
             speed = 0.5f;
             drag = 0.3f;
             hitsize = 8f;
@@ -168,6 +167,7 @@ public class UnitTypes implements ContentList{
             health = 400;
             buildSpeed = 0.4f;
             engineOffset = 6.5f;
+            hitsize = 7f;
         }};
         
         /*
