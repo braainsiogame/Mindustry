@@ -83,7 +83,7 @@ public class ThermalGenerator extends PowerGenerator{
                     trigger = () -> construct(Blocks.thermalGenerator);
                     team = tea;
                     size = 2;
-                    weightMultiplier = tile.entity.power.graph.getSatisfaction();
+                    weightMultiplier = 0.5f;
                 }});
             }
         }
