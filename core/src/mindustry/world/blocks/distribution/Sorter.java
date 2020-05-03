@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
@@ -88,7 +89,7 @@ public class Sorter extends Block{
 
         to.block().handleItem(item, to, tile);
 
-        tile.<SorterEntity>ent().i++;
+        if(source.block != Blocks.phaseConveyor) tile.<SorterEntity>ent().i++;
     }
 
     boolean isSame(Tile tile, Tile other){
@@ -152,7 +153,7 @@ public class Sorter extends Block{
         entity.throughput.addValue(entity.i);
         entity.i = 0;
 
-        if(entity.throughput.getMean() > 0.4f) Core.app.post(() -> {
+        if(entity.throughput.getMean() > 0.5f) Core.app.post(() -> {
             if(Mathf.chance(0.01f)){
                 tile.entity.kill();
             }else{
