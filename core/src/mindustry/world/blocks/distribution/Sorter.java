@@ -1,10 +1,12 @@
 package mindustry.world.blocks.distribution;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.type.*;
@@ -75,8 +77,6 @@ public class Sorter extends Block{
 
     @Override
     public boolean acceptItem(Item item, Tile tile, Tile source){
-        if(tile.<SorterEntity>ent().config() == -1) tile.configureAny(item.id);
-
         Tile to = getTileTarget(item, tile, source, false);
 
         return to != null && to.block().acceptItem(item, to, tile) && to.getTeam() == tile.getTeam();
@@ -87,6 +87,8 @@ public class Sorter extends Block{
         Tile to = getTileTarget(item, tile, source, true);
 
         to.block().handleItem(item, to, tile);
+
+        tile.<SorterEntity>ent().i++;
     }
 
     boolean isSame(Tile tile, Tile other){
@@ -144,8 +146,26 @@ public class Sorter extends Block{
         });
     }
 
+    @Override
+    public void update(Tile tile){
+        SorterEntity entity = tile.ent();
+        entity.throughput.addValue(entity.i);
+        entity.i = 0;
+
+        if(entity.throughput.getMean() > 0.4f) Core.app.post(() -> {
+            if(Mathf.chance(0.01f)){
+                tile.entity.kill();
+            }else{
+                Fire.create(tile);
+            }
+        });
+    }
+
     public class SorterEntity extends TileEntity{
         @Nullable Item sortItem;
+
+        WindowedMean throughput = new WindowedMean(60);
+        int i = 0;
 
         @Override
         public int config(){
