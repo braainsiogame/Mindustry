@@ -224,7 +224,6 @@ public class BuildBlock extends Block{
          */
         public Block previous;
         public int builderID = -1;
-        public int abandoned;
 
         private float[] accumulator;
         private float[] totalAccumulator;
@@ -234,8 +233,6 @@ public class BuildBlock extends Block{
                 kill();
                 return false;
             }
-
-            abandoned = 0;
 
             if(cblock.requirements.length != accumulator.length || totalAccumulator.length != cblock.requirements.length){
                 setConstruct(previous, cblock);
@@ -466,18 +463,6 @@ public class BuildBlock extends Block{
             }
             this.accumulator = new float[previous.requirements.length];
             this.totalAccumulator = new float[previous.requirements.length];
-        }
-
-        @Override
-        public void update(){
-            super.update();
-
-            abandoned++;
-
-            if(abandoned > 60 * 10 && !getTeam().cores().isEmpty()){
-                deconstruct(null, getTeam().core(), 1f / buildCost * Time.delta() * 2.5f * state.rules.buildSpeedMultiplier);
-                netServer.titanic.add(tile);
-            }
         }
 
         @Override
