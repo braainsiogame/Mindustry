@@ -106,7 +106,7 @@ public class LaunchPad extends StorageBlock{
 
                     Array<Silk> passed = spiderSilk.silky
                     .select(s -> s.team == tile.getTeam())
-                    .select(s -> inventory.has(s.requirements, state.rules.buildCostMultiplier * 11))
+                    .select(s -> s.afford.get(inventory))
                     .select(s -> s.footprint().count(t -> spiderSilk.reserved.contains(t.pos())) == 0)
                     .select(s -> !s.abort.get());
 

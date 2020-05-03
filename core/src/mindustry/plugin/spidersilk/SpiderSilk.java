@@ -99,6 +99,8 @@ public class SpiderSilk implements ApplicationListener{
             footprint().each(t -> spiderSilk.reserved.removeValue(t.pos()));
         };
 
+        public Func<ItemModule, Boolean> afford = (core) -> core.has(requirements, state.rules.buildCostMultiplier * 11);
+
         public Silk(Tile tile){
             this.tile = tile;
             this.rotation = tile.rotation;

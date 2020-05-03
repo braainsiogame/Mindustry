@@ -1,6 +1,7 @@
 package mindustry.world.blocks;
 
 import arc.*;
+import arc.func.*;
 import mindustry.annotations.Annotations.*;
 import arc.Graphics.*;
 import arc.Graphics.Cursor.*;
@@ -18,12 +19,14 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.modules.*;
 
 import java.io.*;
@@ -322,30 +325,30 @@ public class BuildBlock extends Block{
             }
 
             if(progress >= 1f || state.rules.infiniteResources){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                constructed(tile, cblock, builderID, tile.rotation(), tile.getTeam(), configured);
                 return true;
             }
 
             // downgrade titanium conveyors
             if(progress == 0f && (cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor)){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
+                constructed(tile, cblock, builderID, tile.rotation(), tile.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conveyor, tile.getTeam(), tile.rotation));
                 return true;
             }
 
             // downgrade titanium conduits
             if(progress == 0f && (cblock == Blocks.pulseConduit || cblock == Blocks.conduit)){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
+                constructed(tile, cblock, builderID, tile.rotation(), tile.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conduit, tile.getTeam(), tile.rotation));
                 return true;
             }
 
             // downgrade solar panels
             if(progress == 0f && cblock == Blocks.largeSolarPanel && inventory != null && inventory.has(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier)){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                constructed(tile, cblock, builderID, tile.rotation(), tile.getTeam(), configured);
                 inventory.sub(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier);
                 Core.app.post(() -> tile.deconstructNet());
-                Core.app.post(() -> tile.setNet(Blocks.solarPanel, builder.getTeam(), tile.rotation));
+                Core.app.post(() -> tile.setNet(Blocks.solarPanel, tile.getTeam(), tile.rotation));
                 return true;
             }
 
@@ -509,5 +512,23 @@ public class BuildBlock extends Block{
                 buildCost = 20f;
             }
         }
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        BuildEntity entity = tile.ent();
+        if(entity.cblock == null) return;
+        if(tile.getTeam().cores().isEmpty()) return;
+        CoreEntity core = tile.getTeam().core();
+
+        cons.get(new Silk(tile){{
+            requirements = Blocks.air.requirements;
+            afford = (inventory) -> inventory.has(entity.cblock.requirements, state.rules.buildCostMultiplier);
+            trigger = () -> {
+                netServer.titanic.add(tile);
+                entity.construct(null, core, 1f / entity.buildCost * Time.delta() * 100f * state.rules.buildSpeedMultiplier, false);
+            };
+            weightMultiplier = 1f - entity.progress;
+        }});
     }
 }
