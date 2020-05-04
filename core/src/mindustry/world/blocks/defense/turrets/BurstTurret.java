@@ -3,7 +3,6 @@ package mindustry.world.blocks.defense.turrets;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.type.*;
 import mindustry.world.Tile;
 
 import static mindustry.Vars.*;
@@ -29,7 +28,7 @@ public class BurstTurret extends ItemTurret{
                 entity.recoil = recoil;
 
                 tr.trns(entity.rotation, size * tilesize / 2, Mathf.range(xRand));
-                Bullet bullet = Bullet.capture(() -> bullet(tile, ammo, entity.rotation + Mathf.range(inaccuracy)));
+                bullet(tile, ammo, entity.rotation + Mathf.range(inaccuracy));
                 effects(tile);
                 useAmmo(tile);
             });
