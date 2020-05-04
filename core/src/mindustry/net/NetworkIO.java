@@ -64,7 +64,7 @@ public class NetworkIO{
 
     public static ByteBuffer writeServerData(){
         String name = (headless ? Config.name.string() : player.name());
-        String description = Strings.format("[royal]@{0} [white]{1} \uF835 \uF82F \uF82E", Version.type.replace("-", " "), Version.build);
+        String description = Strings.format("[royal]@@ [white]@ \uF835 \uF82F \uF82E", "@", Version.type.replace("-", " "), Version.build);
         String map = state.map.name();
 
         ByteBuffer buffer = ByteBuffer.allocate(512);
