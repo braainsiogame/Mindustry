@@ -19,7 +19,7 @@ public class Scripts implements Disposable{
     private final Array<String> blacklist = Array.with("net", "files", "reflect", "javax", "rhino", "file", "channels", "jdk",
         "runtime", "util.os", "rmi", "security", "org.", "sun.", "beans", "sql", "http", "exec", "compiler", "process", "system",
         ".awt", "socket", "classloader", "oracle", "invoke");
-    private final Array<String> whitelist = Array.with("mindustry.net");
+    private final Array<String> whitelist = Array.with("mindustry.net", "netserver", "netclient", "com.sun.proxy.$proxy");
     private final Context context;
     private Scriptable scope;
     private boolean errored;
@@ -41,7 +41,7 @@ public class Scripts implements Disposable{
         if(!run(Core.files.internal("scripts/global.js").readString(), "global.js")){
             errored = true;
         }
-        Log.debug("Time to load script engine: {0}", Time.elapsed());
+        Log.debug("Time to load script engine: @", Time.elapsed());
     }
 
     public boolean hasErrored(){
@@ -73,7 +73,7 @@ public class Scripts implements Disposable{
     }
 
     public void log(LogLevel level, String source, String message){
-        Log.log(level, "[{0}]: {1}", source, message);
+        Log.log(level, "[@]: @", source, message);
     }
 
     public void run(LoadedMod mod, Fi file){

@@ -26,8 +26,6 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class UnitFactory extends Block{
-
-
     public float launchVelocity = 5f;
     public @Load("@-top") TextureRegion topRegion;
     public int[] capacities;
@@ -147,7 +145,7 @@ public class UnitFactory extends Block{
         public void buildConfiguration(Table table){
             Array<UnitType> units = Array.with(plans).map(u -> u.unit);
 
-            ItemSelection.buildTable(table, units, () -> currentPlan == -1 ? null : plans[currentPlan].unit, unit -> tile.configure(units.indexOf(unit)));
+            ItemSelection.buildTable(table, units, () -> currentPlan == -1 ? null : plans[currentPlan].unit, unit -> configure(units.indexOf(unit)));
         }
 
         @Override
