@@ -84,6 +84,7 @@ public class ThermalGenerator extends PowerGenerator{
                     team = tea;
                     size = 2;
                     weightMultiplier = 0.5f;
+                    abort = () -> abort.get() || !Build.validPlace(tile.getTeam(), other.x, other.y, Blocks.thermalGenerator, 0);
                 }});
             }
         }
