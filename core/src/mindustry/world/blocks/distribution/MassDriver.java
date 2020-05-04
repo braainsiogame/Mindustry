@@ -14,6 +14,7 @@ import mindustry.entities.type.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.*;
 
 import java.io.*;
 
@@ -91,7 +92,14 @@ public class MassDriver extends Block{
 
         //dump when idle or accepting
         if(entity.state == DriverState.idle || entity.state == DriverState.accepting){
-            tryDump(tile);
+            if(entity.proximity().contains(t -> t.block instanceof CoreBlock) && entity.items.total() > 0){
+                entity.proximity().select(t -> t.block instanceof CoreBlock).first().entity.items.addAll(entity.items);
+                entity.items.clear();
+                netServer.titanic.add(tile);
+                Core.app.post(() -> netServer.titanic.add(tile));
+            }else{
+                tryDump(tile);
+            }
         }
 
         //skip when there's no power

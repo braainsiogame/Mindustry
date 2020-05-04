@@ -14,7 +14,6 @@ import mindustry.entities.type.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -105,29 +104,12 @@ public class CoreBlock extends StorageBlock{
 
         if(!world.isGenerating()){
             for(Item item : content.items()){
-                entity.items.set(item, Math.min(entity.items.get(item), entity.storageCapacity));
+                entity.items.set(item, entity.items.get(item));
             }
         }
 
         for(CoreEntity other : state.teams.cores(tile.getTeam())){
             other.storageCapacity = entity.storageCapacity;
-        }
-    }
-
-    @Override
-    public void silk(Tile tile, Cons<Silk> cons){
-        CoreEntity entity = tile.ent();
-
-        if(entity.proximity().contains(t -> t.block == Blocks.launchPadLarge)){
-            entity.proximity().each(t -> t.block == Blocks.launchPad, t -> {
-                cons.get(new Silk(t){{
-                    requirements = Blocks.vault.requirements;
-                    trigger = () -> construct(Blocks.vault);
-                    afford = (inventory) -> inventory.has(requirements, state.rules.buildCostMultiplier);
-                    size = 3;
-                    weightMultiplier = 0f;
-                }});
-            });
         }
     }
 
@@ -185,7 +167,7 @@ public class CoreBlock extends StorageBlock{
 
         int max = itemCapacity * state.teams.cores(tile.getTeam()).size;
         for(Item item : content.items()){
-            tile.entity.items.set(item, Math.min(tile.entity.items.get(item), max));
+            tile.entity.items.set(item, tile.entity.items.get(item));
         }
 
         for(CoreEntity other : state.teams.cores(tile.getTeam())){
