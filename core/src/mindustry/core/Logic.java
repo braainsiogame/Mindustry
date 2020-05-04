@@ -238,7 +238,7 @@ public class Logic implements ApplicationListener{
                 }
 
                 {
-                    if(unitGroup.size() > 2500 && !state.rules.editor){
+                    if(unitGroup.size() > 1000 && !state.rules.editor){
                         state.rules.editor = true;
                         Call.onSetRules(state.rules);
                         Events.fire(new GameOverEvent(Team.derelict));
