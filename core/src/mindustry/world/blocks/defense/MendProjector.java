@@ -10,8 +10,6 @@ import mindustry.content.*;
 import mindustry.entities.Effects;
 import mindustry.entities.type.TileEntity;
 import mindustry.graphics.*;
-import mindustry.plugin.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -76,21 +74,6 @@ public class MendProjector extends Block{
             entity.cons.trigger();
         }
 
-        if(Nydus.free_phase_mender.active()){
-            if(tile.block == Blocks.mendProjector && entity.items.get(Items.phasefabric) <= 1){
-                if(getAroundCount(tile, t -> t.block == Blocks.plastaniumWall || t.block == Blocks.plastaniumWallLarge) >= 12){
-                    entity.items.set(Items.phasefabric, 9);
-                    netServer.titanic.add(tile);
-                }
-            }
-            if(tile.block == Blocks.mender && entity.items.get(Items.silicon) <= 1){
-                if(getAroundCount(tile, t -> t.block == Blocks.plastaniumWall || t.block == Blocks.plastaniumWallLarge) >= 8){
-                    entity.items.set(Items.silicon, 9);
-                    netServer.titanic.add(tile);
-                }
-            }
-        }
-
         if(entity.charge >= reload){
             float realRange = range + entity.phaseHeat * phaseRangeBoost;
             entity.charge = 0f;
@@ -113,15 +96,6 @@ public class MendProjector extends Block{
                     }
                 }
             }
-        }
-    }
-
-    @Override
-    public void unloaded(Tile tile, Item item, Tile other){
-        if(item == Items.phasefabric && Nydus.free_phase_mender.active()){
-            Core.app.post(() -> {
-                if(tile.entity != null) tile.entity.kill();
-            });
         }
     }
 
