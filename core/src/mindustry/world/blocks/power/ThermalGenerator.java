@@ -74,8 +74,8 @@ public class ThermalGenerator extends PowerGenerator{
     @Override
     public void silk(Tile tile, Cons<Silk> cons){
         Team tea = tile.getTeam();
-        for(Point2 i : Geometry.d4){
-            Tile other = world.tile(tile.x + (i.x * size), tile.y + (i.y * size));
+        for(Point2 p : Geometry.d4){
+            Tile other = world.tile(tile.x + (p.x * 2), tile.y + (p.y * 2));
             if(Build.validPlace(tile.getTeam(), other.x, other.y, Blocks.thermalGenerator, 0)){
                 cons.get(new Silk(other){{
                     requirements = Blocks.thermalGenerator.requirements;
