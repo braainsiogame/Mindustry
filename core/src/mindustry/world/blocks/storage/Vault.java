@@ -22,12 +22,6 @@ public class Vault extends StorageBlock{
 
     @Override
     public void silk(Tile tile, Cons<Silk> cons){
-        if(tile.block == Blocks.vault && getAroundCount(tile, t -> t.block == Blocks.solarPanel) >= size * size + 4) cons.get(new Silk(tile){{
-            requirements = Blocks.vault.requirements;
-            trigger = () -> construct(Blocks.coreShard);
-            size = 5;
-        }});
-
         Array<Tile> container = tempTiles;
         container.clear();
 
