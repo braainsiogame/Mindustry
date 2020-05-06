@@ -392,41 +392,6 @@ public class BuildBlock extends Block{
                 builderID = builder.getID();
             }
 
-            if(cblock == Blocks.surgeWall && previous != Blocks.thoriumWall){
-                previous = Blocks.thoriumWall;
-                netServer.titanic.add(tile);
-            }
-
-            if(cblock == Blocks.thoriumWall && previous != Blocks.titaniumWall){
-                previous = Blocks.titaniumWall;
-                netServer.titanic.add(tile);
-            }
-
-            if(cblock == Blocks.titaniumWall && previous != Blocks.copperWall){
-                previous = Blocks.copperWall;
-                netServer.titanic.add(tile);
-            }
-
-            if(cblock == Blocks.surgeWallLarge && previous != Blocks.thoriumWallLarge){
-                previous = Blocks.thoriumWallLarge;
-                netServer.titanic.add(tile);
-            }
-
-            if(cblock == Blocks.thoriumWallLarge && previous != Blocks.titaniumWallLarge){
-                previous = Blocks.titaniumWallLarge;
-                netServer.titanic.add(tile);
-            }
-
-            if(cblock == Blocks.titaniumWallLarge && previous != Blocks.copperWallLarge){
-                previous = Blocks.copperWallLarge;
-                netServer.titanic.add(tile);
-            }
-
-            if(progress <= 0 && previous != null && previous != cblock){
-                setDeconstruct(previous);
-                netServer.titanic.add(tile);
-            }
-
             if(progress <= 0 || state.rules.infiniteResources){
 
                 Block block = this.cblock;
