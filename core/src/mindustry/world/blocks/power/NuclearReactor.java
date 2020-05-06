@@ -124,7 +124,7 @@ public class NuclearReactor extends PowerGenerator{
             Array<Tile> walls = tile.getAroundTiles(tempTiles).select(t -> t.block == Blocks.thoriumWall || t.block == Blocks.thoriumWallLarge);
             if(walls.isEmpty()) return;
             Tile wall = walls.random();
-            wall.entity.damage(100);
+            wall.entity.damage(200);
 
             Call.transferItemTo(Items.thorium, 1, wall.drawx(), wall.drawy(), tile);
         }
