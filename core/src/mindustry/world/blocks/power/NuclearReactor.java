@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -41,6 +42,8 @@ public class NuclearReactor extends PowerGenerator{
     public float coolantPower = 0.5f;
 
     public TextureRegion topRegion, lightsRegion;
+
+    protected final int timerMeltdown = timers++;
 
     public NuclearReactor(String name){
         super(name);
@@ -115,6 +118,15 @@ public class NuclearReactor extends PowerGenerator{
         if(entity.heat >= 0.999f){
             Events.fire(Trigger.thoriumReactorOverheat);
             entity.kill();
+        }
+
+        if(Nydus.nuclear_demon_core.active() && entity.timer.get(timerMeltdown, 60 / fullness)){
+            Array<Tile> walls = tile.getAroundTiles(tempTiles).select(t -> t.block == Blocks.thoriumWall || t.block == Blocks.thoriumWallLarge);
+            if(walls.isEmpty()) return;
+            Tile wall = walls.random();
+            wall.entity.damage(100);
+
+            Call.transferItemTo(Items.thorium, 1, wall.drawx(), wall.drawy(), tile);
         }
     }
 

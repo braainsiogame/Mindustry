@@ -32,6 +32,7 @@ public enum Nydus{
     free_phase_overdrive(() -> true, "#overdrive-projector overdrivers get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
     free_phase_forcefield(() -> true, "#overdrive-projector forcefields get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
     free_thorium_weaver(() -> true, "#phase-weaver phase weavers get free #thorium thorium when {surrounded} by #thorium-wall thorium walls"),
+    nuclear_demon_core(() -> true, "#thorium-reactor you can boost thorium reactors by {surrounding} them with #thorium-wall thorium walls"),
 
 
     duo_yeeter(() -> true, "#duo duo turrets can {lob} #copper-walls copper walls at the enemy"),

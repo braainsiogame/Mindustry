@@ -189,7 +189,7 @@ public class TileEntity extends BaseEntity implements TargetTrait, HealthTrait{
             if(block.downgrade == null || !Nydus.block_downgrading.active()){
                 Call.onTileDestroyed(tile);
             }else{
-                tile.setNet(block.downgrade.get(), tile.getTeam(), tile.rotation);
+                tile.constructNet(block.downgrade.get(), tile.getTeam(), tile.rotation);
             }
         }
 
