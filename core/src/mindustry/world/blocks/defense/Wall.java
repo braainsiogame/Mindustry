@@ -7,7 +7,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.*;
 import mindustry.content.*;
-import mindustry.plugin.*;
 import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -35,9 +34,6 @@ public class Wall extends Block{
 
         upgradeMap.put(Blocks.titaniumWall,      Blocks.thoriumWall);
         upgradeMap.put(Blocks.titaniumWallLarge, Blocks.thoriumWallLarge);
-
-        upgradeMap.put(Blocks.thoriumWall,       Blocks.surgeWall);
-        upgradeMap.put(Blocks.thoriumWallLarge,  Blocks.surgeWallLarge);
     }
 
     @Override
@@ -76,12 +72,6 @@ public class Wall extends Block{
     @Override
     public void silk(Tile tile, Cons<Silk> cons){
         upgradeMap.each((from, to) -> {
-
-            if(tile.block == Blocks.thoriumWall || tile.block == Blocks.thoriumWallLarge){
-                if(Nydus.free_thorium_weaver.active() && getAroundCount(tile, t -> t.block == Blocks.phaseWeaver) > 0) return;
-                if(Nydus.nuclear_demon_core.active() && getAroundCount(tile, t -> t.block == Blocks.thoriumReactor) > 0) return;
-            }
-            
             if(tile.block == from) cons.get(new Silk(tile){{
                 requirements = to.requirements;
                 trigger = () -> construct(to);
