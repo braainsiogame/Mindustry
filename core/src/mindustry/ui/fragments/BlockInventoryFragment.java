@@ -11,6 +11,7 @@ import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.scene.ui.layout.Stack;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.annotations.Annotations.*;
@@ -21,6 +22,8 @@ import mindustry.net.Administration.*;
 import mindustry.net.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+
+import java.util.*;
 
 import static mindustry.Vars.*;
 
@@ -82,7 +85,7 @@ public class BlockInventoryFragment extends Fragment{
     public void hide(){
         if(table == null) return;
 
-        table.actions(Actions.scaleTo(0f, 1f, 0.06f, Interpolation.pow3Out), Actions.run(() -> {
+        table.actions(Actions.scaleTo(0f, 1f, 0.06f, Interp.pow3Out), Actions.run(() -> {
             table.clearChildren();
             table.clearListeners();
             table.update(null);
@@ -93,6 +96,9 @@ public class BlockInventoryFragment extends Fragment{
 
     private void rebuild(boolean actions){
         IntSet container = new IntSet();
+
+        Arrays.fill(shrinkHoldTimes, 0);
+        holdTime = emptyTime = 0f;
 
         table.clearChildren();
         table.clearActions();
@@ -207,7 +213,7 @@ public class BlockInventoryFragment extends Fragment{
 
         if(actions){
             table.setScale(0f, 1f);
-            table.actions(Actions.scaleTo(1f, 1f, 0.07f, Interpolation.pow3Out));
+            table.actions(Actions.scaleTo(1f, 1f, 0.07f, Interp.pow3Out));
         }else{
             table.setScale(1f, 1f);
         }

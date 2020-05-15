@@ -17,6 +17,29 @@ import static mindustry.Vars.*;
 
 public class Drawf{
 
+    //an experiment, to be removed
+    public static void runes(float x, float y, int[] text){
+        int height = 6, width = 5;
+        float scale = 3;
+        float th = height * scale, tw = width * scale;
+        float skewx = width * scale, skewy = 0;
+
+        Draw.color(Pal.accent);
+
+        for(int i = 0; i < text.length; i++){
+            float ox = x + i*tw*width;
+
+            for(int j = 0; j < width * height; j++){
+                int cx = j % width, cy = j / width;
+                float rx = ox + cx * tw + skewx * cy, ry = y + cy * th;
+
+                if((text[i] & (1 << j)) != 0){
+                    Fill.quad(rx, ry, rx + tw, ry, rx + tw + skewx, ry + th + skewy, rx + skewx, ry + th + skewy);
+                }
+            }
+        }
+    }
+
     public static float text(){
         float z = Draw.z();
         if(renderer.pixelator.enabled()){
@@ -67,7 +90,11 @@ public class Drawf{
     }
 
     public static void shadow(float x, float y, float rad){
-        Draw.color(0, 0, 0, 0.4f);
+        shadow(x, y, rad, 1f);
+    }
+
+    public static void shadow(float x, float y, float rad, float alpha){
+        Draw.color(0, 0, 0, 0.4f * alpha);
         Draw.rect("circle-shadow", x, y, rad, rad);
         Draw.color();
     }
@@ -89,6 +116,14 @@ public class Drawf{
         Lines.circle(x, y, rad);
         Lines.stroke(1f, color);
         Lines.circle(x, y, rad);
+        Draw.reset();
+    }
+
+    public static void select(float x, float y, float radius, Color color){
+        Lines.stroke(3f, Pal.gray);
+        Lines.square(x, y, radius + 1f);
+        Lines.stroke(1f, color);
+        Lines.square(x, y, radius);
         Draw.reset();
     }
 

@@ -64,6 +64,7 @@ public abstract class BulletType extends Content{
 
     //additional effects
 
+    public float fragCone = 360f;
     public int fragBullets = 9;
     public float fragVelocityMin = 0.2f, fragVelocityMax = 1f;
     public BulletType fragBullet = null;
@@ -80,6 +81,9 @@ public abstract class BulletType extends Content{
 
     public int lightining;
     public int lightningLength = 5;
+
+    public float weaveScale = 1f;
+    public float weaveMag = -1f;
 
     public float hitShake = 0f;
 
@@ -117,7 +121,7 @@ public abstract class BulletType extends Content{
         if(fragBullet != null){
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
-                float a = Mathf.random(360f);
+                float a = b.rotation() + Mathf.range(fragCone/2);
                 fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax));
             }
         }
@@ -163,6 +167,10 @@ public abstract class BulletType extends Content{
             if(target != null){
                 b.vel().setAngle(Mathf.slerpDelta(b.rotation(), b.angleTo(target), 0.08f));
             }
+        }
+
+        if(weaveMag > 0){
+            b.vel().rotate(Mathf.sin(Time.time() + b.id() * 3, weaveScale, weaveMag) * Time.delta());
         }
     }
 

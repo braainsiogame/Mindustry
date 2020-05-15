@@ -1,16 +1,18 @@
 package mindustry.core;
 
 import arc.*;
+import arc.math.*;
 import arc.util.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.GameState.*;
 import mindustry.ctype.*;
-import mindustry.gen.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
+import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.type.Weather.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.BuildBlock.*;
@@ -90,6 +92,8 @@ public class Logic implements ApplicationListener{
                 }
             }
         });
+
+        Events.on(LaunchItemEvent.class, e -> state.stats.handleItemExport(e.stack));
     }
 
     /** Handles the event of content being used by either the player or some block. */
@@ -140,29 +144,56 @@ public class Logic implements ApplicationListener{
     }
 
     private void checkGameOver(){
-        if(!state.rules.attackMode && state.teams.playerCores().size == 0 && !state.gameOver){
-            state.gameOver = true;
-            Events.fire(new GameOverEvent(state.rules.waveTeam));
-        }else if(state.rules.attackMode){
-            Team alive = null;
-
-            for(TeamData team : state.teams.getActive()){
-                if(team.hasCore()){
-                    if(alive != null){
-                        return;
-                    }
-                    alive = team.team;
-                }
+        //campaign maps do not have a 'win' state!
+        if(state.isCampaign()){
+            //gameover only when cores are dead
+            if(!state.rules.attackMode && state.teams.playerCores().size == 0 && !state.gameOver){
+                state.gameOver = true;
+                Events.fire(new GameOverEvent(state.rules.waveTeam));
             }
 
-            if(alive != null && !state.gameOver){
-                if(state.isCampaign() && alive == state.rules.defaultTeam){
-                    //in attack maps, a victorious game over is equivalent to a launch
-                    Call.launchZone();
-                }else{
-                    Events.fire(new GameOverEvent(alive));
-                }
+            //check if there are no enemy spawns
+            if(state.rules.waves && spawner.countSpawns() + state.teams.cores(state.rules.waveTeam).size <= 0){
+                //if yes, waves get disabled
+                state.rules.waves = false;
+            }
+        }else{
+            if(!state.rules.attackMode && state.teams.playerCores().size == 0 && !state.gameOver){
                 state.gameOver = true;
+                Events.fire(new GameOverEvent(state.rules.waveTeam));
+            }else if(state.rules.attackMode){
+                Team alive = null;
+
+                for(TeamData team : state.teams.getActive()){
+                    if(team.hasCore()){
+                        if(alive != null){
+                            return;
+                        }
+                        alive = team.team;
+                    }
+                }
+
+                if(alive != null && !state.gameOver){
+                    Events.fire(new GameOverEvent(alive));
+                    state.gameOver = true;
+                }
+            }
+        }
+
+
+    }
+
+    private void updateWeather(){
+
+        for(WeatherEntry entry : state.rules.weather){
+            //update cooldown
+            entry.cooldown -= Time.delta();
+
+            //create new event when not active
+            if(entry.cooldown < 0 && !entry.weather.isActive()){
+                float duration = Mathf.random(entry.minDuration, entry.maxDuration);
+                entry.cooldown = duration + Mathf.random(entry.minFrequency, entry.maxFrequency);
+                Call.createWeather(entry.weather, entry.intensity, duration);
             }
         }
     }
@@ -186,7 +217,7 @@ public class Logic implements ApplicationListener{
             for(Tilec entity : state.teams.playerCores()){
                 for(Item item : content.items()){
                     data.addItem(item, entity.items().get(item));
-                    Events.fire(new LaunchItemEvent(item, entity.items().get(item)));
+                    Events.fire(new LaunchItemEvent(new ItemStack(item, entity.items().get(item))));
                 }
                 entity.tile().remove();
             }
@@ -212,14 +243,21 @@ public class Logic implements ApplicationListener{
 
         if(state.isGame()){
             if(!net.client()){
-                state.enemies = Groups.unit.count(b -> b.team() == state.rules.waveTeam && b.type().isCounted);
+                state.enemies = Groups.unit.count(u -> u.team() == state.rules.waveTeam && u.type().isCounted);
             }
 
             if(!state.isPaused()){
+                state.stats.update();
+
                 if(state.isCampaign()){
                     universe.update();
                 }
                 Time.update();
+
+                //weather is serverside
+                if(!net.client()){
+                    updateWeather();
+                }
 
                 if(state.rules.waves && state.rules.waveTimer && !state.gameOver){
                     if(!state.rules.waitForWaveToEnd || state.enemies == 0){

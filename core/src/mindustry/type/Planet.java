@@ -12,6 +12,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.graphics.*;
 import mindustry.graphics.g3d.*;
 import mindustry.graphics.g3d.PlanetGrid.*;
 import mindustry.maps.generators.*;
@@ -63,7 +64,7 @@ public class Planet extends UnlockableContent{
     /** Sattelites orbiting this planet. */
     public Array<Satellite> satellites = new Array<>();
     /** Loads the mesh. Clientside only. Defaults to a boring sphere mesh. */
-    protected Prov<PlanetMesh> meshLoader = () -> new SunMesh(this, 2);
+    protected Prov<PlanetMesh> meshLoader = () -> new ShaderSphereMesh(this, Shaders.unlit, 2);
 
     public Planet(String name, Planet parent, int sectorSize, float radius){
         super(name);
@@ -183,6 +184,14 @@ public class Planet extends UnlockableContent{
     @Override
     public void load(){
         mesh = meshLoader.get();
+    }
+
+    @Override
+    public void dispose(){
+        if(mesh != null){
+            mesh.dispose();
+            mesh = null;
+        }
     }
 
     /** Gets a sector a tile position. */

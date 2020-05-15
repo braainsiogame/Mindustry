@@ -7,13 +7,13 @@ import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.io.*;
 import mindustry.type.*;
+import mindustry.type.Weather.*;
 import mindustry.world.*;
 
 /**
  * Defines current rules on how the game should function.
  * Does not store game state, just configuration.
  */
-@Serialize
 public class Rules{
     /** Whether the player has infinite resources. */
     public boolean infiniteResources;
@@ -57,10 +57,10 @@ public class Rules{
     public float bossWaveMultiplier = 3f;
     /** How many times longer a launch wave takes. */
     public float launchWaveMultiplier = 2f;
+    /** Base unit cap. Can still be increased by blocks. */
+    public int unitCap = 0;
     /** Sector for saves that have them.*/
     public @Nullable Sector sector;
-    /** Region that save is on. Indicates campaign. TODO not implemented. */
-    public @Nullable MapRegion region;
     /** Spawn layout. */
     public Array<SpawnGroup> spawns = new Array<>();
     /** Determines if there should be limited respawns. */
@@ -82,6 +82,8 @@ public class Rules{
     public boolean drawDarkness = true;
     /** Starting items put in cores */
     public Array<ItemStack> loadout = Array.with(ItemStack.with(Items.copper, 100));
+    /** Weather events that occur here. */
+    public Array<WeatherEntry> weather = new Array<>(1);
     /** Blocks that cannot be placed. */
     public ObjectSet<Block> bannedBlocks = new ObjectSet<>();
     /** Whether everything is dark. Enables lights. Experimental. */

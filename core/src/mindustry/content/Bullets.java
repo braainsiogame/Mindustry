@@ -117,7 +117,7 @@ public class Bullets implements ContentList{
             frontColor = Pal.missileYellow;
         }};
 
-        artilleryUnit = new ArtilleryBulletType(2f, 0, "shell"){{
+        artilleryUnit = new ArtilleryBulletType(2f, 8, "shell"){{
             hitEffect = Fx.blastExplosion;
             knockback = 0.8f;
             lifetime = 90f;
@@ -489,6 +489,7 @@ public class Bullets implements ContentList{
             despawnEffect = Fx.none;
             hitSize = 4;
             lifetime = 16f;
+            drawSize = 400f;
         }};
 
         meltdownLaser = new BulletType(0.001f, 70){

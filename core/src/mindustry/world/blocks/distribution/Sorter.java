@@ -70,8 +70,6 @@ public class Sorter extends Block{
                 Draw.rect("center", x, y);
                 Draw.color();
             }
-
-
         }
 
         @Override
@@ -94,7 +92,7 @@ public class Sorter extends Block{
         }
 
         Tilec getTileTarget(Item item, Tilec source, boolean flip){
-            int dir = source.absoluteRelativeTo(tile.x, tile.y);
+            int dir = source.relativeTo(tile.x, tile.y);
             if(dir == -1) return null;
             Tilec to;
 
@@ -140,7 +138,7 @@ public class Sorter extends Block{
         @Override
         public boolean onConfigureTileTapped(Tilec other){
             if(this == other){
-                control.input.frag.config.hideConfig();
+                deselect();
                 configure(null);
                 return false;
             }
@@ -170,7 +168,7 @@ public class Sorter extends Block{
             sortItem = content.item(read.s());
 
             if(revision == 1){
-                new DirectionalItemBuffer(20, 45f).read(read);
+                new DirectionalItemBuffer(20).read(read);
             }
         }
     }

@@ -16,8 +16,7 @@ public class Schematic implements Publishable, Comparable<Schematic>{
     public final Array<Stile> tiles;
     public StringMap tags;
     public int width, height;
-    public @Nullable
-    Fi file;
+    public @Nullable Fi file;
     /** Associated mod. If null, no mod is associated with this schematic. */
     public @Nullable LoadedMod mod;
 
@@ -49,9 +48,9 @@ public class Schematic implements Publishable, Comparable<Schematic>{
     }
 
     public @NonNull CoreBlock findCore(){
-        CoreBlock block = (CoreBlock)tiles.find(s -> s.block instanceof CoreBlock).block;
-        if(block == null) throw new IllegalArgumentException("Schematic is missing a core!");
-        return block;
+        Stile tile = tiles.find(s -> s.block instanceof CoreBlock);
+        if(tile == null) throw new IllegalArgumentException("Schematic is missing a core!");
+        return (CoreBlock)tile.block;
     }
 
     public String name(){

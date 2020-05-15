@@ -20,7 +20,7 @@ public class Tile implements Position, QuadTreeObject{
     static final ObjectSet<Tilec> tileSet = new ObjectSet<>();
 
     /** Tile traversal cost. */
-    public byte cost = 1;
+    public short cost = 1;
     /** Tile entity, usually null. */
     public @Nullable Tilec entity;
     public short x, y;
@@ -80,18 +80,26 @@ public class Tile implements Position, QuadTreeObject{
     }
 
     public byte absoluteRelativeTo(int cx, int cy){
-        if(x == cx && y <= cy - 1) return 1;
-        if(x == cx && y >= cy + 1) return 3;
-        if(x <= cx - 1 && y == cy) return 0;
-        if(x >= cx + 1 && y == cy) return 2;
-        return -1;
-    }
 
-    public static byte absoluteRelativeTo(int x, int y, int cx, int cy){
-        if(x == cx && y <= cy - 1) return 1;
-        if(x == cx && y >= cy + 1) return 3;
-        if(x <= cx - 1 && y == cy) return 0;
-        if(x >= cx + 1 && y == cy) return 2;
+        //very straightforward for odd sizes
+        if(block.size % 2 == 1){
+            if(Math.abs(x - cx) > Math.abs(y - cy)){
+                if(x <= cx - 1) return 0;
+                if(x >= cx + 1) return 2;
+            }else{
+                if(y <= cy - 1) return 1;
+                if(y >= cy + 1) return 3;
+            }
+        }else{ //need offsets here
+            if(Math.abs(x - cx + 0.5f) > Math.abs(y - cy + 0.5f)){
+                if(x+0.5f <= cx - 1) return 0;
+                if(x+0.5f >= cx + 1) return 2;
+            }else{
+                if(y+0.5f <= cy - 1) return 1;
+                if(y+0.5f >= cy + 1) return 3;
+            }
+        }
+
         return -1;
     }
 
@@ -452,31 +460,21 @@ public class Tile implements Position, QuadTreeObject{
             }
         }
 
-        //+24
-
         if(occluded){
             cost += 2;
         }
 
-        //+26
-
         if(block.synthetic() && solid()){
-            cost += Mathf.clamp(block.health / 10f, 0, 20);
+            cost += Mathf.clamp(block.health / 6f, 0, 1000);
         }
-
-        //+46
 
         if(floor.isLiquid){
             cost += 10;
         }
 
-        //+56
-
         if(floor.drownTime > 0){
             cost += 70;
         }
-
-        //+126
 
         if(cost < 0){
             cost = Byte.MAX_VALUE;

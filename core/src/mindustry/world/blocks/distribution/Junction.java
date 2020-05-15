@@ -27,7 +27,7 @@ public class Junction extends Block{
     }
 
     public class JunctionEntity extends TileEntity{
-        DirectionalItemBuffer buffer = new DirectionalItemBuffer(capacity, speed);
+        DirectionalItemBuffer buffer = new DirectionalItemBuffer(capacity);
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
@@ -43,7 +43,7 @@ public class Junction extends Block{
                     long l = buffer.buffers[i][0];
                     float time = BufferItem.time(l);
 
-                    if(Time.time() >= time + speed || Time.time() < time){
+                    if(Time.time() >= time + speed / timeScale || Time.time() < time){
 
                         Item item = content.item(BufferItem.item(l));
                         Tilec dest = nearby(i);
@@ -63,13 +63,13 @@ public class Junction extends Block{
 
         @Override
         public void handleItem(Tilec source, Item item){
-            int relative = source.relativeTo(tile.x, tile.y);
+            int relative = source.relativeTo(tile);
             buffer.accept(relative, item);
         }
 
         @Override
         public boolean acceptItem(Tilec source, Item item){
-            int relative = source.relativeTo(tile.x, tile.y);
+            int relative = source.relativeTo(tile);
 
             if(relative == -1 || !buffer.accepts(relative)) return false;
             Tilec to = nearby(relative);

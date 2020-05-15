@@ -7,7 +7,7 @@ import mindustry.annotations.Annotations.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
-@EntityDef(value = {Decalc.class}, pooled = true)
+@EntityDef(value = {Decalc.class}, pooled = true, serialize = false)
 @Component
 abstract class DecalComp implements Drawc, Timedc, Rotc, Posc{
     @Import float x, y, rotation;
@@ -25,7 +25,7 @@ abstract class DecalComp implements Drawc, Timedc, Rotc, Posc{
         Draw.color();
     }
 
-    @Override
+    @Replace
     public float clipSize(){
         return region.getWidth()*2;
     }

@@ -7,6 +7,7 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.maps.generators.*;
 import mindustry.world.*;
 
@@ -16,8 +17,8 @@ public class TODOPlanetGenerator extends PlanetGenerator{
     Simplex noise = new Simplex();
     RidgedPerlin rid = new RidgedPerlin(1, 2);
     float scl = 5f;
+    float waterOffset = 0.07f;
 
-    //TODO generate array from planet image later
     Block[][] arr = {
     {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandTaintedWater, Blocks.snow, Blocks.ice},
     {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandTaintedWater, Blocks.snow, Blocks.snow, Blocks.ice},
@@ -43,16 +44,13 @@ public class TODOPlanetGenerator extends PlanetGenerator{
 
     float rawHeight(Vec3 position){
         position = Tmp.v33.set(position).scl(scl);
-        return Mathf.pow((float)noise.octaveNoise3D(7, 0.48f, 1f/3f, position.x, position.y, position.z), 2.3f);
+        return (Mathf.pow((float)noise.octaveNoise3D(7, 0.48f, 1f/3f, position.x, position.y, position.z), 2.3f) + waterOffset) / (1f + waterOffset);
     }
 
     @Override
     public float getHeight(Vec3 position){
         float height = rawHeight(position);
-        if(height <= water){
-            return water;
-        }
-        return height;
+        return Math.max(height, water);
     }
 
     @Override
@@ -125,7 +123,7 @@ public class TODOPlanetGenerator extends PlanetGenerator{
 
         float constraint = 1.3f;
         float radius = width / 2f / Mathf.sqrt3;
-        int rooms = rand.random(2, 5) - 1;
+        int rooms = rand.random(2, 5);
         Array<Room> array = new Array<>();
 
         for(int i = 0; i < rooms; i++){
@@ -262,7 +260,13 @@ public class TODOPlanetGenerator extends PlanetGenerator{
             }
         });
 
-        schematics.placeLoadout(Loadouts.advancedShard, spawn.x, spawn.y);
+        Schematics.placeLoadout(Loadouts.advancedShard, spawn.x, spawn.y);
+
+        if(sector.hostility > 0.02f){
+            new BaseGenerator().generate(tiles, enemies.map(r -> tiles.getn(r.x, r.y)), tiles.get(spawn.x, spawn.y), state.rules.waveTeam, sector);
+
+            state.rules.attackMode = true;
+        }
 
         state.rules.waves = true;
     }

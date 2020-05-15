@@ -12,6 +12,7 @@ import arc.util.Log.*;
 import arc.util.io.*;
 import mindustry.ai.*;
 import mindustry.async.*;
+import mindustry.audio.LoopControl;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
@@ -79,8 +80,8 @@ public class Vars implements Loadable{
     public static final float miningRange = 70f;
     /** range for building */
     public static final float buildingRange = 220f;
-    /** ticks spent out of bound until self destruct. */
-    public static final float boundsCountdown = 60 * 7;
+    /** duration of one turn. */
+    public static final float turnDuration = 5 * Time.toMinutes;
     /** for map generator dialog */
     public static boolean updateEditorOnChange = false;
     /** size of tiles in units */
@@ -126,6 +127,10 @@ public class Vars implements Loadable{
     public static boolean steam;
     /** whether typing into the console is enabled - developers only */
     public static boolean enableConsole = false;
+    /** whether to clear sector saves when landing */
+    public static boolean clearSectors = false;
+    /** whether any light rendering is enabled */
+    public static boolean enableLight = true;
     /** application data directory, equivalent to {@link Settings#getDataDirectory()} */
     public static Fi dataDirectory;
     /** data subdirectory used for screenshots */
@@ -163,12 +168,12 @@ public class Vars implements Loadable{
     public static GlobalData data;
     public static EntityCollisions collisions;
     public static DefaultWaves defaultWaves;
-    public static LoopControl loops;
+    public static mindustry.audio.LoopControl loops;
     public static Platform platform = new Platform(){};
     public static Mods mods;
-    public static Schematics schematics = new Schematics();
+    public static Schematics schematics;
     public static BeControl becontrol;
-    public static AsyncLogic asyncLogic;
+    public static AsyncCore asyncCore;
     public static TeamIndexProcess teamIndex;
 
     public static Universe universe;
@@ -237,7 +242,7 @@ public class Vars implements Loadable{
         world = new World();
         universe = new Universe();
         becontrol = new BeControl();
-        asyncLogic = new AsyncLogic();
+        asyncCore = new AsyncCore();
 
         maps = new Maps();
         spawner = new WaveSpawner();
@@ -290,7 +295,7 @@ public class Vars implements Loadable{
 
         Writer writer = settings.getDataDirectory().child("last_log.txt").writer(false);
         LogHandler log = Log.getLogger();
-        Log.setLogger(((level, text) -> {
+        Log.setLogger((level, text) -> {
             log.log(level, text);
 
             try{
@@ -300,7 +305,7 @@ public class Vars implements Loadable{
                 e.printStackTrace();
                 //ignore it
             }
-        }));
+        });
 
         loadedFileLogger = true;
     }

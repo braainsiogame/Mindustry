@@ -6,7 +6,6 @@ import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g3d.*;
 import arc.graphics.gl.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.util.ArcAnnotate.*;
@@ -16,21 +15,19 @@ import mindustry.type.*;
 import static mindustry.Vars.renderer;
 
 public class Shaders{
-    public static Shadow shadow;
     public static BlockBuild blockbuild;
     public static @Nullable Shield shield;
     public static UnitBuild build;
     public static FogShader fog;
-    public static MenuShader menu;
     public static LightShader light;
     public static SurfaceShader water, tar, slag;
     public static PlanetShader planet;
     public static PlanetGridShader planetGrid;
-    public static SunShader sun;
     public static AtmosphereShader atmosphere;
+    public static MeshShader mesh = new MeshShader();
+    public static Shader unlit;
 
     public static void init(){
-        shadow = new Shadow();
         blockbuild = new BlockBuild();
         try{
             shield = new Shield();
@@ -41,15 +38,14 @@ public class Shaders{
         }
         build = new UnitBuild();
         fog = new FogShader();
-        menu = new MenuShader();
         light = new LightShader();
         water = new SurfaceShader("water");
         tar = new SurfaceShader("tar");
         slag = new SurfaceShader("slag");
         planet = new PlanetShader();
         planetGrid = new PlanetGridShader();
-        sun = new SunShader();
         atmosphere = new AtmosphereShader();
+        unlit = new LoadShader("planet", "unlit");
     }
 
     public static class AtmosphereShader extends LoadShader{
@@ -97,29 +93,10 @@ public class Shaders{
         }
     }
 
-    public static class SunShader extends LoadShader{
-        public int octaves = 5;
-        public float falloff = 0.5f, scale = 1f, power = 1.3f, magnitude = 0.6f, speed = 99999999999f, spread = 1.3f, seed = Mathf.random(9999f);
+    public static class MeshShader extends LoadShader{
 
-        public float[] colorValues;
-
-        public SunShader(){
-            super("sun", "sun");
-        }
-
-        @Override
-        public void apply(){
-            setUniformi("u_octaves", octaves);
-            setUniformf("u_falloff", falloff);
-            setUniformf("u_scale", scale);
-            setUniformf("u_power", power);
-            setUniformf("u_magnitude", magnitude);
-            setUniformf("u_time", Time.globalTime() / speed);
-            setUniformf("u_seed", seed);
-            setUniformf("u_spread", spread);
-
-            setUniformi("u_colornum", colorValues.length / 4);
-            setUniform4fv("u_colors[0]", colorValues, 0, colorValues.length);
+        public MeshShader(){
+            super("planet", "mesh");
         }
     }
 
@@ -150,25 +127,6 @@ public class Shaders{
 
     }
 
-    public static class MenuShader extends LoadShader{
-        float time = 0f;
-
-        public MenuShader(){
-            super("menu", "default");
-        }
-
-        @Override
-        public void apply(){
-            time = time % 158;
-
-            setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
-            setUniformi("u_time", (int)(time += Core.graphics.getDeltaTime() * 60f));
-            setUniformf("u_uv", Core.atlas.white().getU(), Core.atlas.white().getV());
-            setUniformf("u_scl", Scl.scl(1f));
-            setUniformf("u_uv2", Core.atlas.white().getU2(), Core.atlas.white().getV2());
-        }
-    }
-
     public static class FogShader extends LoadShader{
         public FogShader(){
             super("fog", "default");
@@ -191,23 +149,6 @@ public class Shaders{
             setUniformf("u_progress", progress);
             setUniformf("u_uv", region.getU(), region.getV());
             setUniformf("u_uv2", region.getU2(), region.getV2());
-            setUniformf("u_texsize", region.getTexture().getWidth(), region.getTexture().getHeight());
-        }
-    }
-
-    public static class Shadow extends LoadShader{
-        public Color color = new Color();
-        public TextureRegion region = new TextureRegion();
-        public float scl;
-
-        public Shadow(){
-            super("shadow", "default");
-        }
-
-        @Override
-        public void apply(){
-            setUniformf("u_color", color);
-            setUniformf("u_scl", scl);
             setUniformf("u_texsize", region.getTexture().getWidth(), region.getTexture().getHeight());
         }
     }

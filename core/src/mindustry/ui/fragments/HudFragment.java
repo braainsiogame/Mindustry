@@ -181,7 +181,7 @@ public class HudFragment extends Fragment{
 
             //fps display
             cont.table(info -> {
-                info.top().left().margin(4).visible(() -> Core.settings.getBool("fps"));
+                info.top().left().margin(4).visible(() -> Core.settings.getBool("fps") && shown);
                 info.update(() -> info.setTranslation(state.rules.waves || state.isEditor() ? 0f : -Scl.scl(dsize * 4 + 3), 0));
                 IntFormat fps = new IntFormat("fps");
                 IntFormat ping = new IntFormat("ping");
@@ -193,7 +193,7 @@ public class HudFragment extends Fragment{
         });
         
         parent.fill(t -> {
-            t.visible(() -> Core.settings.getBool("minimap") && !state.rules.tutorial);
+            t.visible(() -> Core.settings.getBool("minimap") && !state.rules.tutorial && shown);
             //minimap
             t.add(new Minimap());
             t.row();
@@ -348,9 +348,9 @@ public class HudFragment extends Fragment{
             Table container = Core.scene.table();
             container.top().add(table);
             container.setTranslation(0, table.getPrefHeight());
-            container.actions(Actions.translateBy(0, -table.getPrefHeight(), 1f, Interpolation.fade), Actions.delay(2.5f),
+            container.actions(Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
             //nesting actions() calls is necessary so the right prefHeight() is used
-            Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interpolation.fade), Actions.remove())));
+            Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove())));
         });
     }
 
@@ -396,9 +396,9 @@ public class HudFragment extends Fragment{
                 Table container = Core.scene.table();
                 container.top().add(table);
                 container.setTranslation(0, table.getPrefHeight());
-                container.actions(Actions.translateBy(0, -table.getPrefHeight(), 1f, Interpolation.fade), Actions.delay(2.5f),
+                container.actions(Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
                 //nesting actions() calls is necessary so the right prefHeight() is used
-                Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interpolation.fade), Actions.run(() -> {
+                Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.run(() -> {
                     lastUnlockTable = null;
                     lastUnlockLayout = null;
                 }), Actions.remove())));

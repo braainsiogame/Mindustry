@@ -1,4 +1,4 @@
-package mindustry.world.blocks.logic;
+package mindustry.world.blocks.storage;
 
 import arc.*;
 import arc.Input.*;
@@ -125,7 +125,7 @@ public class MessageBlock extends Block{
                     });
                     dialog.show();
                 }
-                control.input.frag.config.hideConfig();
+                deselect();
             }).size(40f);
         }
 

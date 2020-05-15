@@ -31,15 +31,13 @@ public class Renderer implements ApplicationListener{
     private Color clearColor = new Color(0f, 0f, 0f, 1f);
     private float targetscale = Scl.scl(4);
     private float camerascale = targetscale;
-    private float landscale = 0f, landTime;
+    private float landscale = 0f, landTime, weatherAlpha;
     private float minZoomScl = Scl.scl(0.01f);
     private float shakeIntensity, shaketime;
 
     public Renderer(){
         camera = new Camera();
         Shaders.init();
-
-        //fx.addEffect(new SnowFilter());
     }
 
     public void shake(float intensity, float duration){
@@ -62,8 +60,11 @@ public class Renderer implements ApplicationListener{
 
         if(landTime > 0){
             landTime -= Time.delta();
-            landscale = Interpolation.pow5In.apply(minZoomScl, Scl.scl(4f), 1f - landTime / Fx.coreLand.lifetime);
+            landscale = Interp.pow5In.apply(minZoomScl, Scl.scl(4f), 1f - landTime / Fx.coreLand.lifetime);
             camerascale = landscale;
+            weatherAlpha = 0f;
+        }else{
+            weatherAlpha = Mathf.lerpDelta(weatherAlpha, 1f, 0.08f);
         }
 
         camera.width = graphics.getWidth() / camerascale;
@@ -80,6 +81,10 @@ public class Renderer implements ApplicationListener{
                 draw();
             }
         }
+    }
+
+    public float weatherAlpha(){
+        return weatherAlpha;
     }
 
     public float landScale(){
@@ -287,7 +292,11 @@ public class Renderer implements ApplicationListener{
 
     public void clampScale(){
         float s = Scl.scl(1f);
-        targetscale = Mathf.clamp(targetscale, s * 1.5f, Math.round(s * 6));
+        targetscale = Mathf.clamp(targetscale, minScale(), Math.round(s * 6));
+    }
+
+    public float minScale(){
+        return Scl.scl(1.5f);
     }
 
     public float getScale(){

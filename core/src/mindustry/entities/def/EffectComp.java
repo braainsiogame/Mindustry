@@ -1,13 +1,11 @@
 package mindustry.entities.def;
 
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 
-@EntityDef(value = {Effectc.class, Childc.class}, pooled = true)
+@EntityDef(value = {Effectc.class, Childc.class}, pooled = true, serialize = false)
 @Component
 abstract class EffectComp implements Posc, Drawc, Timedc, Rotc, Childc{
     Color color = new Color(Color.white);
@@ -19,7 +17,7 @@ abstract class EffectComp implements Posc, Drawc, Timedc, Rotc, Childc{
         effect.render(id(), color, time(), rotation(), x(), y(), data);
     }
 
-    @Override
+    @Replace
     public float clipSize(){
         return effect.size;
     }

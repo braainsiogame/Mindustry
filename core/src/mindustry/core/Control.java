@@ -9,6 +9,7 @@ import arc.math.*;
 import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.audio.*;
 import mindustry.content.*;
 import mindustry.core.GameState.*;
 import mindustry.entities.*;
@@ -17,6 +18,7 @@ import mindustry.game.*;
 import mindustry.game.Saves.*;
 import mindustry.gen.*;
 import mindustry.input.*;
+import mindustry.io.*;
 import mindustry.io.SaveIO.*;
 import mindustry.maps.Map;
 import mindustry.type.*;
@@ -39,7 +41,7 @@ import static mindustry.Vars.*;
  */
 public class Control implements ApplicationListener, Loadable{
     public Saves saves;
-    public MusicControl music;
+    public mindustry.audio.MusicControl music;
     public Tutorial tutorial;
     public InputHandler input;
 
@@ -263,9 +265,7 @@ public class Control implements ApplicationListener, Loadable{
         ui.loadAnd(() -> {
             ui.planet.hide();
             SaveSlot slot = sector.save;
-            //TODO comment for new sector states
-            //slot = null;
-            if(slot != null){
+            if(slot != null && !clearSectors){
                 try{
                     net.reset();
                     slot.load();
@@ -354,6 +354,16 @@ public class Control implements ApplicationListener, Loadable{
 
     @Override
     public void dispose(){
+        //try to save when exiting
+        if(saves != null && saves.getCurrent() != null && saves.getCurrent().isAutosave() && !net.client() && !state.isMenu()){
+            try{
+                SaveIO.save(control.saves.getCurrent().file);
+                Log.info("Saved on exit.");
+            }catch(Throwable e){
+                e.printStackTrace();
+            }
+        }
+
         content.dispose();
         net.dispose();
         Musics.dispose();
@@ -381,16 +391,6 @@ public class Control implements ApplicationListener, Loadable{
         //play tutorial on stop
         if(!settings.getBool("playedtutorial", false)){
             Core.app.post(() -> Core.app.post(this::playTutorial));
-        }
-
-        if(!OS.prop("user.name").equals("anuke") && !OS.hasEnv("iknowwhatimdoing")){
-            app.post(() -> app.post(() -> {
-                FloatingDialog dialog = new FloatingDialog("Don't play 6.0");
-                dialog.cont.add("6.0 is not ready for testing. Don't play it, and don't report any issues with it.\n[scarlet]This dialog cannot be closed. If you know what you're doing, you should know how to disable it.")
-                .grow().wrap().get().setAlignment(Align.center);
-                dialog.setFillParent(true);
-                dialog.show();
-            }));
         }
 
         //display UI scale changed dialog

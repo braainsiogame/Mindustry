@@ -132,10 +132,8 @@ public class PowerNode extends PowerBlock{
     }
 
     protected void drawLaser(float x1, float y1, float x2, float y2, float satisfaction, int size1, int size2){
-        int opacityPercentage = Core.settings.getInt("lasersopacity");
-        if(opacityPercentage == 0) return;
-
-        float opacity = opacityPercentage / 100f;
+        float opacity = Core.settings.getInt("lasersopacity") / 100f;
+        if(Mathf.zero(opacity)) return;
 
         float angle1 = Angles.angle(x1, y1, x2, y2);
         t1.trns(angle1, size1 * tilesize / 2f - 1.5f);
@@ -179,6 +177,10 @@ public class PowerNode extends PowerBlock{
 
         tempTileEnts.clear();
         graphs.clear();
+        if(tile.entity != null && tile.entity.power() != null){
+            graphs.add(tile.entity.power().graph);
+        }
+
         Geometry.circle(tile.x, tile.y, (int)(laserRange + 2), (x, y) -> {
             Tilec other = world.ent(x, y);
             if(valid.get(other) && !tempTileEnts.contains(other)){
@@ -317,6 +319,7 @@ public class PowerNode extends PowerBlock{
                         configure(power.links.get(0));
                     }
                 }
+                deselect();
                 return false;
             }
 
@@ -337,15 +340,8 @@ public class PowerNode extends PowerBlock{
         @Override
         public void drawConfigure(){
 
-            Draw.color(Pal.accent);
-
-            Lines.stroke(1.5f);
-            Lines.circle(x, y,
-            tile.block().size * tilesize / 2f + 1f + Mathf.absin(Time.time(), 4f, 1f));
-
+            Drawf.circles(x, y, tile.block().size * tilesize / 2f + 1f + Mathf.absin(Time.time(), 4f, 1f));
             Drawf.circles(x, y, laserRange * tilesize);
-
-            Lines.stroke(1.5f);
 
             for(int x = (int)(tile.x - laserRange - 2); x <= tile.x + laserRange + 2; x++){
                 for(int y = (int)(tile.y - laserRange - 2); y <= tile.y + laserRange + 2; y++){

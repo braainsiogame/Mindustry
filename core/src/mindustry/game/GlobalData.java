@@ -1,9 +1,9 @@
 package mindustry.game;
 
 import arc.*;
-import arc.struct.*;
 import arc.files.*;
-import arc.util.ArcAnnotate.*;
+import arc.math.*;
+import arc.struct.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -20,8 +20,6 @@ import static mindustry.Vars.*;
 public class GlobalData{
     private ObjectMap<ContentType, ObjectSet<String>> unlocked = new ObjectMap<>();
     private ObjectIntMap<Item> items = new ObjectIntMap<>();
-    private Array<Satellite> satellites = new Array<>();
-    private ObjectMap<String, MapRegion> regions = new ObjectMap<>();
     private boolean modified;
 
     public GlobalData(){
@@ -36,10 +34,6 @@ public class GlobalData{
             int amount = stream.readInt();
             return new ItemStack(content.getByName(ContentType.item, name), amount);
         });
-    }
-
-    public @Nullable MapRegion getRegion(String name){
-        return regions.get(name);
     }
 
     public void exportData(Fi file) throws IOException{
@@ -98,8 +92,10 @@ public class GlobalData{
         items.getAndIncrement(item, 0, amount);
         state.stats.itemsDelivered.getAndIncrement(item, 0, amount);
 
+        //clamp to capacity
+        items.put(item, Mathf.clamp(items.get(item), 0, getItemCapacity()));
+
         //clamp overflow
-        if(items.get(item, 0) < 0) items.put(item, Integer.MAX_VALUE);
         if(state.stats.itemsDelivered.get(item, 0) < 0) state.stats.itemsDelivered.put(item, Integer.MAX_VALUE);
     }
 
@@ -137,6 +133,11 @@ public class GlobalData{
 
     public ObjectIntMap<Item> items(){
         return items;
+    }
+
+    //TODO: make it upgradeable
+    public int getItemCapacity(){
+        return 10000;
     }
 
     /** Returns whether or not this piece of content is unlocked yet. */

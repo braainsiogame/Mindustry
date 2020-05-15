@@ -51,14 +51,14 @@ public class ItemModule extends BlockModule{
             boolean updateFlow = flowTimer.get(30);
 
             for(int i = 0; i < items.length; i++){
-                flow[i].addValue(cacheSums[i]);
+                flow[i].add(cacheSums[i]);
                 if(cacheSums[i] > 0){
                     cacheBits.set(i);
                 }
                 cacheSums[i] = 0;
 
                 if(updateFlow){
-                    displayFlow[i] = flow[i].hasEnoughData() ? flow[i].getMean() : -1;
+                    displayFlow[i] = flow[i].hasEnoughData() ? flow[i].mean() : -1;
                 }
             }
         }else{
@@ -137,6 +137,10 @@ public class ItemModule extends BlockModule{
         return total;
     }
 
+    public boolean any(){
+        return total > 0;
+    }
+
     public Item first(){
         for(int i = 0; i < items.length; i++){
             if(items[i] > 0){
@@ -158,6 +162,25 @@ public class ItemModule extends BlockModule{
             }
         }
         return null;
+    }
+
+    /** Begins a speculative take operation. This returns the item that would be returned by #take(), but does not change state. */
+    public Item beginTake(){
+        for(int i = 0; i < items.length; i++){
+            int index = (i + takeRotation);
+            if(index >= items.length) index -= items.length;
+            if(items[index] > 0){
+                return content.item(index);
+            }
+        }
+        return null;
+    }
+
+    /** Finishes a take operation. Updates take state, removes the item. */
+    public void endTake(Item item){
+        items[item.id] --;
+        total --;
+        takeRotation = item.id + 1;
     }
 
     public int get(int id){
@@ -244,7 +267,7 @@ public class ItemModule extends BlockModule{
     }
 
     public interface ItemConsumer{
-        void accept(Item item, float amount);
+        void accept(Item item, int amount);
     }
 
     public interface ItemCalculator{

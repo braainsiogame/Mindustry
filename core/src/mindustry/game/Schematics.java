@@ -30,7 +30,6 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.sandbox.*;
 import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
 
 import java.io.*;
 import java.util.zip.*;
@@ -275,28 +274,6 @@ public class Schematics implements Loadable{
             .removeAll(s -> !s.block.isVisible() || !s.block.unlockedCur());
     }
 
-    public void placeLoadout(Schematic schem, int x, int y){
-        Stile coreTile = schem.tiles.find(s -> s.block instanceof CoreBlock);
-        if(coreTile == null) throw new IllegalArgumentException("Schematic has no core tile. Exiting.");
-        int ox = x - coreTile.x, oy = y - coreTile.y;
-        schem.tiles.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if(tile == null) return;
-
-            tile.setBlock(st.block, state.rules.defaultTeam, 0);
-            tile.rotation(st.rotation);
-
-            Object config = st.config;
-            if(tile.entity != null){
-                tile.entity.configureAny(config);
-            }
-
-            if(st.block instanceof Drill){
-                tile.getLinkedTiles(t -> t.setOverlay(Blocks.oreCopper));
-            }
-        });
-    }
-
     /** Adds a schematic to the list, also copying it into the files.*/
     public void add(Schematic schematic){
         all.add(schematic);
@@ -394,6 +371,28 @@ public class Schematics implements Loadable{
         }
     }
 
+    public static void placeLoadout(Schematic schem, int x, int y){
+        Stile coreTile = schem.tiles.find(s -> s.block instanceof CoreBlock);
+        if(coreTile == null) throw new IllegalArgumentException("Schematic has no core tile. Exiting.");
+        int ox = x - coreTile.x, oy = y - coreTile.y;
+        schem.tiles.each(st -> {
+            Tile tile = world.tile(st.x + ox, st.y + oy);
+            if(tile == null) return;
+
+            tile.setBlock(st.block, state.rules.defaultTeam, 0);
+            tile.rotation(st.rotation);
+
+            Object config = st.config;
+            if(tile.entity != null){
+                tile.entity.configureAny(config);
+            }
+
+            if(st.block instanceof Drill){
+                tile.getLinkedTiles(t -> t.setOverlay(Blocks.oreCopper));
+            }
+        });
+    }
+
     //region IO methods
 
     /** Loads a schematic from base64. May throw an exception. */
@@ -487,7 +486,7 @@ public class Schematics implements Loadable{
             //write each tile
             for(Stile tile : schematic.tiles){
                 stream.writeByte(blocks.orderedItems().indexOf(tile.block));
-                stream.writeInt(Point2.pack((int)tile.x, (int)tile.y));
+                stream.writeInt(Point2.pack(tile.x, tile.y));
                 TypeIO.writeObject(Writes.get(stream), tile.config);
                 stream.writeByte(tile.rotation);
             }
@@ -499,7 +498,7 @@ public class Schematics implements Loadable{
         if(block instanceof Sorter || block instanceof Unloader || block instanceof ItemSource) return content.item(value);
         if(block instanceof LiquidSource) return content.liquid(value);
         if(block instanceof MassDriver || block instanceof ItemBridge) return Point2.unpack(value).sub(Point2.x(position), Point2.y(position));
-        if(block instanceof LightBlock || block instanceof CommandCenter) return value;
+        if(block instanceof LightBlock) return value;
 
         return null;
     }

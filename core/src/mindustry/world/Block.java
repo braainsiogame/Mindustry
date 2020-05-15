@@ -106,6 +106,9 @@ public class Block extends UnlockableContent{
     public EnumSet<BlockFlag> flags = EnumSet.of();
     /** Targeting priority of this block, as seen by enemies.*/
     public TargetPriority priority = TargetPriority.base;
+    /** How much this block affects the unit cap by.
+     * The block flags must contain unitModifier in order for this to work. */
+    public int unitCapModifier = 0;
     /** Whether the block can be tapped and selected to configure. */
     public boolean configurable;
     /** Whether this block consumes touchDown events when tapped. */
@@ -302,7 +305,7 @@ public class Block extends UnlockableContent{
 
         // Note: Power stats are added by the consumers.
         if(hasLiquids) stats.add(BlockStat.liquidCapacity, liquidCapacity, StatUnit.liquidUnits);
-        if(hasItems) stats.add(BlockStat.itemCapacity, itemCapacity, StatUnit.items);
+        if(hasItems && itemCapacity > 0) stats.add(BlockStat.itemCapacity, itemCapacity, StatUnit.items);
     }
 
     public void setBars(){

@@ -132,30 +132,32 @@ public class DesktopInput extends InputHandler{
             drawOverRequest(request);
         }
 
-        //draw things that may be placed soon
-        if(mode == placing && block != null){
-            for(int i = 0; i < lineRequests.size; i++){
-                BuildRequest req = lineRequests.get(i);
-                if(i == lineRequests.size - 1 && req.block.rotate){
-                    drawArrow(block, req.x, req.y, req.rotation);
+        if(player.isBuilder()){
+            //draw things that may be placed soon
+            if(mode == placing && block != null){
+                for(int i = 0; i < lineRequests.size; i++){
+                    BuildRequest req = lineRequests.get(i);
+                    if(i == lineRequests.size - 1 && req.block.rotate){
+                        drawArrow(block, req.x, req.y, req.rotation);
+                    }
+                    drawRequest(lineRequests.get(i));
                 }
-                drawRequest(lineRequests.get(i));
-            }
-        }else if(isPlacing()){
-            if(block.rotate){
-                drawArrow(block, cursorX, cursorY, rotation);
-            }
-            Draw.color();
-            drawRequest(cursorX, cursorY, block, rotation);
-            block.drawPlace(cursorX, cursorY, rotation, validPlace(cursorX, cursorY, block, rotation));
+            }else if(isPlacing()){
+                if(block.rotate){
+                    drawArrow(block, cursorX, cursorY, rotation);
+                }
+                Draw.color();
+                drawRequest(cursorX, cursorY, block, rotation);
+                block.drawPlace(cursorX, cursorY, rotation, validPlace(cursorX, cursorY, block, rotation));
 
-            if(block.saveConfig && block.lastConfig != null){
-                brequest.set(cursorX, cursorY, rotation, block);
-                brequest.config = block.lastConfig;
+                if(block.saveConfig && block.lastConfig != null){
+                    brequest.set(cursorX, cursorY, rotation, block);
+                    brequest.config = block.lastConfig;
+                    block.drawRequestConfig(brequest, allRequests());
+                    brequest.config = null;
+                }
 
-                block.drawRequestConfig(brequest, allRequests());
             }
-
         }
 
         Draw.reset();
@@ -170,13 +172,15 @@ public class DesktopInput extends InputHandler{
         }
 
         if((player.dead() || state.isPaused()) && !ui.chatfrag.shown()){
-            //move camera around
-            float camSpeed = !Core.input.keyDown(Binding.dash) ? 3f : 8f;
-            Core.camera.position.add(Tmp.v1.setZero().add(Core.input.axis(Binding.move_x), Core.input.axis(Binding.move_y)).nor().scl(Time.delta() * camSpeed));
+            if(!(scene.getKeyboardFocus() instanceof TextField)){
+                //move camera around
+                float camSpeed = !Core.input.keyDown(Binding.boost) ? 3f : 8f;
+                Core.camera.position.add(Tmp.v1.setZero().add(Core.input.axis(Binding.move_x), Core.input.axis(Binding.move_y)).nor().scl(Time.delta() * camSpeed));
 
-            if(Core.input.keyDown(Binding.mouse_move)){
-                Core.camera.position.x += Mathf.clamp((Core.input.mouseX() - Core.graphics.getWidth() / 2f) * 0.005f, -1, 1) * camSpeed;
-                Core.camera.position.y += Mathf.clamp((Core.input.mouseY() - Core.graphics.getHeight() / 2f) * 0.005f, -1, 1) * camSpeed;
+                if(Core.input.keyDown(Binding.mouse_move)){
+                    Core.camera.position.x += Mathf.clamp((Core.input.mouseX() - Core.graphics.getWidth() / 2f) * 0.005f, -1, 1) * camSpeed;
+                    Core.camera.position.y += Mathf.clamp((Core.input.mouseY() - Core.graphics.getHeight() / 2f) * 0.005f, -1, 1) * camSpeed;
+                }
             }
         }else if(!player.dead()){
             Core.camera.position.lerpDelta(player, 0.08f);
@@ -252,7 +256,7 @@ public class DesktopInput extends InputHandler{
             isShooting = false;
         }
 
-        if(isPlacing()){
+        if(isPlacing() && player.isBuilder()){
             cursorType = SystemCursor.hand;
             selectScale = Mathf.lerpDelta(selectScale, 1f, 0.2f);
         }else{
@@ -461,7 +465,7 @@ public class DesktopInput extends InputHandler{
         }else if(Core.input.keyTap(Binding.deselect) && !selectRequests.isEmpty()){
             selectRequests.clear();
             lastSchematic = null;
-        }else if(Core.input.keyTap(Binding.break_block) && !Core.scene.hasMouse()){
+        }else if(Core.input.keyTap(Binding.break_block) && !Core.scene.hasMouse() && player.isBuilder()){
             //is recalculated because setting the mode to breaking removes potential multiblock cursor offset
             deleting = false;
             mode = breaking;

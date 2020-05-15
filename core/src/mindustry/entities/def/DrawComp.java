@@ -5,7 +5,10 @@ import mindustry.gen.*;
 
 @Component
 abstract class DrawComp implements Posc{
-    abstract float clipSize();
+
+    float clipSize(){
+        return Float.MAX_VALUE;
+    }
 
     void draw(){
 

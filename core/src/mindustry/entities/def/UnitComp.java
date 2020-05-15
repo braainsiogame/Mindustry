@@ -22,7 +22,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
 
     @Import float x, y, rotation, elevation, maxHealth;
 
-    private UnitController controller;
+    private transient UnitController controller;
     private UnitType type;
 
     public void moveAt(Vec2 vector){
@@ -43,7 +43,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         return type.hasWeapons();
     }
 
-    @Override
+    @Replace
     public float clipSize(){
         return type.region.getWidth() * 2f;
     }
@@ -113,6 +113,16 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
     public void afterRead(){
         //set up type info after reading
         type(this.type);
+    }
+
+    @Override
+    public void add(){
+        teamIndex.updateCount(team(), 1);
+    }
+
+    @Override
+    public void remove(){
+        teamIndex.updateCount(team(), -1);
     }
 
     @Override
