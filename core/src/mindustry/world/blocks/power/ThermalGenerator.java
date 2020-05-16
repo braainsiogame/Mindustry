@@ -1,19 +1,15 @@
 package mindustry.world.blocks.power;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.Effects.*;
-import mindustry.game.*;
-import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.renderer;
 
 public class ThermalGenerator extends PowerGenerator{
     public Effect generateEffect = Fx.none;
@@ -69,25 +65,5 @@ public class ThermalGenerator extends PowerGenerator{
     public boolean canPlaceOn(Tile tile){
         //make sure there's heat at this location
         return tile.getLinkedTilesAs(this, tempTiles).sumf(other -> other.floor().attributes.get(attribute)) > 0.01f;
-    }
-
-    @Override
-    public void silk(Tile tile, Cons<Silk> cons){
-        Team tea = tile.getTeam();
-        for(Point2 p : Geometry.d4){
-            Tile other = world.tile(tile.x + (p.x * 2), tile.y + (p.y * 2));
-            if(other == null) continue;
-            if(Build.validPlace(tile.getTeam(), other.x, other.y, Blocks.thermalGenerator, 0)){
-                cons.get(new Silk(other){{
-                    requirements = Blocks.thermalGenerator.requirements;
-                    afford = (inventory) -> inventory.has(requirements, state.rules.buildCostMultiplier);
-                    trigger = () -> construct(Blocks.thermalGenerator);
-                    team = tea;
-                    size = 2;
-                    weightMultiplier = 0.5f;
-                    abort = () -> tile.changed != changed || tile.rotation != rotation || !Build.validPlace(tile.getTeam(), other.x, other.y, Blocks.thermalGenerator, 0);
-                }});
-            }
-        }
     }
 }
