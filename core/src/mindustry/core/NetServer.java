@@ -366,7 +366,7 @@ public class NetServer implements ApplicationListener{
         int voteCooldown = 60 * 1;
 
         class VoteSession{
-            Player target;
+            Player target, caster;
             ObjectSet<String> voted = new ObjectSet<>();
             VoteSession[] map;
             Timer.Task task;
@@ -393,8 +393,14 @@ public class NetServer implements ApplicationListener{
             }
 
             boolean checkPass(){
+
+                if(votes <= -votesRequired()){
+                    target = caster;
+                    votes = votesRequired();
+                }
+
                 if(votes >= votesRequired()){
-                    Call.sendMessage(Strings.format("[orange]Vote passed.[scarlet] {0}[orange] will be banned from the server for {1} minutes.", target.name, (kickDuration/60*(target.getInfo().timesKicked+1))));
+                    Call.sendMessage(Strings.format("[orange]Vote " + (target == caster ? "backfired" : "passed") +".[scarlet] {0}[orange] will be banned from the server for {1} minutes.", target.name, (kickDuration/60*(target.getInfo().timesKicked+1))));
                     target.getInfo().lastKicked = Time.millis() + kickDuration*1000*(target.getInfo().timesKicked+1);
                     playerGroup.all().each(p -> p.uuid != null && p.uuid.equals(target.uuid), p -> p.con.yeet(KickReason.vote));
                     map[0] = null;
@@ -465,6 +471,7 @@ public class NetServer implements ApplicationListener{
                         }
 
                         VoteSession session = new VoteSession(currentlyKicking, found);
+                        session.caster = player;
                         session.vote(player, 1);
                         vtime.reset();
                         currentlyKicking[0] = session;
