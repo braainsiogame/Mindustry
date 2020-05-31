@@ -43,7 +43,8 @@ public enum Nydus{
     do_you_want_to_build_a_snowman(() -> true, "#rock rocks can only be moved by {ground mechs}"),
     launchpad_upgrading(() -> true, "#launch-pad a launch pad can {upgrade blocks automatically} for your team"),
     water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks"),
-    game_of_doors(() -> true, "#door game of life in mindustry <3");
+    game_of_doors(() -> true, "#door game of life in mindustry <3"),
+    admin_aboose(() -> true, "#{admin} can run javascript");
 
     private final Boolp active;
     public String description;
